@@ -1,6 +1,8 @@
 package server
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"server2/app/config"
 	"server2/app/store"
@@ -16,10 +18,14 @@ type Server struct {
 
 // NewServer ...
 func NewServer(s *store.Store) *Server {
-	return &Server{
+	res := &Server{
 		router: mux.NewRouter(),
 		store:  s,
 	}
+
+	res.generateRoutePaths()
+
+	return res
 }
 
 // NewMemoryServer ...
@@ -43,4 +49,7 @@ func (s *Server) writeError(w http.ResponseWriter, err error, code int) {
 
 	json.NewEncoder(w).Encode(jsonErr)
 }
+
+func (s *Server) generateRoutePaths() {
+	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost)
 }
