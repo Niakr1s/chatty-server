@@ -22,6 +22,11 @@ func NewServer(s *store.Store) *Server {
 	}
 }
 
+// NewMemoryServer ...
+func NewMemoryServer() *Server {
+	return NewServer(store.NewMemoryStore())
+}
+
 // ListenAndServe ...
 func (s *Server) ListenAndServe() error {
 	return http.ListenAndServe(config.C.ServerListenAddress, s.router)

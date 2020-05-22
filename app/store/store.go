@@ -11,3 +11,9 @@ type Store struct {
 func NewStore(u userdb.DB) *Store {
 	return &Store{userDB: u}
 }
+
+// NewMemoryStore ...
+func NewMemoryStore() *Store {
+	userDB := userdb.NewMemoryDB()
+	return &Store{userDB: userDB}
+}
