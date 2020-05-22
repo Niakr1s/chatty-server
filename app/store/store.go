@@ -4,16 +4,16 @@ import userdb "server2/app/db/user"
 
 // Store contains all databases
 type Store struct {
-	userDB userdb.DB
+	UserDB userdb.DB
 }
 
 // NewStore ...
 func NewStore(u userdb.DB) *Store {
-	return &Store{userDB: u}
+	return &Store{UserDB: u}
 }
 
 // NewMemoryStore ...
 func NewMemoryStore() *Store {
 	userDB := userdb.NewMemoryDB()
-	return &Store{userDB: userDB}
+	return &Store{UserDB: userDB}
 }
