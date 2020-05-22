@@ -10,9 +10,9 @@ type DB interface {
 
 	// Login must return valid *User if (error == ErrAlreadyLogged)
 	// with other errors must return (nil, err)
-	Login(username string) (User, error)
+	Login(username string) (*User, error)
 
-	Update(u User) error
+	Get(username string) (*User, error)
 
-	Get(username string) (User, error)
+	Logout(username string) error
 }

@@ -41,3 +41,15 @@ func TestMemoryDB_Get(t *testing.T) {
 
 	assert.Equal(t, u1, got1)
 }
+
+func TestMemoryDB_Logout(t *testing.T) {
+	db := NewMemoryDB()
+
+	db.Login("user1")
+
+	err := db.Logout("user1")
+	assert.NoError(t, err)
+
+	err = db.Logout("user1")
+	assert.Error(t, err)
+}
