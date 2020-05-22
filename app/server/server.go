@@ -29,5 +29,8 @@ func NewMemoryServer() *Server {
 
 // ListenAndServe ...
 func (s *Server) ListenAndServe() error {
-	return http.ListenAndServe(config.C.ServerListenAddress, s.router)
+	address := config.C.ServerListenAddress
+	log.Printf("starting to listening on address %s", address)
+	return http.ListenAndServe(address, s.router)
+}
 }
