@@ -4,3 +4,10 @@ package random
 type StrGenerator interface {
 	RandomStr() string
 }
+
+// StrGen ...
+var StrGen StrGenerator
+
+func init() {
+	StrGen = NewRandStrGenerator()
+}
