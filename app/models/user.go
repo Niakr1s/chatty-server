@@ -11,7 +11,7 @@ type User struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name" validate:"required"`
 
-	PasswordHash string `json:"=" validate:"required"`
+	PasswordHash string `json:"-" validate:"required"`
 	Password     string `json:"password,omitempty" validate:"gt=5,lt=15"`
 }
 
