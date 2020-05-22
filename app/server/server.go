@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"server2/app/config"
+	"server2/app/server/middleware"
 	"server2/app/store"
 
 	"github.com/gorilla/mux"
@@ -51,5 +52,6 @@ func (s *Server) writeError(w http.ResponseWriter, err error, code int) {
 }
 
 func (s *Server) generateRoutePaths() {
-	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost)
+	s.router.Use(middleware.Cors)
+	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
 }
