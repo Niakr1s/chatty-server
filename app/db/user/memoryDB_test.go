@@ -33,9 +33,9 @@ func TestMemoryDB_Get(t *testing.T) {
 	db := NewMemoryDB()
 
 	t.Run("simple get", func(t *testing.T) {
-		u := &models.User{Name: "user", Password: "password", PasswordHash: "passwordhash"}
+		u := models.User{Name: "user", Password: "password", PasswordHash: "passwordhash"}
 
-		db.Store(u)
+		db.Store(&u)
 
 		gotU, err := db.Get(u.ID)
 

@@ -5,12 +5,12 @@ import (
 	"server2/app/models"
 )
 
-// DB ...
+// DB should be persistend storage
 type DB interface {
 	// should update user's ID
 	Store(u *models.User) error
 
-	Get(id uint) (*models.User, error)
+	Get(id uint) (models.User, error)
 }
 
 // Errors

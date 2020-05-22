@@ -31,14 +31,14 @@ func (d *MemoryDB) Store(u *models.User) error {
 }
 
 // Get ...
-func (d *MemoryDB) Get(id uint) (*models.User, error) {
+func (d *MemoryDB) Get(id uint) (models.User, error) {
 	d.RLock()
 	defer d.RUnlock()
 
 	u, ok := d.users[id]
 	if !ok {
-		return nil, ErrUserNotExist
+		return models.User{}, ErrUserNotExist
 	}
 
-	return u, nil
+	return *u, nil
 }
