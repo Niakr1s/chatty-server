@@ -19,7 +19,8 @@ const configFilepath = "config.toml"
 
 func init() {
 	if _, err := toml.DecodeFile(configFilepath, &C); err != nil {
-		panic(err)
+		log.Print(err)
+	} else {
+		log.Printf("config file succesfully loaded from %s", configFilepath)
 	}
-	log.Printf("config file succesfully loaded from %s", configFilepath)
 }
