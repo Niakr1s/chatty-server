@@ -33,4 +33,14 @@ func (s *Server) ListenAndServe() error {
 	log.Printf("starting to listening on address %s", address)
 	return http.ListenAndServe(address, s.router)
 }
+
+func (s *Server) writeError(w http.ResponseWriter, err error, code int) {
+	w.WriteHeader(code)
+
+	jsonErr := struct {
+		What string `json:"error"`
+	}{err.Error()}
+
+	json.NewEncoder(w).Encode(jsonErr)
+}
 }
