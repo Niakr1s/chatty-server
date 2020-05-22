@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"server2/app/server"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {

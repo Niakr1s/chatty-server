@@ -2,11 +2,12 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"server2/app/config"
 	"server2/app/server/middleware"
 	"server2/app/store"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gorilla/mux"
 )

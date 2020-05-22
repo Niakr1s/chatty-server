@@ -1,9 +1,9 @@
 package config
 
 import (
-	"log"
-
 	"github.com/BurntSushi/toml"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Config ...
@@ -19,7 +19,7 @@ const configFilepath = "config.toml"
 
 func init() {
 	if _, err := toml.DecodeFile(configFilepath, &C); err != nil {
-		log.Print(err)
+		log.Error(err)
 	} else {
 		log.Printf("config file succesfully loaded from %s", configFilepath)
 	}
