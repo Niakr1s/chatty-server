@@ -24,15 +24,14 @@ func (d *MemoryDB) StartCleanInactiveUsers(each time.Duration, inactivityTimeout
 	go func() {
 		for {
 			<-time.After(each)
+			d.Lock()
 			d.cleanInactiveUsers(inactivityTimeout)
+			d.Unlock()
 		}
 	}()
 }
 
 func (d *MemoryDB) cleanInactiveUsers(inactivityTimeout time.Duration) {
-	d.Lock()
-	defer d.Unlock()
-
 	now := time.Now()
 
 	for n, u := range d.users {
