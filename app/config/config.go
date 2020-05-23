@@ -9,6 +9,9 @@ import (
 // Config ...
 type Config struct {
 	ServerListenAddress string
+
+	CleanInactiveUsersInterval duration
+	InactivityTimeout          duration
 }
 
 // C contains configuration for app
