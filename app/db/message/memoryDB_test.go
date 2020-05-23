@@ -2,6 +2,7 @@ package message
 
 import (
 	"server2/app/models"
+	"server2/app/pool/events"
 	"testing"
 	"time"
 
@@ -39,5 +40,27 @@ func TestMemoryDB_GetLastNMessages(t *testing.T) {
 		last, err := db.GetLastNMessages(chatname, i)
 		assert.NoError(t, err)
 		assert.LessOrEqual(t, len(last), 10)
+	}
+}
+
+func TestMemoryDB_notify(t *testing.T) {
+	ch := make(chan events.Event)
+
+	db := NewMemoryDB().WithNotifyCh(ch)
+
+	msg := models.NewMessage(username, text, chatname).WithTime(time.Now())
+
+	for i := 0; i < 3; i++ {
+		db.Post(msg)
+		msgE, ok := (<-ch).(*events.MessageEvent)
+
+		assert.True(t, ok)
+		assert.Equal(t, msgE.Message, msg)
+	}
+
+	select {
+	case <-ch:
+		assert.Fail(t, "channel should be empty")
+	default:
 	}
 }
