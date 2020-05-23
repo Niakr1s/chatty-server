@@ -30,7 +30,7 @@ func NewPool(s *store.Store) *Pool {
 		inputCh: make(chan events.Event, 10),
 
 		userCh:       make(map[string]*events.EventChan),
-		userChFilter: func(username string) events.FilterPass { return events.FilterPassIfUserInChat(s, username) },
+		userChFilter: func(username string) events.FilterPass { return FilterPassIfUserInChat(s, username) },
 
 		innerCh: make([]*events.EventChan, 0),
 	}

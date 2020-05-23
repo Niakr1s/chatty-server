@@ -1,4 +1,4 @@
-package models
+package chat
 
 import "server2/app/er"
 

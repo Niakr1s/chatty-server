@@ -2,7 +2,7 @@ package chat
 
 import (
 	"server2/app/er"
-	"server2/app/models"
+	"server2/app/pool/events"
 	"sync"
 )
 
@@ -10,26 +10,28 @@ import (
 type MemoryDB struct {
 	sync.Mutex
 
-	chats map[string]*models.Chat
+	chats map[string]*Chat
+
+	ch chan<- events.Event
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{chats: make(map[string]*models.Chat)}
+	return &MemoryDB{chats: make(map[string]*Chat)}
 }
 
 // Add ...
-func (d *MemoryDB) Add(chatname string) (*models.Chat, error) {
+func (d *MemoryDB) Add(chatname string) (*Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, er.ErrChatAlreadyExists
 	}
-	c := models.NewChat(chatname)
+	c := NewChat(chatname)
 	d.chats[chatname] = c
 	return c, nil
 }
 
 // Get ...
-func (d *MemoryDB) Get(chatname string) (*models.Chat, error) {
+func (d *MemoryDB) Get(chatname string) (*Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, nil
 	}
