@@ -2,6 +2,7 @@ package logged
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -51,5 +52,22 @@ func TestMemoryDB_Logout(t *testing.T) {
 	assert.NoError(t, err)
 
 	err = db.Logout("user1")
+	assert.Error(t, err)
+}
+
+func TestMemoryDB_StartCleanInactiveUsers(t *testing.T) {
+	memoryDB := NewMemoryDB()
+
+	memoryDB.StartCleanInactiveUsers(time.Millisecond*10, time.Millisecond*10)
+
+	username := "user"
+	memoryDB.Login(username)
+
+	<-time.After(time.Millisecond * 50)
+
+	memoryDB.Lock()
+	_, err := memoryDB.Get(username)
+	memoryDB.Unlock()
+
 	assert.Error(t, err)
 }
