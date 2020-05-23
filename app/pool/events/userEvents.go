@@ -44,3 +44,23 @@ type LogoutEvent struct {
 func NewLogoutEvent(username string, chatname string, time time.Time) *LogoutEvent {
 	return &LogoutEvent{NewUserEvent(username, chatname, time)}
 }
+
+// ChatJoinEvent ...
+type ChatJoinEvent struct {
+	*UserEvent
+}
+
+// NewChatJoinEvent ...
+func NewChatJoinEvent(username string, chatname string, time time.Time) *ChatJoinEvent {
+	return &ChatJoinEvent{NewUserEvent(username, chatname, time)}
+}
+
+// ChatLeaveEvent ...
+type ChatLeaveEvent struct {
+	*UserEvent
+}
+
+// NewChatLeaveEvent ...
+func NewChatLeaveEvent(username string, chatname string, time time.Time) *ChatLeaveEvent {
+	return &ChatLeaveEvent{NewUserEvent(username, chatname, time)}
+}
