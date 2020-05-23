@@ -23,8 +23,9 @@ var C *Config
 const configFilepath = "config.toml"
 
 func init() {
+	C = new(Config)
 	if _, err := toml.DecodeFile(configFilepath, C); err != nil {
-		log.Infof("couldn't load from %s, initializing default config", configFilepath)
+		log.Infof("couldn't load from %s: %v, initializing default config", configFilepath, err)
 		C = NewDefaultConfig()
 	} else {
 		log.Infof("config file succesfully loaded from %s", configFilepath)
