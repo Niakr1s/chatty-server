@@ -1,6 +1,9 @@
 package events
 
-import "time"
+import (
+	"server2/app/er"
+	"time"
+)
 
 // UserEvent ...
 type UserEvent struct {
@@ -17,7 +20,7 @@ func NewUserEvent(username string, chatname string, time time.Time) *UserEvent {
 // InChat ...
 func (ue *UserEvent) InChat() (string, error) {
 	if ue.Chatname == "" {
-		return "", ErrGlobal
+		return "", er.ErrGlobal
 	}
 	return ue.Chatname, nil
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"server2/app/er"
 	"server2/app/validator"
 
 	"golang.org/x/crypto/bcrypt"
@@ -23,7 +24,7 @@ func (u *User) ValidateBeforeStoring() error {
 // GeneratePasswordHash ...
 func (u *User) GeneratePasswordHash() error {
 	if u.Password == "" {
-		return ErrPasswordIsEmpty
+		return er.ErrPasswordIsEmpty
 	}
 
 	hash, err := generatePasswordHash(u.Password)
@@ -56,7 +57,7 @@ func (u *User) CheckPassword(password string) error {
 
 func generatePasswordHash(pass string) (string, error) {
 	if pass == "" {
-		return "", ErrPasswordIsEmpty
+		return "", er.ErrPasswordIsEmpty
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.MinCost)

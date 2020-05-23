@@ -1,6 +1,7 @@
 package user
 
 import (
+	"server2/app/er"
 	"server2/app/models"
 	"sync"
 )
@@ -37,7 +38,7 @@ func (d *MemoryDB) Get(id uint) (models.User, error) {
 
 	u, ok := d.users[id]
 	if !ok {
-		return models.User{}, ErrUserNotExist
+		return models.User{}, er.ErrUserNotExist
 	}
 
 	return *u, nil

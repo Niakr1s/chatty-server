@@ -1,4 +1,6 @@
-package chat
+package models
+
+import "server2/app/er"
 
 // Chat ...
 type Chat struct {
@@ -14,7 +16,7 @@ func NewChat(chatname string) *Chat {
 // AddUser ...
 func (c *Chat) AddUser(username string) error {
 	if _, ok := c.users[username]; ok {
-		return ErrAlreadyInChat
+		return er.ErrAlreadyInChat
 	}
 	c.users[username] = struct{}{}
 	return nil
@@ -23,7 +25,7 @@ func (c *Chat) AddUser(username string) error {
 // RemoveUser ...
 func (c *Chat) RemoveUser(username string) error {
 	if _, ok := c.users[username]; !ok {
-		return ErrNotInChat
+		return er.ErrNotInChat
 	}
 	delete(c.users, username)
 	return nil

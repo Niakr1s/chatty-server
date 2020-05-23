@@ -1,6 +1,7 @@
 package logged
 
 import (
+	"server2/app/er"
 	"testing"
 	"time"
 
@@ -13,22 +14,22 @@ func TestMemoryDB_Login(t *testing.T) {
 	u1, err := db.Login("user1")
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, u1.loginToken)
+	assert.NotEmpty(t, u1.LoginToken)
 
 	sameU, err := db.Login("user1")
 
 	assert.Error(t, err)
 
-	if err == ErrAlreadyLogged {
+	if err == er.ErrAlreadyLogged {
 		assert.Equal(t, u1, sameU)
 	}
 
 	u2, err := db.Login("user2")
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, u2.loginToken)
+	assert.NotEmpty(t, u2.LoginToken)
 
-	assert.NotEqual(t, u1.loginToken, u2.loginToken)
+	assert.NotEqual(t, u1.LoginToken, u2.LoginToken)
 }
 
 func TestMemoryDB_Get(t *testing.T) {

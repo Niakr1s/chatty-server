@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"server2/app/config"
+	"server2/app/db/chat"
+	"server2/app/db/logged"
+	"server2/app/db/user"
 	"server2/app/server/middleware"
 	"server2/app/store"
 
@@ -32,7 +35,11 @@ func NewServer(s *store.Store) *Server {
 
 // NewMemoryServer ...
 func NewMemoryServer() *Server {
-	return NewServer(store.NewMemoryStore())
+	u := user.NewMemoryDB()
+	c := chat.NewMemoryDB()
+	l := logged.NewMemoryDB()
+
+	return NewServer(store.NewStore(u, c, l))
 }
 
 // ListenAndServe ...

@@ -1,4 +1,4 @@
-package logged
+package er
 
 import "errors"
 

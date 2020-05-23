@@ -1,7 +1,8 @@
-package events
+package pool
 
 import (
 	"fmt"
+	"server2/app/pool/events"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,10 +20,10 @@ func (e *mockEvent) InChat() (string, error) {
 func NewMockPool(t *testing.T, inner int, user int) *Pool {
 	t.Helper()
 
-	p := NewPool(nil).WithUserChFilter(func(username string) FilterPass { return FilterPassAlways })
+	p := NewPool(nil).WithUserChFilter(func(username string) events.FilterPass { return events.FilterPassAlways })
 
 	for i := 0; i < inner; i++ {
-		p.CreateChan(FilterPassAlways)
+		p.CreateChanNoFilter()
 	}
 
 	for i := 0; i < user; i++ {
@@ -50,10 +51,10 @@ func TestPool_CreateChan(t *testing.T) {
 	p := NewMockPool(t, 0, 0)
 	assert.Len(t, p.innerCh, 0)
 
-	p.CreateChan(FilterPassAlways)
+	p.CreateChanNoFilter()
 	assert.Len(t, p.innerCh, 1)
 
-	p.CreateChan(FilterPassAlways)
+	p.CreateChanNoFilter()
 	assert.Len(t, p.innerCh, 2)
 }
 
@@ -96,7 +97,7 @@ func TestPool_ProcessLogoutEvent(t *testing.T) {
 
 	assert.Len(t, p.userCh, 1)
 
-	logoutEvent := &LogoutEvent{UserEvent: &UserEvent{Username: username, Chatname: ""}}
+	logoutEvent := &events.LogoutEvent{UserEvent: &events.UserEvent{Username: username, Chatname: ""}}
 
 	p.processLogoutEvent(logoutEvent)
 

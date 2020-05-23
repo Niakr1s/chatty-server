@@ -1,41 +1,45 @@
 package chat
 
-import "sync"
+import (
+	"server2/app/er"
+	"server2/app/models"
+	"sync"
+)
 
 // MemoryDB ...
 type MemoryDB struct {
 	sync.Mutex
 
-	chats map[string]*Chat
+	chats map[string]*models.Chat
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{chats: make(map[string]*Chat)}
+	return &MemoryDB{chats: make(map[string]*models.Chat)}
 }
 
 // Add ...
-func (d *MemoryDB) Add(chatname string) (*Chat, error) {
+func (d *MemoryDB) Add(chatname string) (*models.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
-		return c, ErrChatAlreadyExists
+		return c, er.ErrChatAlreadyExists
 	}
-	c := NewChat(chatname)
+	c := models.NewChat(chatname)
 	d.chats[chatname] = c
 	return c, nil
 }
 
 // Get ...
-func (d *MemoryDB) Get(chatname string) (*Chat, error) {
+func (d *MemoryDB) Get(chatname string) (*models.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, nil
 	}
-	return nil, ErrNoSuchChat
+	return nil, er.ErrNoSuchChat
 }
 
 // Remove ...
 func (d *MemoryDB) Remove(chatname string) error {
 	if _, ok := d.chats[chatname]; !ok {
-		return ErrNoSuchChat
+		return er.ErrNoSuchChat
 	}
 	delete(d.chats, chatname)
 	return nil
