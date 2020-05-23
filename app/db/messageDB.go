@@ -12,7 +12,5 @@ type MessageDB interface {
 	// should update message ID
 	Post(*models.Message) error
 
-	Get(chatname string, id uint) (*models.Message, error)
-
 	GetLastNMessages(chatname string, n int) ([]*models.Message, error)
 }
