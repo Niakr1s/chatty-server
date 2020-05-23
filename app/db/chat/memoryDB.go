@@ -32,7 +32,7 @@ func (d *MemoryDB) Add(chatname string) (*Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, er.ErrChatAlreadyExists
 	}
-	c := NewChat(chatname)
+	c := NewChat(chatname).WithNotifyCh(d.notifyCh)
 	d.chats[chatname] = c
 
 	d.notifyChatCreated(chatname, time.Now())
