@@ -3,7 +3,6 @@ package chat
 import (
 	"server2/app/pool/events"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -73,11 +72,16 @@ func TestMemoryDB_ChatWithChannel(t *testing.T) {
 
 	memoryDB := NewMemoryDB().WithNotifyCh(ch)
 
-	chat, _ := memoryDB.Add(chatname)
+	chat, err := memoryDB.Add(chatname)
+	assert.NoError(t, err)
+	<-ch
 
-	chat.notifyUserJoined("user", chatname, time.Now())
+	chat.AddUser(username)
 
-	joinedE := (<-ch).(*events.ChatJoinEvent)
+	e, ok := (<-ch)
+	assert.True(t, ok)
+
+	joinedE := e.(*events.ChatJoinEvent)
 	assert.Equal(t, joinedE.Chatname, chatname)
 	assert.Equal(t, joinedE.Username, "user")
 }
