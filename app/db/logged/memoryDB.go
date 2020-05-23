@@ -3,6 +3,7 @@ package logged
 import (
 	"server2/app/er"
 	"server2/app/models"
+	"server2/app/pool/events"
 	"sync"
 	"time"
 )
@@ -12,11 +13,19 @@ type MemoryDB struct {
 	sync.Mutex
 
 	users map[string]*models.LoggedUser
+
+	notifyCh chan<- events.Event
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
 	return &MemoryDB{users: make(map[string]*models.LoggedUser)}
+}
+
+// WithNotifyCh ...
+func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *MemoryDB {
+	d.notifyCh = ch
+	return d
 }
 
 // StartCleanInactiveUsers ...
@@ -51,6 +60,9 @@ func (d *MemoryDB) Login(username string) (*models.LoggedUser, error) {
 
 	u = models.NewLoggedUser(username)
 	d.users[username] = u
+
+	d.notifyLogin(username, u.LastActivity)
+
 	return u, nil
 }
 
@@ -69,5 +81,24 @@ func (d *MemoryDB) Logout(username string) error {
 		return er.ErrNotLogged
 	}
 	delete(d.users, username)
+
+	d.notifyLogout(username, time.Now())
+
 	return nil
+}
+
+func (d *MemoryDB) notifyLogin(username string, t time.Time) {
+	go func() {
+		if d.notifyCh != nil {
+			d.notifyCh <- events.NewLoginEvent(username, "", t)
+		}
+	}()
+}
+
+func (d *MemoryDB) notifyLogout(username string, t time.Time) {
+	go func() {
+		if d.notifyCh != nil {
+			d.notifyCh <- events.NewLogoutEvent(username, "", t)
+		}
+	}()
 }

@@ -2,10 +2,15 @@ package logged
 
 import (
 	"server2/app/er"
+	"server2/app/pool/events"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+)
+
+const (
+	username = "user"
 )
 
 func TestMemoryDB_Login(t *testing.T) {
@@ -71,4 +76,26 @@ func TestMemoryDB_StartCleanInactiveUsers(t *testing.T) {
 	memoryDB.Unlock()
 
 	assert.Error(t, err)
+}
+
+func TestMemoryDB_notifyLogin(t *testing.T) {
+	ch := make(chan events.Event)
+
+	memoryDB := NewMemoryDB().WithNotifyCh(ch)
+
+	memoryDB.Login(username)
+
+	loginE := (<-ch).(*events.LoginEvent)
+	assert.Equal(t, loginE.Username, username)
+
+	memoryDB.Logout(username)
+
+	logoutE := (<-ch).(*events.LogoutEvent)
+	assert.Equal(t, logoutE.Username, username)
+
+	select {
+	case <-ch:
+		assert.Fail(t, "no other events expected")
+	default:
+	}
 }
