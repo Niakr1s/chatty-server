@@ -15,3 +15,8 @@ var (
 
 	ErrHashMismatch = errors.New("hash mismatch")
 )
+
+// Message errors
+var (
+	ErrTooOld = errors.New("too old")
+)
