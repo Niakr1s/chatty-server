@@ -20,7 +20,7 @@ func NewUserEvent(username string, chatname string, time time.Time) *UserEvent {
 // InChat ...
 func (ue *UserEvent) InChat() (string, error) {
 	if ue.Chatname == "" {
-		return "", er.ErrGlobal
+		return "", er.ErrGlobalEvent
 	}
 	return ue.Chatname, nil
 }

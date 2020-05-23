@@ -2,7 +2,13 @@ package er
 
 import "errors"
 
-// Errors
+// Chat errors
+var (
+	ErrAlreadyInChat = errors.New("user is already logged in chat")
+	ErrNotInChat     = errors.New("user not logged in such chat")
+)
+
+// User errors
 var (
 	ErrPasswordIsEmpty     = errors.New("password is empty")
 	ErrPasswordHashIsEmpty = errors.New("password hash is empty")

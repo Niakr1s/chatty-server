@@ -38,7 +38,7 @@ func (d *MemoryDB) Get(id uint) (models.User, error) {
 
 	u, ok := d.users[id]
 	if !ok {
-		return models.User{}, er.ErrUserNotExist
+		return models.User{}, er.ErrUserNotFound
 	}
 
 	return *u, nil

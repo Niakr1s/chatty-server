@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"server2/app/er"
 	"server2/app/models"
 )
 
@@ -13,7 +14,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	u := models.User{}
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
-		s.writeError(w, ErrCannotParseData, http.StatusBadRequest)
+		s.writeError(w, er.ErrCannotParseData, http.StatusBadRequest)
 		return
 	}
 
