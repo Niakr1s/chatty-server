@@ -1,10 +1,13 @@
 package chat
 
 import (
+	"server2/app/pool/events"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+const chatname = "chat"
 
 func TestMemoryDB_Add(t *testing.T) {
 	chatDB := NewMemoryDB()
@@ -38,4 +41,28 @@ func TestMemoryDB_Remove(t *testing.T) {
 
 	err = chatDB.Remove("other")
 	assert.Error(t, err)
+}
+
+func TestMemoryDB_notify(t *testing.T) {
+	ch := make(chan events.Event)
+
+	memoryDB := NewMemoryDB().WithNotifyCh(ch)
+
+	memoryDB.Add(chatname)
+	memoryDB.Add(chatname) // shouldn't fire same event twice
+
+	createdE := (<-ch).(*events.ChatCreatedEvent)
+	assert.Equal(t, createdE.Chatname, chatname)
+
+	memoryDB.Remove(chatname)
+	memoryDB.Remove(chatname) // shouldn't fire same event twice
+
+	removedE := (<-ch).(*events.ChatRemovedEvent)
+	assert.Equal(t, removedE.Chatname, chatname)
+
+	select {
+	case <-ch:
+		assert.Fail(t, "no other events expected")
+	default:
+	}
 }

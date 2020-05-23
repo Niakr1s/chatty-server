@@ -4,6 +4,7 @@ import (
 	"server2/app/er"
 	"server2/app/pool/events"
 	"sync"
+	"time"
 )
 
 // MemoryDB ...
@@ -12,12 +13,18 @@ type MemoryDB struct {
 
 	chats map[string]*Chat
 
-	ch chan<- events.Event
+	notifyCh chan<- events.Event
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
 	return &MemoryDB{chats: make(map[string]*Chat)}
+}
+
+// WithNotifyCh ...
+func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *MemoryDB {
+	d.notifyCh = ch
+	return d
 }
 
 // Add ...
@@ -27,6 +34,9 @@ func (d *MemoryDB) Add(chatname string) (*Chat, error) {
 	}
 	c := NewChat(chatname)
 	d.chats[chatname] = c
+
+	d.notifyChatCreated(chatname, time.Now())
+
 	return c, nil
 }
 
@@ -44,5 +54,24 @@ func (d *MemoryDB) Remove(chatname string) error {
 		return er.ErrNoSuchChat
 	}
 	delete(d.chats, chatname)
+
+	d.notifyChatRemoved(chatname, time.Now())
+
 	return nil
+}
+
+func (d *MemoryDB) notifyChatCreated(chatname string, t time.Time) {
+	go func() {
+		if d.notifyCh != nil {
+			d.notifyCh <- events.NewChatCreatedEvent(chatname, t)
+		}
+	}()
+}
+
+func (d *MemoryDB) notifyChatRemoved(chatname string, t time.Time) {
+	go func() {
+		if d.notifyCh != nil {
+			d.notifyCh <- events.NewChatRemovedEvent(chatname, t)
+		}
+	}()
 }
