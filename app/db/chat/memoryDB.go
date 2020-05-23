@@ -1,7 +1,11 @@
 package chat
 
+import "sync"
+
 // MemoryDB ...
 type MemoryDB struct {
+	sync.Mutex
+
 	chats map[string]*Chat
 }
 
