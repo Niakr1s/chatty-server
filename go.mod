@@ -1,4 +1,4 @@
-module server2
+module github.com/niakr1s/chatty-server
 
 go 1.14
 
