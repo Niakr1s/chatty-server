@@ -61,6 +61,7 @@ func (s *Server) generateRoutePaths() {
 	s.router.Use(middleware.Cors)
 	s.router.Use(middleware.Logger)
 	s.router.Handle("/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
+	s.router.Handle("/authorize", http.HandlerFunc(s.Authorize)).Methods(http.MethodPost, http.MethodOptions)
 
 	// /api/auth
 	authRouter := s.router.PathPrefix("/authonly").Subrouter()
