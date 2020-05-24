@@ -17,6 +17,7 @@ type ChatDB interface {
 
 // Chat ...
 type Chat interface {
+	ChatName() string
 	AddUser(username string) error
 	RemoveUser(username string) error
 	IsInChat(username string) bool

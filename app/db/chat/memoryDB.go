@@ -2,7 +2,6 @@ package chat
 
 import (
 	"sync"
-	"time"
 
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
@@ -13,20 +12,17 @@ import (
 type MemoryDB struct {
 	sync.Mutex
 
-	chats map[string]*MemoryChat
-
-	notifyCh chan<- events.Event
+	chats map[string]db.Chat
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{chats: make(map[string]*MemoryChat)}
+	return &MemoryDB{chats: make(map[string]db.Chat)}
 }
 
 // WithNotifyCh ...
-func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *MemoryDB {
-	d.notifyCh = ch
-	return d
+func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
+	return NewNotifyDB(d, ch)
 }
 
 // Add ...
@@ -34,10 +30,8 @@ func (d *MemoryDB) Add(chatname string) (db.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, er.ErrChatAlreadyExists
 	}
-	c := NewMemoryChat(chatname).WithNotifyCh(d.notifyCh)
+	c := NewMemoryChat(chatname)
 	d.chats[chatname] = c
-
-	d.notifyChatCreated(chatname, time.Now())
 
 	return c, nil
 }
@@ -57,23 +51,5 @@ func (d *MemoryDB) Remove(chatname string) error {
 	}
 	delete(d.chats, chatname)
 
-	d.notifyChatRemoved(chatname, time.Now())
-
 	return nil
-}
-
-func (d *MemoryDB) notifyChatCreated(chatname string, t time.Time) {
-	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewChatCreatedEvent(chatname, t)
-		}
-	}()
-}
-
-func (d *MemoryDB) notifyChatRemoved(chatname string, t time.Time) {
-	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewChatRemovedEvent(chatname, t)
-		}
-	}()
 }

@@ -3,8 +3,6 @@ package chat
 import (
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/pool/events"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,28 +45,4 @@ func TestMemoryChat_IsInChat(t *testing.T) {
 
 	chat.RemoveUser(username)
 	assert.False(t, chat.IsInChat(username))
-}
-
-func TestMemoryChat_notify(t *testing.T) {
-	ch := make(chan events.Event)
-
-	chat := NewMemoryChat(chatname).WithNotifyCh(ch)
-
-	chat.AddUser(username)
-	chat.AddUser(username)
-
-	joinE := (<-ch).(*events.ChatJoinEvent)
-	assert.Equal(t, joinE.Username, username)
-
-	chat.RemoveUser(username)
-	chat.RemoveUser(username)
-
-	leaveE := (<-ch).(*events.ChatLeaveEvent)
-	assert.Equal(t, leaveE.Username, username)
-
-	select {
-	case <-ch:
-		assert.Fail(t, "channel should be empty")
-	default:
-	}
 }
