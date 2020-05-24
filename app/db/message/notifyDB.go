@@ -33,8 +33,6 @@ func (d *NotifyDB) Post(msg *models.Message) error {
 
 func (d *NotifyDB) notifyNewMessage(msg *models.Message) {
 	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewMessageEvent(msg)
-		}
+		d.notifyCh <- events.NewMessageEvent(msg)
 	}()
 }

@@ -29,7 +29,7 @@ func (c *NotifyChat) AddUser(username string) error {
 
 	c.notifyUserJoined(username, c.Chat.ChatName(), time.Now())
 
-	return err
+	return nil
 }
 
 // RemoveUser ...
@@ -42,21 +42,17 @@ func (c *NotifyChat) RemoveUser(username string) error {
 
 	c.notifyUserLeaved(username, c.Chat.ChatName(), time.Now())
 
-	return err
+	return nil
 }
 
 func (c *NotifyChat) notifyUserJoined(username, chatname string, t time.Time) {
 	go func() {
-		if c.notifyCh != nil {
-			c.notifyCh <- events.NewChatJoinEvent(username, chatname, t)
-		}
+		c.notifyCh <- events.NewChatJoinEvent(username, chatname, t)
 	}()
 }
 
 func (c *NotifyChat) notifyUserLeaved(username, chatname string, t time.Time) {
 	go func() {
-		if c.notifyCh != nil {
-			c.notifyCh <- events.NewChatLeaveEvent(username, chatname, t)
-		}
+		c.notifyCh <- events.NewChatLeaveEvent(username, chatname, t)
 	}()
 }

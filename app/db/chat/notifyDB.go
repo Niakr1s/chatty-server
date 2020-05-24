@@ -27,17 +27,12 @@ func (d *NotifyDB) Add(chatname string) (db.Chat, error) {
 		return c, err
 	}
 
-	c, err = d.ChatDB.Get(chatname)
-
-	if err != nil {
-		return c, nil
-	}
-
+	// converting chat to notifyChat
 	c = NewNotifyChat(c, d.notifyCh)
 
 	d.notifyChatCreated(chatname, time.Now())
 
-	return c, err
+	return c, nil
 }
 
 // Remove ...
@@ -50,21 +45,17 @@ func (d *NotifyDB) Remove(chatname string) error {
 
 	d.notifyChatRemoved(chatname, time.Now())
 
-	return err
+	return nil
 }
 
 func (d *NotifyDB) notifyChatCreated(chatname string, t time.Time) {
 	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewChatCreatedEvent(chatname, t)
-		}
+		d.notifyCh <- events.NewChatCreatedEvent(chatname, t)
 	}()
 }
 
 func (d *NotifyDB) notifyChatRemoved(chatname string, t time.Time) {
 	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewChatRemovedEvent(chatname, t)
-		}
+		d.notifyCh <- events.NewChatRemovedEvent(chatname, t)
 	}()
 }

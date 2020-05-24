@@ -30,7 +30,7 @@ func (d *NotifyDB) Login(username string) (*models.LoggedUser, error) {
 
 	d.notifyLogin(username, u.LastActivity)
 
-	return u, err
+	return u, nil
 }
 
 // Logout ...
@@ -43,21 +43,17 @@ func (d *NotifyDB) Logout(username string) error {
 
 	d.notifyLogout(username, time.Now())
 
-	return err
+	return nil
 }
 
 func (d *NotifyDB) notifyLogin(username string, t time.Time) {
 	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewLoginEvent(username, "", t)
-		}
+		d.notifyCh <- events.NewLoginEvent(username, "", t)
 	}()
 }
 
 func (d *NotifyDB) notifyLogout(username string, t time.Time) {
 	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewLogoutEvent(username, "", t)
-		}
+		d.notifyCh <- events.NewLogoutEvent(username, "", t)
 	}()
 }
