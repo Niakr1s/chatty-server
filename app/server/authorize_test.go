@@ -17,8 +17,12 @@ func TestServer_Authorize(t *testing.T) {
 
 	storedUser := models.NewFullUser("user", "user@example.org", "password")
 	storedUser.GeneratePasswordHash()
+	storedUser.Email.Activated = true
 
 	s.store.UserDB.Store(&storedUser)
+
+	unverifiedUser := models.NewFullUser("unverifiedUser", "user@example.org", "password")
+	s.store.UserDB.Store(&unverifiedUser)
 
 	testCases := []struct {
 		name       string
@@ -31,6 +35,7 @@ func TestServer_Authorize(t *testing.T) {
 		{"same user with empty pass", "user", "", false},
 		{"other user", "user1", "password", false},
 		{"other user with empty pass", "user1", "", false},
+		{"user with unverified email", "unverifiedUser", "password", false},
 	}
 
 	for _, tt := range testCases {

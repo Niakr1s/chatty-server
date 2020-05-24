@@ -13,5 +13,6 @@ var (
 
 // Email errors
 var (
-	ErrSendEmail = errors.New("couldn't send email")
+	ErrSendEmail       = errors.New("couldn't send email")
+	ErrUnverifiedEmail = errors.New("email is not verified")
 )
