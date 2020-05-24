@@ -24,6 +24,8 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.store.LoggedDB.Lock()
+	defer s.store.LoggedDB.Unlock()
+
 	s.store.LoggedDB.Logout(username) // we are authorized, do forced login
 	u, err := s.store.LoggedDB.Login(username)
 
