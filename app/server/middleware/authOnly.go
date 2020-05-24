@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/server/httputil"
 	"github.com/niakr1s/chatty-server/app/server/sess"
-	"github.com/niakr1s/chatty-server/app/server/util"
 )
 
 // AuthOnly ...
@@ -14,12 +14,12 @@ func AuthOnly(h http.Handler) http.Handler {
 		session := sess.GetSessionFromContext(r.Context())
 
 		if session == nil {
-			util.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
+			httputil.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
 			return
 		}
 
 		if !sess.IsAuthorized(session) {
-			util.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
+			httputil.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
 			return
 		}
 
