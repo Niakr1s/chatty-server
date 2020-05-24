@@ -1,11 +1,9 @@
 package middleware
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/server/sess"
 	"github.com/niakr1s/chatty-server/app/server/util"
 )
@@ -20,7 +18,7 @@ func AddSessionToContext(store *sessions.CookieStore) func(http.Handler) http.Ha
 				return
 			}
 
-			r = r.WithContext(context.WithValue(r.Context(), config.CtxSessionKey, session))
+			r = r.WithContext(sess.ContextWithSession(r.Context(), session))
 
 			h.ServeHTTP(w, r)
 		})

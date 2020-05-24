@@ -15,5 +15,16 @@ func GetSessionFromStore(store *sessions.CookieStore, r *http.Request) (*session
 
 // GetSessionFromContext ...
 func GetSessionFromContext(ctx context.Context) *sessions.Session {
-	return ctx.Value(config.CtxSessionKey).(*sessions.Session)
+	session := ctx.Value(config.CtxSessionKey)
+
+	if session == nil {
+		return nil
+	}
+
+	return session.(*sessions.Session)
+}
+
+// ContextWithSession ...
+func ContextWithSession(ctx context.Context, session *sessions.Session) context.Context {
+	return context.WithValue(ctx, config.CtxSessionKey, session)
 }
