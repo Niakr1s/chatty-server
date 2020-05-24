@@ -23,9 +23,8 @@ func NewMemoryDB() *MemoryDB {
 }
 
 // WithNotifyCh ...
-func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *MemoryDB {
-	d.notifyCh = ch
-	return d
+func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
+	return NewNotifyDB(d, ch)
 }
 
 // Post ...
@@ -34,8 +33,6 @@ func (d *MemoryDB) Post(msg *models.Message) error {
 	msg.ID = len(chat) + 1
 	chat = append(chat, msg)
 	d.chats[msg.Chat] = chat
-
-	d.notifyNewMessage(msg)
 
 	return nil
 }
@@ -53,12 +50,4 @@ func (d *MemoryDB) GetLastNMessages(chatname string, n int) ([]*models.Message, 
 	}
 
 	return chat[len(chat)-n:], nil
-}
-
-func (d *MemoryDB) notifyNewMessage(msg *models.Message) {
-	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewMessageEvent(msg)
-		}
-	}()
 }
