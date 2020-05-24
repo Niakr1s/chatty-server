@@ -104,10 +104,12 @@ func GenerateTestUser(t *testing.T) *User {
 }
 
 func TestUser_ValidateBeforeStoring(t *testing.T) {
+
 	type fields struct {
 		Name         string
 		PasswordHash string
 		Password     string
+		Email        Email
 	}
 	tests := []struct {
 		name    string
@@ -116,32 +118,42 @@ func TestUser_ValidateBeforeStoring(t *testing.T) {
 	}{
 		{
 			"valid",
-			fields{"user", "hash", "password"},
+			fields{"user", "hash", "password", Email{Address: "user@example.org", ActivationToken: "qerwwerhasdf"}},
 			false,
 		},
 		{
+			"empty activation token email",
+			fields{"user", "hash", "password", Email{Address: "user@example", ActivationToken: ""}},
+			true,
+		},
+		{
+			"wrong email",
+			fields{"user", "hash", "password", Email{Address: "user@example", ActivationToken: "qerwwerhasdf"}},
+			true,
+		},
+		{
 			"short pass",
-			fields{"user", "hash", "sh"},
+			fields{"user", "hash", "sh", Email{Address: "user@example.org"}},
 			true,
 		},
 		{
 			"large pass",
-			fields{"user", "hash", "superlargepasswordlol"},
+			fields{"user", "hash", "superlargepasswordlol", Email{Address: "user@example.org"}},
 			true,
 		},
 		{
 			"no user",
-			fields{"", "hash", "password"},
+			fields{"", "hash", "password", Email{Address: "user@example.org"}},
 			true,
 		},
 		{
 			"no hash",
-			fields{"user", "", "password"},
+			fields{"user", "", "password", Email{Address: "user@example.org"}},
 			true,
 		},
 		{
 			"no pass",
-			fields{"user", "hash", ""},
+			fields{"user", "hash", "", Email{Address: "user@example.org"}},
 			true,
 		},
 	}
@@ -151,6 +163,7 @@ func TestUser_ValidateBeforeStoring(t *testing.T) {
 				Name:         tt.fields.Name,
 				PasswordHash: tt.fields.PasswordHash,
 				Password:     tt.fields.Password,
+				Email:        tt.fields.Email,
 			}
 			err := u.ValidateBeforeStoring()
 			assert.Equal(t, (err != nil), tt.wantErr)

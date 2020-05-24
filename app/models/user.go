@@ -9,6 +9,7 @@ import (
 
 // User ...
 type User struct {
+	Email
 	Name string `json:"name" validate:"required"`
 
 	PasswordHash string `json:"-" validate:"required"`
