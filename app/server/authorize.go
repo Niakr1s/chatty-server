@@ -32,7 +32,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := storedU.CheckPassword(u.Password); err != nil {
-		httputil.WriteError(w, err, http.StatusUnauthorized)
+		httputil.WriteError(w, er.ErrHashMismatch, http.StatusUnauthorized)
 		return
 	}
 
