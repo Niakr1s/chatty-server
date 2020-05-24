@@ -60,4 +60,7 @@ func (s *Server) generateRoutePaths() {
 	s.router.Use(middleware.Logger)
 	s.router.Use(middleware.AddSessionToContext(s.cookieStore))
 	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
+
+	auth := s.router.NewRoute().Subrouter()
+	auth.Use(middleware.AuthOnly)
 }
