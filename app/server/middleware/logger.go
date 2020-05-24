@@ -19,7 +19,6 @@ func NewResponseWithCode(w http.ResponseWriter) *ResponseWithCode {
 
 // WriteHeader ...
 func (r *ResponseWithCode) WriteHeader(statuscode int) {
-	log.Tracef("ResonseWithCode: appending status code %d", statuscode)
 	r.Code = statuscode
 	r.ResponseWriter.WriteHeader(statuscode)
 }
