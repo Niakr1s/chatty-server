@@ -33,6 +33,8 @@ func NewServer(s *db.Store) *Server {
 		cookieStore: sess.InitStoreFromConfig(),
 	}
 
+	res.cookieStore.Options.MaxAge = config.C.CookieMaxAge
+
 	res.generateRoutePaths()
 
 	return res

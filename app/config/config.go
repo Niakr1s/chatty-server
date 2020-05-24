@@ -16,6 +16,7 @@ type Config struct {
 	InactivityTimeout          duration
 
 	CookieStoreSecretKey string
+	CookieMaxAge         int
 }
 
 // C contains configuration for app
@@ -42,5 +43,6 @@ func NewDefaultConfig() *Config {
 		InactivityTimeout:          duration{time.Second * 60},
 
 		CookieStoreSecretKey: "1234567890",
+		CookieMaxAge:         60 * 60 * 24 * 7, // week
 	}
 }
