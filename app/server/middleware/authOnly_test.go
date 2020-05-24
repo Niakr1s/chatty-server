@@ -12,30 +12,37 @@ import (
 )
 
 func TestAuthOnly(t *testing.T) {
-	t.Run("unathorized", func(t *testing.T) {
-		h := mockHandlerFail(t)
-		r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(""))
-		w := httptest.NewRecorder()
-		AuthOnly(h).ServeHTTP(w, r)
-	})
+	testCases := []struct {
+		name          string
+		authorized    bool
+		username      string
+		shouldExecute bool
+	}{
+		{"authorized user", true, "username", true},
+		{"unauthorized user", false, "username", false},
+		{"unauthorized user with empty name", false, "", false},
+		{"authorized user with empty name", true, "", false},
+	}
 
-	t.Run("authorized", func(t *testing.T) {
-		store := sess.InitStoreFromTimeNow()
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			store := sess.InitStoreFromTimeNow()
 
-		r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(""))
-		w := httptest.NewRecorder()
+			r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(""))
+			w := httptest.NewRecorder()
 
-		session, _ := sess.GetSessionFromStore(store, r)
-		session.Values[config.SessionAuthorized] = true
-		session.Values[config.SessionUserName] = "username"
-		session.Save(r, w)
+			session, _ := sess.GetSessionFromStore(store, r)
+			session.Values[config.SessionAuthorized] = tt.authorized
+			session.Values[config.SessionUserName] = tt.username
+			session.Save(r, w)
 
-		r = r.WithContext(sess.ContextWithSession(r.Context(), session))
+			r = r.WithContext(sess.ContextWithSession(r.Context(), session))
 
-		h := &executedHandler{}
+			h := &executedHandler{}
 
-		AuthOnly(h).ServeHTTP(w, r)
+			AuthOnly(h).ServeHTTP(w, r)
 
-		assert.True(t, h.IsExecuted)
-	})
+			assert.Equal(t, h.IsExecuted, tt.shouldExecute)
+		})
+	}
 }

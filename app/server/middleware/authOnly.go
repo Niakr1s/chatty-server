@@ -1,8 +1,10 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
 
+	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/server/httputil"
 	"github.com/niakr1s/chatty-server/app/server/sess"
@@ -22,6 +24,15 @@ func AuthOnly(h http.Handler) http.Handler {
 			httputil.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
 			return
 		}
+
+		username, err := sess.GetUserName(session)
+
+		if err != nil || username == "" {
+			httputil.WriteError(w, er.ErrUserNameIsEmpty, http.StatusUnauthorized)
+			return
+		}
+
+		r = r.WithContext(context.WithValue(r.Context(), config.CtxUserNameKey, username))
 
 		h.ServeHTTP(w, r)
 	})
