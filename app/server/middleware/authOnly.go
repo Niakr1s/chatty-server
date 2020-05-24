@@ -26,7 +26,6 @@ func AuthOnly(h http.Handler) http.Handler {
 		}
 
 		username, err := sess.GetUserName(session)
-
 		if err != nil || username == "" {
 			httputil.WriteError(w, er.ErrUserNameIsEmpty, http.StatusUnauthorized)
 			return

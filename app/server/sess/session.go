@@ -42,12 +42,6 @@ func IsAuthorized(session *sessions.Session) bool {
 		return false
 	}
 
-	_, err := GetUserName(session)
-
-	if err != nil {
-		return false
-	}
-
 	return res
 }
 
