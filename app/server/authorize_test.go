@@ -15,10 +15,10 @@ import (
 func TestServer_Authorize(t *testing.T) {
 	s := NewMemoryServer()
 
-	storedUser := &models.User{Name: "user", Password: "password"}
+	storedUser := models.NewFullUser("user", "user@example.org", "password")
 	storedUser.GeneratePasswordHash()
 
-	s.store.UserDB.Store(storedUser)
+	s.store.UserDB.Store(&storedUser)
 
 	testCases := []struct {
 		name       string
@@ -35,7 +35,7 @@ func TestServer_Authorize(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			u := models.User{Name: tt.username, Password: tt.password}
+			u := models.NewFullUser(tt.username, "user@example.org", tt.password)
 			b, _ := json.Marshal(&u)
 			r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(b))
 			w := httptest.NewRecorder()

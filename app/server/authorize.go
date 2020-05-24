@@ -13,7 +13,7 @@ import (
 
 // Authorize ...
 func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
-	u := models.User{}
+	u := models.FullUser{}
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		httputil.WriteError(w, er.ErrCannotParseData, http.StatusBadRequest)

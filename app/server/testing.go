@@ -10,9 +10,9 @@ import (
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
-func mockUser(t *testing.T) models.User {
+func mockUser(t *testing.T) models.FullUser {
 	t.Helper()
-	return models.User{Name: "user", Password: "password"}
+	return models.NewFullUser("user", "user@example.org", "password")
 }
 
 func appendSessionToRequest(t *testing.T, r *http.Request, s *sessions.Session) *http.Request {

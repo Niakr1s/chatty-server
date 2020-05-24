@@ -11,16 +11,16 @@ import (
 type MemoryDB struct {
 	sync.RWMutex
 
-	users map[string]*models.User
+	users map[string]*models.FullUser
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{users: make(map[string]*models.User)}
+	return &MemoryDB{users: make(map[string]*models.FullUser)}
 }
 
 // Store ...
-func (d *MemoryDB) Store(u *models.User) error {
+func (d *MemoryDB) Store(u *models.FullUser) error {
 	d.Lock()
 	defer d.Unlock()
 
@@ -33,13 +33,13 @@ func (d *MemoryDB) Store(u *models.User) error {
 }
 
 // Get ...
-func (d *MemoryDB) Get(username string) (models.User, error) {
+func (d *MemoryDB) Get(username string) (models.FullUser, error) {
 	d.RLock()
 	defer d.RUnlock()
 
 	u, ok := d.users[username]
 	if !ok {
-		return models.User{}, er.ErrUserNotFound
+		return models.FullUser{}, er.ErrUserNotFound
 	}
 
 	return *u, nil

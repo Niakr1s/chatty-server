@@ -8,7 +8,7 @@ import (
 
 // LoggedUser ...
 type LoggedUser struct {
-	Name string
+	User
 
 	LastActivity time.Time
 	LoginToken   string
@@ -16,7 +16,7 @@ type LoggedUser struct {
 
 // NewLoggedUser creates new user, updates last activity and updates login token
 func NewLoggedUser(username string) *LoggedUser {
-	res := &LoggedUser{Name: username}
+	res := &LoggedUser{User: User{Name: username}}
 	res.UpdateLastActivity(time.Now())
 	res.UpdateLoginToken()
 	return res

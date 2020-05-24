@@ -18,7 +18,7 @@ func TestServer_Register(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		user       models.User
+		user       models.FullUser
 		okExpected bool
 	}{
 		{
@@ -28,12 +28,12 @@ func TestServer_Register(t *testing.T) {
 		},
 		{
 			"user with empty password",
-			models.User{Name: "user"},
+			models.NewFullUser("user", "user@example.org", ""),
 			false,
 		},
 		{
 			"user with empty name",
-			models.User{Password: "password"},
+			models.NewFullUser("", "user@example.org", "password"),
 			false,
 		},
 	}
@@ -51,7 +51,7 @@ func TestServer_Register(t *testing.T) {
 
 		s.Register(w, r)
 
-		assert.Equal(t, (w.Code == http.StatusOK), tt.okExpected)
+		assert.Equal(t, tt.okExpected, w.Code == http.StatusOK)
 
 		if authorized := sess.IsAuthorized(session); authorized == tt.okExpected {
 			assert.Equal(t, authorized, tt.okExpected)
