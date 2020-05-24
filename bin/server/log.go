@@ -24,4 +24,5 @@ func logConfigure() {
 	default:
 		log.SetLevel(log.InfoLevel)
 	}
+	log.Printf("Log level set to %v", log.GetLevel())
 }
