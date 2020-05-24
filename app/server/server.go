@@ -8,6 +8,7 @@ import (
 	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/user"
+	"github.com/niakr1s/chatty-server/app/email"
 	"github.com/niakr1s/chatty-server/app/server/middleware"
 	"github.com/niakr1s/chatty-server/app/server/sess"
 
@@ -22,14 +23,16 @@ type Server struct {
 	router      *mux.Router
 	store       *db.Store
 	cookieStore *sessions.CookieStore
+	mailer      email.Mailer
 }
 
 // NewServer ...
-func NewServer(s *db.Store) *Server {
+func NewServer(s *db.Store, m email.Mailer) *Server {
 	res := &Server{
 		router:      mux.NewRouter(),
 		store:       s,
 		cookieStore: sess.InitStoreFromConfig(),
+		mailer:      m,
 	}
 
 	res.cookieStore.Options.MaxAge = config.C.CookieMaxAge
@@ -45,7 +48,7 @@ func NewMemoryServer() *Server {
 	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
 
-	return NewServer(db.NewStore(u, c, l))
+	return NewServer(db.NewStore(u, c, l), email.NewMockMailer())
 }
 
 // ListenAndServe ...
