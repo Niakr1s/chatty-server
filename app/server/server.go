@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/config"
@@ -54,16 +53,6 @@ func (s *Server) ListenAndServe() error {
 	address := config.C.ServerListenAddress
 	log.Printf("starting to listening on address %s", address)
 	return http.ListenAndServe(address, s.router)
-}
-
-func (s *Server) writeError(w http.ResponseWriter, err error, code int) {
-	w.WriteHeader(code)
-
-	jsonErr := struct {
-		What string `json:"error"`
-	}{err.Error()}
-
-	json.NewEncoder(w).Encode(jsonErr)
 }
 
 func (s *Server) generateRoutePaths() {

@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/server/sess"
+	"github.com/niakr1s/chatty-server/app/server/util"
 )
 
 // AddSessionToContext ...
@@ -15,7 +16,7 @@ func AddSessionToContext(store *sessions.CookieStore) func(http.Handler) http.Ha
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			session, err := sess.GetSessionFromStore(store, r)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				util.WriteError(w, err, http.StatusInternalServerError)
 				return
 			}
 

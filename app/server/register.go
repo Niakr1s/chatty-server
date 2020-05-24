@@ -8,6 +8,7 @@ import (
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/niakr1s/chatty-server/app/server/sess"
+	"github.com/niakr1s/chatty-server/app/server/util"
 )
 
 // Register ...
@@ -17,22 +18,22 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	u := models.User{}
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
-		s.writeError(w, er.ErrCannotParseData, http.StatusBadRequest)
+		util.WriteError(w, er.ErrCannotParseData, http.StatusBadRequest)
 		return
 	}
 
 	if err := u.GeneratePasswordHash(); err != nil {
-		s.writeError(w, err, http.StatusUnprocessableEntity)
+		util.WriteError(w, err, http.StatusUnprocessableEntity)
 		return
 	}
 
 	if err := u.ValidateBeforeStoring(); err != nil {
-		s.writeError(w, err, http.StatusBadRequest)
+		util.WriteError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	if err := s.store.UserDB.Store(&u); err != nil {
-		s.writeError(w, err, http.StatusConflict)
+		util.WriteError(w, err, http.StatusConflict)
 		return
 	}
 
