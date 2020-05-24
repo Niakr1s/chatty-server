@@ -66,6 +66,7 @@ func (s *Server) writeError(w http.ResponseWriter, err error, code int) {
 
 func (s *Server) generateRoutePaths() {
 	s.router.Use(middleware.Cors)
+	s.router.Use(middleware.Logger)
 	s.router.Use(middleware.AddSessionToContext(s.cookieStore))
 	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
 }
