@@ -6,10 +6,12 @@ const SessionName = "chatty"
 // Context keys
 const (
 	CtxSessionKey = iota
+	CtxUserNameKey
 )
 
 // session constants
 const (
 	SessionAuthorized = "autorized"
-	SessionUserName   = "username"
+	SessionUserName   = "userName"
+	SessionLoginToken = "loginToken"
 )

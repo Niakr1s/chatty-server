@@ -36,11 +36,9 @@ func TestAuthOnly(t *testing.T) {
 			session.Values[config.SessionUserName] = tt.username
 			session.Save(r, w)
 
-			r = r.WithContext(sess.ContextWithSession(r.Context(), session))
-
 			h := &executedHandler{}
 
-			AuthOnly(h).ServeHTTP(w, r)
+			AuthOnly(store)(h).ServeHTTP(w, r)
 
 			assert.Equal(t, h.IsExecuted, tt.shouldExecute)
 		})

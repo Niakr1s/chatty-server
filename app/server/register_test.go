@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/niakr1s/chatty-server/app/server/sess"
 

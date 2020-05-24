@@ -37,7 +37,12 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session := sess.GetSessionFromContext(r.Context())
+	session, err := sess.GetSessionFromStore(s.cookieStore, r)
+	if err != nil {
+		httputil.WriteSessionError(w)
+		return
+	}
+
 	session.Values[config.SessionAuthorized] = true
 	session.Values[config.SessionUserName] = u.Name
 	session.Save(r, w)

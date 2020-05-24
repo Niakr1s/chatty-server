@@ -56,11 +56,14 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) generateRoutePaths() {
+	// /api
+	s.router = s.router.PathPrefix("/api").Subrouter()
 	s.router.Use(middleware.Cors)
 	s.router.Use(middleware.Logger)
-	s.router.Use(middleware.AddSessionToContext(s.cookieStore))
-	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
+	s.router.Handle("/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
 
-	auth := s.router.NewRoute().Subrouter()
-	auth.Use(middleware.AuthOnly)
+	// /api/auth
+	authRouter := s.router.PathPrefix("/authonly").Subrouter()
+	authRouter.Use(middleware.AuthOnly(s.cookieStore))
+	authRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
 }
