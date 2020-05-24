@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/models"
+	"github.com/niakr1s/chatty-server/app/server/sess"
 )
 
 // Register ...
@@ -33,6 +35,10 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		s.writeError(w, err, http.StatusConflict)
 		return
 	}
+
+	session := sess.GetSessionFromContext(r.Context())
+	session.Values[config.SessionAuthorized] = true
+	session.Save(r, w)
 
 	res := struct {
 		ID   interface{} `json:"id"`

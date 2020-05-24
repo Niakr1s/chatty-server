@@ -10,23 +10,27 @@ import (
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/server/middleware"
+	"github.com/niakr1s/chatty-server/app/server/sess"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
 
 // Server ...
 type Server struct {
-	router *mux.Router
-	store  *db.Store
+	router      *mux.Router
+	store       *db.Store
+	cookieStore *sessions.CookieStore
 }
 
 // NewServer ...
 func NewServer(s *db.Store) *Server {
 	res := &Server{
-		router: mux.NewRouter(),
-		store:  s,
+		router:      mux.NewRouter(),
+		store:       s,
+		cookieStore: sess.InitStoreFromTimeNow(),
 	}
 
 	res.generateRoutePaths()
@@ -62,5 +66,6 @@ func (s *Server) writeError(w http.ResponseWriter, err error, code int) {
 
 func (s *Server) generateRoutePaths() {
 	s.router.Use(middleware.Cors)
+	s.router.Use(middleware.AddSessionToContext(s.cookieStore))
 	s.router.Handle("/api/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
 }
