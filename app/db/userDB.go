@@ -7,6 +7,7 @@ import (
 // UserDB should be persistend storage
 type UserDB interface {
 	Store(u *models.FullUser) error
+	Update(u *models.FullUser) error
 
 	Get(username string) (models.FullUser, error)
 }

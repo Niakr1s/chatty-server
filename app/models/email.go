@@ -8,6 +8,7 @@ import (
 type Email struct {
 	Address         string `json:"email" validate:"email"`
 	ActivationToken string `json:"-" validate:"required"`
+	Activated       bool
 }
 
 // GenerateActivationToken ...

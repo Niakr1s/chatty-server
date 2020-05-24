@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/server/sess"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -38,14 +37,14 @@ func TestServer_Register(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		store := sess.InitStoreFromTimeNow()
+		// store := sess.InitStoreFromTimeNow()
 
 		b, _ := json.Marshal(&tt.user)
 
 		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(b))
 
-		session, _ := sess.GetSessionFromStore(store, r)
-		r = appendSessionToRequest(t, r, session)
+		// session, _ := sess.GetSessionFromStore(store, r)
+		// r = appendSessionToRequest(t, r, session)
 
 		w := httptest.NewRecorder()
 
@@ -53,10 +52,10 @@ func TestServer_Register(t *testing.T) {
 
 		assert.Equal(t, tt.okExpected, w.Code == http.StatusOK)
 
-		if authorized := sess.IsAuthorized(session); authorized == tt.okExpected {
-			assert.Equal(t, authorized, tt.okExpected)
-		} else {
-			assert.Nil(t, authorized)
-		}
+		// if authorized := sess.IsAuthorized(session); authorized == tt.okExpected {
+		// 	assert.Equal(t, authorized, tt.okExpected)
+		// } else {
+		// 	assert.Nil(t, authorized)
+		// }
 	}
 }

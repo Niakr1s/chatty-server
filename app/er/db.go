@@ -12,6 +12,8 @@ var (
 var (
 	ErrUserNotFound          = errors.New("user doesn't exist")
 	ErrUserAlreadyRegistered = errors.New("user already registered")
+	ErrCannotStoreUser       = errors.New("cannot store user")
+	ErrCannotUpdateUser      = errors.New("cannot update user")
 )
 
 // Logged DB errors

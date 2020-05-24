@@ -32,6 +32,15 @@ func (d *MemoryDB) Store(u *models.FullUser) error {
 	return nil
 }
 
+// Update ...
+func (d *MemoryDB) Update(u *models.FullUser) error {
+	d.Lock()
+	defer d.Unlock()
+
+	d.users[u.Name] = u
+	return nil
+}
+
 // Get ...
 func (d *MemoryDB) Get(username string) (models.FullUser, error) {
 	d.RLock()
