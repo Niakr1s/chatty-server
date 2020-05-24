@@ -3,7 +3,6 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/server/sess"
 	"github.com/niakr1s/chatty-server/app/server/util"
@@ -19,9 +18,8 @@ func AuthOnly(h http.Handler) http.Handler {
 			return
 		}
 
-		auth := session.Values[config.SessionAuthorized]
-
-		if auth == nil || auth == false {
+		if !sess.IsAuthorized(session) {
+			util.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
 			return
 		}
 

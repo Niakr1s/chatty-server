@@ -28,3 +28,12 @@ func GetSessionFromContext(ctx context.Context) *sessions.Session {
 func ContextWithSession(ctx context.Context, session *sessions.Session) context.Context {
 	return context.WithValue(ctx, config.CtxSessionKey, session)
 }
+
+// IsAuthorized ...
+func IsAuthorized(session *sessions.Session) bool {
+	v := session.Values[config.SessionAuthorized]
+	if v == nil {
+		return false
+	}
+	return v.(bool)
+}
