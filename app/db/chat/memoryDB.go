@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/pool/events"
 )
@@ -12,14 +13,14 @@ import (
 type MemoryDB struct {
 	sync.Mutex
 
-	chats map[string]*Chat
+	chats map[string]*MemoryChat
 
 	notifyCh chan<- events.Event
 }
 
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{chats: make(map[string]*Chat)}
+	return &MemoryDB{chats: make(map[string]*MemoryChat)}
 }
 
 // WithNotifyCh ...
@@ -29,11 +30,11 @@ func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *MemoryDB {
 }
 
 // Add ...
-func (d *MemoryDB) Add(chatname string) (*Chat, error) {
+func (d *MemoryDB) Add(chatname string) (db.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, er.ErrChatAlreadyExists
 	}
-	c := NewChat(chatname).WithNotifyCh(d.notifyCh)
+	c := NewMemoryChat(chatname).WithNotifyCh(d.notifyCh)
 	d.chats[chatname] = c
 
 	d.notifyChatCreated(chatname, time.Now())
@@ -42,7 +43,7 @@ func (d *MemoryDB) Add(chatname string) (*Chat, error) {
 }
 
 // Get ...
-func (d *MemoryDB) Get(chatname string) (*Chat, error) {
+func (d *MemoryDB) Get(chatname string) (db.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, nil
 	}

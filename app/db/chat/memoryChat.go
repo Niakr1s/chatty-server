@@ -7,27 +7,27 @@ import (
 	"github.com/niakr1s/chatty-server/app/pool/events"
 )
 
-// Chat ...
-type Chat struct {
+// MemoryChat ...
+type MemoryChat struct {
 	Name  string
 	users map[string]struct{}
 
 	notifyCh chan<- events.Event
 }
 
-// NewChat ...
-func NewChat(chatname string) *Chat {
-	return &Chat{Name: chatname, users: make(map[string]struct{})}
+// NewMemoryChat ...
+func NewMemoryChat(chatname string) *MemoryChat {
+	return &MemoryChat{Name: chatname, users: make(map[string]struct{})}
 }
 
 // WithNotifyCh ...
-func (c *Chat) WithNotifyCh(ch chan<- events.Event) *Chat {
+func (c *MemoryChat) WithNotifyCh(ch chan<- events.Event) *MemoryChat {
 	c.notifyCh = ch
 	return c
 }
 
 // AddUser ...
-func (c *Chat) AddUser(username string) error {
+func (c *MemoryChat) AddUser(username string) error {
 	if _, ok := c.users[username]; ok {
 		return er.ErrAlreadyInChat
 	}
@@ -39,7 +39,7 @@ func (c *Chat) AddUser(username string) error {
 }
 
 // RemoveUser ...
-func (c *Chat) RemoveUser(username string) error {
+func (c *MemoryChat) RemoveUser(username string) error {
 	if _, ok := c.users[username]; !ok {
 		return er.ErrNotInChat
 	}
@@ -51,12 +51,12 @@ func (c *Chat) RemoveUser(username string) error {
 }
 
 // IsInChat ...
-func (c *Chat) IsInChat(username string) bool {
+func (c *MemoryChat) IsInChat(username string) bool {
 	_, ok := c.users[username]
 	return ok
 }
 
-func (c *Chat) notifyUserJoined(username, chatname string, t time.Time) {
+func (c *MemoryChat) notifyUserJoined(username, chatname string, t time.Time) {
 	go func() {
 		if c.notifyCh != nil {
 			c.notifyCh <- events.NewChatJoinEvent(username, chatname, t)
@@ -64,7 +64,7 @@ func (c *Chat) notifyUserJoined(username, chatname string, t time.Time) {
 	}()
 }
 
-func (c *Chat) notifyUserLeaved(username, chatname string, t time.Time) {
+func (c *MemoryChat) notifyUserLeaved(username, chatname string, t time.Time) {
 	go func() {
 		if c.notifyCh != nil {
 			c.notifyCh <- events.NewChatLeaveEvent(username, chatname, t)

@@ -2,8 +2,6 @@ package db
 
 import (
 	"sync"
-
-	"github.com/niakr1s/chatty-server/app/db/chat"
 )
 
 // ChatDB stores chats in-memory
@@ -11,8 +9,15 @@ type ChatDB interface {
 	sync.Locker
 
 	// if err == ErrChatAlreadyExists, returned *Chat must be valid
-	Add(chatname string) (*chat.Chat, error)
+	Add(chatname string) (Chat, error)
 
-	Get(chatname string) (*chat.Chat, error)
+	Get(chatname string) (Chat, error)
 	Remove(chatname string) error
+}
+
+// Chat ...
+type Chat interface {
+	AddUser(username string) error
+	RemoveUser(username string) error
+	IsInChat(username string) bool
 }

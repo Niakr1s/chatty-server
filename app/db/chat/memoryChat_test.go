@@ -10,8 +10,8 @@ import (
 
 const username = "user"
 
-func TestChat_AddUser(t *testing.T) {
-	chat := NewChat(chatname)
+func TestMemoryChat_AddUser(t *testing.T) {
+	chat := NewMemoryChat(chatname)
 
 	err := chat.AddUser(username)
 	assert.NoError(t, err)
@@ -23,8 +23,8 @@ func TestChat_AddUser(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestChat_RemoveUser(t *testing.T) {
-	chat := NewChat(chatname)
+func TestMemoryChat_RemoveUser(t *testing.T) {
+	chat := NewMemoryChat(chatname)
 
 	chat.AddUser(username)
 
@@ -38,8 +38,8 @@ func TestChat_RemoveUser(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestChat_IsInChat(t *testing.T) {
-	chat := NewChat(chatname)
+func TestMemoryChat_IsInChat(t *testing.T) {
+	chat := NewMemoryChat(chatname)
 	assert.False(t, chat.IsInChat(username))
 
 	chat.AddUser(username)
@@ -49,10 +49,10 @@ func TestChat_IsInChat(t *testing.T) {
 	assert.False(t, chat.IsInChat(username))
 }
 
-func TestChat_notify(t *testing.T) {
+func TestMemoryChat_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	chat := NewChat(chatname).WithNotifyCh(ch)
+	chat := NewMemoryChat(chatname).WithNotifyCh(ch)
 
 	chat.AddUser(username)
 	chat.AddUser(username)
