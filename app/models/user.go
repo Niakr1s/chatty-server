@@ -9,7 +9,6 @@ import (
 
 // User ...
 type User struct {
-	ID   uint   `json:"id"`
 	Name string `json:"name" validate:"required"`
 
 	PasswordHash string `json:"-" validate:"required"`

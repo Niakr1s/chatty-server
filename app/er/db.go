@@ -10,7 +10,8 @@ var (
 
 // User DB errors
 var (
-	ErrUserNotFound = errors.New("user doesn't exist")
+	ErrUserNotFound          = errors.New("user doesn't exist")
+	ErrUserAlreadyRegistered = errors.New("user already registered")
 )
 
 // Logged DB errors

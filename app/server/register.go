@@ -46,11 +46,4 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	session.Values[config.SessionAuthorized] = true
 	session.Values[config.SessionUserName] = u.Name
 	session.Save(r, w)
-
-	res := struct {
-		ID   interface{} `json:"id"`
-		Name interface{} `json:"name"`
-	}{u.ID, u.Name}
-
-	json.NewEncoder(w).Encode(res)
 }
