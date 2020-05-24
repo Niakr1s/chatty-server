@@ -54,7 +54,7 @@ func TestServer_Register(t *testing.T) {
 
 		assert.Equal(t, (w.Code == http.StatusOK), tt.okExpected)
 
-		if authorized := sess.GetSessionFromContext(r.Context()).Values[config.SessionAuthorized]; tt.okExpected {
+		if authorized := sess.IsAuthorized(session); authorized == tt.okExpected {
 			assert.Equal(t, authorized, tt.okExpected)
 		} else {
 			assert.Nil(t, authorized)
