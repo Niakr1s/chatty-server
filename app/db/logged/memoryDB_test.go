@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/pool/events"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -78,28 +77,4 @@ func TestMemoryDB_StartCleanInactiveUsers(t *testing.T) {
 	memoryDB.Unlock()
 
 	assert.Error(t, err)
-}
-
-func TestMemoryDB_notify(t *testing.T) {
-	ch := make(chan events.Event)
-
-	memoryDB := NewMemoryDB().WithNotifyCh(ch)
-
-	memoryDB.Login(username)
-	memoryDB.Login(username) // shouldn't fire same event twice
-
-	loginE := (<-ch).(*events.LoginEvent)
-	assert.Equal(t, loginE.Username, username)
-
-	memoryDB.Logout(username)
-	memoryDB.Logout(username) // shouldn't fire same event twice
-
-	logoutE := (<-ch).(*events.LogoutEvent)
-	assert.Equal(t, logoutE.Username, username)
-
-	select {
-	case <-ch:
-		assert.Fail(t, "no other events expected")
-	default:
-	}
 }

@@ -14,8 +14,6 @@ type MemoryDB struct {
 	sync.Mutex
 
 	users map[string]*models.LoggedUser
-
-	notifyCh chan<- events.Event
 }
 
 // NewMemoryDB ...
@@ -24,9 +22,8 @@ func NewMemoryDB() *MemoryDB {
 }
 
 // WithNotifyCh ...
-func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *MemoryDB {
-	d.notifyCh = ch
-	return d
+func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
+	return NewNotifyDB(d, ch)
 }
 
 // StartCleanInactiveUsers ...
@@ -62,8 +59,6 @@ func (d *MemoryDB) Login(username string) (*models.LoggedUser, error) {
 	u = models.NewLoggedUser(username)
 	d.users[username] = u
 
-	d.notifyLogin(username, u.LastActivity)
-
 	return u, nil
 }
 
@@ -83,23 +78,5 @@ func (d *MemoryDB) Logout(username string) error {
 	}
 	delete(d.users, username)
 
-	d.notifyLogout(username, time.Now())
-
 	return nil
-}
-
-func (d *MemoryDB) notifyLogin(username string, t time.Time) {
-	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewLoginEvent(username, "", t)
-		}
-	}()
-}
-
-func (d *MemoryDB) notifyLogout(username string, t time.Time) {
-	go func() {
-		if d.notifyCh != nil {
-			d.notifyCh <- events.NewLogoutEvent(username, "", t)
-		}
-	}()
 }
