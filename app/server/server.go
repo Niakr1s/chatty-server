@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/server/middleware"
-	"github.com/niakr1s/chatty-server/app/store"
 
 	log "github.com/sirupsen/logrus"
 
@@ -19,11 +19,11 @@ import (
 // Server ...
 type Server struct {
 	router *mux.Router
-	store  *store.Store
+	store  *db.Store
 }
 
 // NewServer ...
-func NewServer(s *store.Store) *Server {
+func NewServer(s *db.Store) *Server {
 	res := &Server{
 		router: mux.NewRouter(),
 		store:  s,
@@ -40,7 +40,7 @@ func NewMemoryServer() *Server {
 	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
 
-	return NewServer(store.NewStore(u, c, l))
+	return NewServer(db.NewStore(u, c, l))
 }
 
 // ListenAndServe ...

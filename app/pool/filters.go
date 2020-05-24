@@ -1,12 +1,12 @@
 package pool
 
 import (
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/pool/events"
-	"github.com/niakr1s/chatty-server/app/store"
 )
 
 // FilterPassIfUserInChat ...
-func FilterPassIfUserInChat(store *store.Store, username string) events.FilterPass {
+func FilterPassIfUserInChat(store *db.Store, username string) events.FilterPass {
 	return events.FilterPass(func(e events.Event) bool {
 		inChat, err := e.InChat()
 

@@ -3,16 +3,16 @@ package pool
 import (
 	"sync"
 
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/pool/events"
-	"github.com/niakr1s/chatty-server/app/store"
 )
 
 // Pool ...
 type Pool struct {
 	sync.Mutex
 
-	store *store.Store
+	store *db.Store
 
 	// events.Event inputs here
 	inputCh chan events.Event
@@ -24,7 +24,7 @@ type Pool struct {
 }
 
 // NewPool ...
-func NewPool(s *store.Store) *Pool {
+func NewPool(s *db.Store) *Pool {
 	return &Pool{
 		store: s,
 
