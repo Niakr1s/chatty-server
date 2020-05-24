@@ -1,7 +1,7 @@
 package db
 
 import (
-	"server2/app/models"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // UserDB should be persistend storage

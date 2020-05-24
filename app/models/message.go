@@ -1,9 +1,10 @@
 package models
 
 import (
-	"server2/app/er"
-	"server2/app/validator"
 	"time"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/validator"
 )
 
 // Message ...

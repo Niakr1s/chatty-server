@@ -1,8 +1,8 @@
 package events
 
 import (
-	"server2/app/er"
-	"server2/app/models"
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // MessageEvent ...

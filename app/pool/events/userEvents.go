@@ -1,8 +1,9 @@
 package events
 
 import (
-	"server2/app/er"
 	"time"
+
+	"github.com/niakr1s/chatty-server/app/er"
 )
 
 // UserEvent ...

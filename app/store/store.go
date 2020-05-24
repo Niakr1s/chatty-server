@@ -1,7 +1,7 @@
 package store
 
 import (
-	"server2/app/db"
+	"github.com/niakr1s/chatty-server/app/db"
 )
 
 // Store contains all databases

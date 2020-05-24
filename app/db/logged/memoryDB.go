@@ -1,11 +1,12 @@
 package logged
 
 import (
-	"server2/app/er"
-	"server2/app/models"
-	"server2/app/pool/events"
 	"sync"
 	"time"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/models"
+	"github.com/niakr1s/chatty-server/app/pool/events"
 )
 
 // MemoryDB ...

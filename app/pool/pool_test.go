@@ -2,8 +2,9 @@ package pool
 
 import (
 	"fmt"
-	"server2/app/pool/events"
 	"testing"
+
+	"github.com/niakr1s/chatty-server/app/pool/events"
 
 	"github.com/stretchr/testify/assert"
 )

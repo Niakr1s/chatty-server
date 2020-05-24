@@ -1,9 +1,10 @@
 package user
 
 import (
-	"server2/app/er"
-	"server2/app/models"
 	"sync"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // MemoryDB ...

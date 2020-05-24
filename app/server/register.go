@@ -3,8 +3,9 @@ package server
 import (
 	"encoding/json"
 	"net/http"
-	"server2/app/er"
-	"server2/app/models"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // Register ...

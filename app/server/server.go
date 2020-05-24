@@ -3,12 +3,13 @@ package server
 import (
 	"encoding/json"
 	"net/http"
-	"server2/app/config"
-	"server2/app/db/chat"
-	"server2/app/db/logged"
-	"server2/app/db/user"
-	"server2/app/server/middleware"
-	"server2/app/store"
+
+	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/db/chat"
+	"github.com/niakr1s/chatty-server/app/db/logged"
+	"github.com/niakr1s/chatty-server/app/db/user"
+	"github.com/niakr1s/chatty-server/app/server/middleware"
+	"github.com/niakr1s/chatty-server/app/store"
 
 	log "github.com/sirupsen/logrus"
 

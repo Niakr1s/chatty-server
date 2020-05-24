@@ -1,10 +1,11 @@
 package pool
 
 import (
-	"server2/app/er"
-	"server2/app/pool/events"
-	"server2/app/store"
 	"sync"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/pool/events"
+	"github.com/niakr1s/chatty-server/app/store"
 )
 
 // Pool ...

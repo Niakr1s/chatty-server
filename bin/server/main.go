@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"server2/app/server"
+
+	"github.com/niakr1s/chatty-server/app/server"
 
 	log "github.com/sirupsen/logrus"
 )

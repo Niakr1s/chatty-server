@@ -1,8 +1,9 @@
 package db
 
 import (
-	"server2/app/db/chat"
 	"sync"
+
+	"github.com/niakr1s/chatty-server/app/db/chat"
 )
 
 // ChatDB stores chats in-memory

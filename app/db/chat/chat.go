@@ -1,9 +1,10 @@
 package chat
 
 import (
-	"server2/app/er"
-	"server2/app/pool/events"
 	"time"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/pool/events"
 )
 
 // Chat ...

@@ -1,8 +1,8 @@
 package pool
 
 import (
-	"server2/app/pool/events"
-	"server2/app/store"
+	"github.com/niakr1s/chatty-server/app/pool/events"
+	"github.com/niakr1s/chatty-server/app/store"
 )
 
 // FilterPassIfUserInChat ...

@@ -1,10 +1,11 @@
 package logged
 
 import (
-	"server2/app/er"
-	"server2/app/pool/events"
 	"testing"
 	"time"
+
+	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/pool/events"
 
 	"github.com/stretchr/testify/assert"
 )

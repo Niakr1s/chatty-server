@@ -1,8 +1,9 @@
 package server
 
 import (
-	"server2/app/models"
 	"testing"
+
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 func mockUser(t *testing.T) models.User {

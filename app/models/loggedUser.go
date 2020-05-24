@@ -1,8 +1,9 @@
 package models
 
 import (
-	"server2/app/random"
 	"time"
+
+	"github.com/niakr1s/chatty-server/app/random"
 )
 
 // LoggedUser ...

@@ -1,8 +1,9 @@
 package db
 
 import (
-	"server2/app/models"
 	"sync"
+
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // LoggedDB represents logged users
