@@ -14,6 +14,8 @@ var (
 	ErrPasswordHashIsEmpty = errors.New("password hash is empty")
 
 	ErrHashMismatch = errors.New("hash mismatch")
+
+	ErrUserNameIsEmpty = errors.New("username is empty")
 )
 
 // Message errors

@@ -39,6 +39,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 
 	session := sess.GetSessionFromContext(r.Context())
 	session.Values[config.SessionAuthorized] = true
+	session.Values[config.SessionUserName] = u.Name
 	session.Save(r, w)
 
 	res := struct {

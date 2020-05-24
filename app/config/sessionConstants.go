@@ -11,4 +11,5 @@ const (
 // session constants
 const (
 	SessionAuthorized = "autorized"
+	SessionUserName   = "username"
 )

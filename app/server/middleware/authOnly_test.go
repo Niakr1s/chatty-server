@@ -27,6 +27,7 @@ func TestAuthOnly(t *testing.T) {
 
 		session, _ := sess.GetSessionFromStore(store, r)
 		session.Values[config.SessionAuthorized] = true
+		session.Values[config.SessionUserName] = "username"
 		session.Save(r, w)
 
 		r = r.WithContext(sess.ContextWithSession(r.Context(), session))

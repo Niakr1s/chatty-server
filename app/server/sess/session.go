@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/er"
 )
 
 // GetSessionFromStore ...
@@ -35,5 +36,36 @@ func IsAuthorized(session *sessions.Session) bool {
 	if v == nil {
 		return false
 	}
-	return v.(bool)
+
+	res, ok := v.(bool)
+	if !ok {
+		return false
+	}
+
+	_, err := GetUserName(session)
+
+	if err != nil {
+		return false
+	}
+
+	return res
+}
+
+// GetUserName ...
+func GetUserName(session *sessions.Session) (string, error) {
+	v := session.Values[config.SessionUserName]
+	if v == nil {
+		return "", er.ErrUserNameIsEmpty
+	}
+
+	res, ok := v.(string)
+	if !ok {
+		return "", er.ErrConvertType
+	}
+
+	if res == "" {
+		return "", er.ErrUserNameIsEmpty
+	}
+
+	return res, nil
 }
