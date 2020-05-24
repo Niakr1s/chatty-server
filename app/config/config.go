@@ -14,6 +14,8 @@ type Config struct {
 
 	CleanInactiveUsersInterval duration
 	InactivityTimeout          duration
+
+	CookieStoreSecretKey string
 }
 
 // C contains configuration for app
@@ -38,5 +40,7 @@ func NewDefaultConfig() *Config {
 		ServerListenAddress:        "127.0.0.1:8080",
 		CleanInactiveUsersInterval: duration{time.Second * 60},
 		InactivityTimeout:          duration{time.Second * 60},
+
+		CookieStoreSecretKey: "1234567890",
 	}
 }

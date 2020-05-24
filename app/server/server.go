@@ -30,7 +30,7 @@ func NewServer(s *db.Store) *Server {
 	res := &Server{
 		router:      mux.NewRouter(),
 		store:       s,
-		cookieStore: sess.InitStoreFromTimeNow(),
+		cookieStore: sess.InitStoreFromConfig(),
 	}
 
 	res.generateRoutePaths()
