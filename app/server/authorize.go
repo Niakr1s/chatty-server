@@ -44,5 +44,9 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 
 	session.Values[config.SessionAuthorized] = true
 	session.Values[config.SessionUserName] = u.Name
-	session.Save(r, w)
+
+	if err := session.Save(r, w); err != nil {
+		httputil.WriteError(w, er.ErrSession, http.StatusInternalServerError)
+		return
+	}
 }
