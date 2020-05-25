@@ -10,8 +10,8 @@ import (
 type LoggedUser struct {
 	User
 
-	LastActivity time.Time
-	LoginToken   string
+	LastActivity time.Time `validate:"required"`
+	LoginToken   string    `validate:"required"`
 }
 
 // NewLoggedUser creates new user, updates last activity and updates login token

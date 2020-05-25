@@ -14,6 +14,7 @@ type LoggedDB interface {
 
 	// Login must return valid *User if (error == ErrAlreadyLogged)
 	// with other errors must return (nil, err)
+	// also should generate valid LoginToken and LastActivity
 	Login(username string) (*models.LoggedUser, error)
 
 	Get(username string) (*models.LoggedUser, error)
