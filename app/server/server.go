@@ -24,6 +24,7 @@ type Server struct {
 	Store       *db.Store
 	cookieStore sessions.Store
 	mailer      email.Mailer
+	pool        *pool.Pool
 }
 
 // NewServer ...
@@ -33,7 +34,16 @@ func NewServer(s *db.Store, m email.Mailer) *Server {
 		Store:       s,
 		cookieStore: sess.InitStoreFromConfig(),
 		mailer:      m,
+		pool:        pool.NewPool(),
 	}
+
+	ch := res.pool.GetInputChan()
+	res.Store.LoggedDB = logged.NewNotifyDB(res.Store.LoggedDB, ch)
+	res.Store.ChatDB = chat.NewNotifyDB(res.Store.ChatDB, ch)
+	res.pool = res.pool.WithUserChFilter(func(username string) events.FilterPass {
+		return pool.FilterPassIfUserInChat(res.Store, username)
+	})
+	res.pool.Run()
 
 	res.generateRoutePaths()
 
@@ -46,11 +56,6 @@ func NewMemoryServer() *Server {
 	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
 	return NewServer(db.NewStore(u, c, l), email.NewMockMailer())
-}
-
-// WithPool ...
-func (s *Server) WithPool() *WithPool {
-	return NewServerWithPool(s)
 }
 
 // ListenAndServe ...

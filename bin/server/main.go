@@ -14,7 +14,7 @@ func main() {
 	flag.Parse()
 	logConfigure()
 
-	server := server.NewMemoryServer().WithPool()
+	server := server.NewMemoryServer()
 	db.StartCleanInactiveUsers(server.Store.LoggedDB,
 		config.C.CleanInactiveUsersInterval.Duration,
 		config.C.InactivityTimeout.Duration)
