@@ -3,16 +3,14 @@ package pool
 import (
 	"sync"
 
-	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/pool/events"
+	log "github.com/sirupsen/logrus"
 )
 
 // Pool ...
 type Pool struct {
 	sync.Mutex
-
-	store *db.Store
 
 	// events.Event inputs here
 	inputCh chan events.Event
@@ -24,14 +22,12 @@ type Pool struct {
 }
 
 // NewPool ...
-func NewPool(s *db.Store) *Pool {
+func NewPool() *Pool {
 	return &Pool{
-		store: s,
-
 		inputCh: make(chan events.Event, 10),
 
 		userCh:       make(map[string]*events.EventChan),
-		userChFilter: func(username string) events.FilterPass { return FilterPassIfUserInChat(s, username) },
+		userChFilter: func(username string) events.FilterPass { return events.FilterPassAlways },
 
 		innerCh: make([]*events.EventChan, 0),
 	}
@@ -106,6 +102,7 @@ func (p *Pool) Run() {
 	go func() {
 		for {
 			event := <-p.inputCh
+			log.Tracef("event: %v", event)
 
 			p.Lock()
 

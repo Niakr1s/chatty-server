@@ -15,6 +15,10 @@ func NewMessageEvent(msg *models.Message) *MessageEvent {
 	return &MessageEvent{msg}
 }
 
+func (e *MessageEvent) String() string {
+	return e.Message.String()
+}
+
 // InChat ...
 func (e *MessageEvent) InChat() (string, error) {
 	if e.Chat == "" {

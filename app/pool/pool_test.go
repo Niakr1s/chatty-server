@@ -18,10 +18,14 @@ func (e *mockEvent) InChat() (string, error) {
 	return chat, nil
 }
 
+func (e *mockEvent) String() string {
+	return ""
+}
+
 func NewMockPool(t *testing.T, inner int, user int) *Pool {
 	t.Helper()
 
-	p := NewPool(nil).WithUserChFilter(func(username string) events.FilterPass { return events.FilterPassAlways })
+	p := NewPool().WithUserChFilter(func(username string) events.FilterPass { return events.FilterPassAlways })
 
 	for i := 0; i < inner; i++ {
 		p.CreateChanNoFilter()

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/er"
@@ -33,4 +34,8 @@ func (m *Message) ValidateBeforeStoring() error {
 		return er.ErrTooOld
 	}
 	return validator.Validate.Struct(*m)
+}
+
+func (m *Message) String() string {
+	return fmt.Sprintf("chat: %s, id: %d, user: %s, text: %s, time: %v", m.Chat, m.ID, m.Username, m.Text, m.Time)
 }
