@@ -21,21 +21,6 @@ func GetSessionFromStore(store sessions.Store, r *http.Request) (*sessions.Sessi
 	return session, nil
 }
 
-// IsAuthorized ...
-func IsAuthorized(session *sessions.Session) bool {
-	v := session.Values[config.SessionAuthorized]
-	if v == nil {
-		return false
-	}
-
-	res, ok := v.(bool)
-	if !ok {
-		return false
-	}
-
-	return res
-}
-
 // IsLogged ...
 func IsLogged(session *sessions.Session, loggedDB db.LoggedDB) bool {
 	usernameI := session.Values[config.SessionUserName]

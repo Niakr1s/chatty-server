@@ -70,11 +70,6 @@ func (s *Server) generateRoutePaths() {
 	s.router.Handle("/verifyEmail/{username}/{activationToken}", http.HandlerFunc(s.VerifyEmail)).Methods(http.MethodPut, http.MethodOptions)
 	s.router.Handle("/login", http.HandlerFunc(s.Login)).Methods(http.MethodPost, http.MethodOptions)
 
-	// /api/authonly
-	authRouter := s.router.PathPrefix("/authonly").Subrouter()
-	authRouter.Use(middleware.AuthOnly(s.cookieStore))
-	authRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
-
 	// /api/loggedonly
 	loggedRouter := s.router.PathPrefix("/loggedonly").Subrouter()
 	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.store.LoggedDB))
