@@ -30,7 +30,7 @@ func LoggedOnly(s *sessions.CookieStore, loggedDB db.LoggedDB) func(h http.Handl
 
 			username, err := sess.GetUserName(session)
 			if err != nil {
-				httputil.WriteError(w, er.ErrSession, http.StatusInternalServerError)
+				httputil.WriteSessionError(w)
 				return
 			}
 

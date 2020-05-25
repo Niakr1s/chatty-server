@@ -38,7 +38,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 
 	session, err := sess.GetSessionFromStore(s.cookieStore, r)
 	if err != nil {
-		httputil.WriteError(w, er.ErrSession, http.StatusInternalServerError)
+		httputil.WriteSessionError(w)
 		return
 	}
 
@@ -46,7 +46,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	session.Values[config.SessionLoginToken] = loggedU.LoginToken
 
 	if err := session.Save(r, w); err != nil {
-		httputil.WriteError(w, er.ErrSession, http.StatusInternalServerError)
+		httputil.WriteSessionError(w)
 		return
 	}
 }
