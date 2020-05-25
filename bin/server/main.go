@@ -12,6 +12,6 @@ func main() {
 	flag.Parse()
 	logConfigure()
 
-	server := server.NewMemoryServer()
+	server := server.NewMemoryServer().WithPool()
 	log.Fatal(server.ListenAndServe())
 }

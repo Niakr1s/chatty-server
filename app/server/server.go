@@ -22,7 +22,7 @@ import (
 type Server struct {
 	router      *mux.Router
 	store       *db.Store
-	cookieStore *sessions.CookieStore
+	cookieStore sessions.Store
 	mailer      email.Mailer
 }
 
@@ -35,8 +35,6 @@ func NewServer(s *db.Store, m email.Mailer) *Server {
 		mailer:      m,
 	}
 
-	res.cookieStore.Options.MaxAge = config.C.CookieMaxAge
-
 	res.generateRoutePaths()
 
 	return res
@@ -47,8 +45,12 @@ func NewMemoryServer() *Server {
 	u := user.NewMemoryDB()
 	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
-
 	return NewServer(db.NewStore(u, c, l), email.NewMockMailer())
+}
+
+// WithPool ...
+func (s *Server) WithPool() *WithPool {
+	return NewServerWithPool(s)
 }
 
 // ListenAndServe ...
@@ -76,4 +78,6 @@ func (s *Server) generateRoutePaths() {
 	// /api/loggedonly
 	loggedRouter := s.router.PathPrefix("/loggedonly").Subrouter()
 	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.store.LoggedDB))
+	loggedRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
+	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
 }

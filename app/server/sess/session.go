@@ -10,8 +10,15 @@ import (
 )
 
 // GetSessionFromStore ...
-func GetSessionFromStore(store *sessions.CookieStore, r *http.Request) (*sessions.Session, error) {
-	return store.Get(r, config.SessionName)
+func GetSessionFromStore(store sessions.Store, r *http.Request) (*sessions.Session, error) {
+	session, err := store.Get(r, config.SessionName)
+	if err != nil {
+		session, err = store.New(r, config.SessionName)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return session, nil
 }
 
 // IsAuthorized ...

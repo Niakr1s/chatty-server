@@ -13,7 +13,7 @@ import (
 
 // AuthOnly reject unauthorized user
 // stores username in context
-func AuthOnly(s *sessions.CookieStore) func(h http.Handler) http.Handler {
+func AuthOnly(s sessions.Store) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			session, err := sess.GetSessionFromStore(s, r)

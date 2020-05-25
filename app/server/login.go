@@ -14,6 +14,8 @@ import (
 
 // Login - without password!
 func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	u := models.User{}
 	err := json.NewDecoder(r.Body).Decode(&u)
 
@@ -27,18 +29,18 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	session, err := sess.GetSessionFromStore(s.cookieStore, r)
+	if err != nil {
+		httputil.WriteSessionError(w)
+		return
+	}
+
 	s.store.LoggedDB.Lock()
 	defer s.store.LoggedDB.Unlock()
 
 	loggedU, err := s.store.LoggedDB.Login(u.Name)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)
-		return
-	}
-
-	session, err := sess.GetSessionFromStore(s.cookieStore, r)
-	if err != nil {
-		httputil.WriteSessionError(w)
 		return
 	}
 
@@ -49,4 +51,6 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 		httputil.WriteSessionError(w)
 		return
 	}
+
+	json.NewEncoder(w).Encode(loggedU.User)
 }

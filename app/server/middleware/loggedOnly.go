@@ -14,7 +14,7 @@ import (
 
 // LoggedOnly rejects user with invalid loginToken
 // Stores username in context
-func LoggedOnly(s *sessions.CookieStore, loggedDB db.LoggedDB) func(h http.Handler) http.Handler {
+func LoggedOnly(s sessions.Store, loggedDB db.LoggedDB) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			session, err := sess.GetSessionFromStore(s, r)

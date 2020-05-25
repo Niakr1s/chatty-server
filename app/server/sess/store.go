@@ -17,5 +17,7 @@ func InitStoreFromTimeNow() *sessions.CookieStore {
 
 // InitStoreFromConfig ...
 func InitStoreFromConfig() *sessions.CookieStore {
-	return sessions.NewCookieStore([]byte(config.C.CookieStoreSecretKey))
+	store := sessions.NewCookieStore([]byte(config.C.CookieStoreSecretKey))
+	store.Options.MaxAge = config.C.CookieMaxAge
+	return store
 }

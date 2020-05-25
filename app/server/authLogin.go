@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/config"
@@ -11,6 +12,7 @@ import (
 
 // AuthLogin should be used always after AuthOnly middleware
 func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
+
 	session, err := sess.GetSessionFromStore(s.cookieStore, r)
 	if err != nil {
 		httputil.WriteSessionError(w)
@@ -36,4 +38,7 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 
 	session.Values[config.SessionLoginToken] = u.LoginToken
 	session.Save(r, w)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(u.User)
 }
