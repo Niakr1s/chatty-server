@@ -6,14 +6,15 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/server/httputil"
 	"github.com/niakr1s/chatty-server/app/server/sess"
 )
 
-// AuthOnly reject unauthorized user
-// stores username in context
-func AuthOnly(s *sessions.CookieStore) func(h http.Handler) http.Handler {
+// LoggedOnly rejects user with invalid loginToken
+// Stores username in context
+func LoggedOnly(s *sessions.CookieStore, loggedDB db.LoggedDB) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			session, err := sess.GetSessionFromStore(s, r)
@@ -22,19 +23,14 @@ func AuthOnly(s *sessions.CookieStore) func(h http.Handler) http.Handler {
 				return
 			}
 
-			if session == nil {
-				httputil.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
-				return
-			}
-
-			if !sess.IsAuthorized(session) {
-				httputil.WriteError(w, er.ErrUnathorized, http.StatusUnauthorized)
+			if !sess.IsLogged(session, loggedDB) {
+				httputil.WriteError(w, er.ErrNotLogged, http.StatusUnauthorized)
 				return
 			}
 
 			username, err := sess.GetUserName(session)
-			if err != nil || username == "" {
-				httputil.WriteError(w, er.ErrUserNameIsEmpty, http.StatusUnauthorized)
+			if err != nil {
+				httputil.WriteError(w, er.ErrSession, http.StatusInternalServerError)
 				return
 			}
 

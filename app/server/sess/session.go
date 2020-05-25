@@ -5,6 +5,7 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 )
 
@@ -26,6 +27,31 @@ func IsAuthorized(session *sessions.Session) bool {
 	}
 
 	return res
+}
+
+// IsLogged ...
+func IsLogged(session *sessions.Session, loggedDB db.LoggedDB) bool {
+	usernameI := session.Values[config.SessionUserName]
+	loginTokenI := session.Values[config.SessionLoginToken]
+	if usernameI == nil || loginTokenI == nil {
+		return false
+	}
+
+	username, usernameOk := usernameI.(string)
+	loginToken, loginTokenOk := loginTokenI.(string)
+
+	if !usernameOk || !loginTokenOk {
+		return false
+	}
+
+	loggedDB.Lock()
+	defer loggedDB.Unlock()
+	loggedU, err := loggedDB.Get(username)
+	if err != nil {
+		return false
+	}
+
+	return loggedU.LoginToken == loginToken
 }
 
 // GetUserName ...
