@@ -1,3 +1,4 @@
 config.toml
 go.sum
 server.exe
+bin/server/__debug_bin

@@ -75,4 +75,5 @@ func (s *Server) generateRoutePaths() {
 	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.Store.LoggedDB))
 	loggedRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
+	loggedRouter.Handle("/keepalive", http.HandlerFunc(s.KeepAlive)).Methods(http.MethodPut, http.MethodOptions)
 }

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -33,6 +34,9 @@ func Logger(h http.Handler) http.Handler {
 
 		h.ServeHTTP(withCodeW, r)
 
+		if strings.Contains(url.String(), "keepalive") {
+			return
+		}
 		log.Tracef("%s: %s => %d %s", method, url, withCodeW.Code, http.StatusText(withCodeW.Code))
 	})
 }
