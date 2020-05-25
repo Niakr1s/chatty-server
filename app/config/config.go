@@ -17,6 +17,9 @@ type Config struct {
 
 	CookieStoreSecretKey string
 	CookieMaxAge         int
+
+	RequestTimeout  duration
+	ResponseTimeout duration
 }
 
 // C contains configuration for app
@@ -27,9 +30,9 @@ const configFilepath = "config.toml"
 
 func init() {
 	C = new(Config)
+	C = NewDefaultConfig()
 	if _, err := toml.DecodeFile(configFilepath, C); err != nil {
 		log.Infof("couldn't load from %s: %v, initializing default config", configFilepath, err)
-		C = NewDefaultConfig()
 	} else {
 		log.Infof("config file succesfully loaded from %s", configFilepath)
 	}
@@ -44,5 +47,8 @@ func NewDefaultConfig() *Config {
 
 		CookieStoreSecretKey: "1234567890",
 		CookieMaxAge:         60 * 60 * 24 * 7, // week
+
+		RequestTimeout:  duration{time.Second * 15},
+		ResponseTimeout: duration{time.Second * 30},
 	}
 }

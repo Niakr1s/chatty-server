@@ -9,6 +9,8 @@ import (
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
+	"github.com/niakr1s/chatty-server/app/pool"
+	"github.com/niakr1s/chatty-server/app/pool/events"
 	"github.com/niakr1s/chatty-server/app/server/middleware"
 	"github.com/niakr1s/chatty-server/app/server/sess"
 
@@ -62,7 +64,13 @@ func NewMemoryServer() *Server {
 func (s *Server) ListenAndServe() error {
 	address := config.C.ServerListenAddress
 	log.Printf("starting to listening on address %s", address)
-	return http.ListenAndServe(address, s.router)
+	srv := &http.Server{
+		Addr:         config.C.ServerListenAddress,
+		Handler:      s.router,
+		ReadTimeout:  config.C.RequestTimeout.Duration,
+		WriteTimeout: config.C.ResponseTimeout.Duration,
+	}
+	return srv.ListenAndServe()
 }
 
 func (s *Server) generateRoutePaths() {
@@ -81,4 +89,5 @@ func (s *Server) generateRoutePaths() {
 	loggedRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/keepalive", http.HandlerFunc(s.KeepAlive)).Methods(http.MethodPut, http.MethodOptions)
+	loggedRouter.Handle("/poll", http.HandlerFunc(s.Poll)).Methods(http.MethodGet, http.MethodOptions)
 }
