@@ -51,11 +51,8 @@ func TestServer_Authorize(t *testing.T) {
 
 			session, _ := sess.GetSessionFromStore(s.cookieStore, r)
 			username, _ := sess.GetUserName(session)
-			isAuthorized := sess.IsAuthorized(session)
 
-			assert.Equal(t, tt.okExpected, isAuthorized)
-
-			if isAuthorized {
+			if tt.okExpected {
 				assert.Equal(t, tt.username, username)
 			}
 		})

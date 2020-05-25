@@ -42,8 +42,19 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session.Values[config.SessionAuthorized] = true
-	session.Values[config.SessionUserName] = u.Name
+	s.store.LoggedDB.Lock()
+	defer s.store.LoggedDB.Unlock()
+
+	err = s.store.LoggedDB.Logout(storedU.Name) // force logout, don't check err
+
+	loggedU, err := s.store.LoggedDB.Login(storedU.Name)
+	if err != nil {
+		httputil.WriteError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	session.Values[config.SessionUserName] = loggedU.Name
+	session.Values[config.SessionLoginToken] = loggedU.LoginToken
 
 	if err := session.Save(r, w); err != nil {
 		httputil.WriteSessionError(w)
