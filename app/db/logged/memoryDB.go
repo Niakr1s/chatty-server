@@ -2,7 +2,6 @@ package logged
 
 import (
 	"sync"
-	"time"
 
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/models"
@@ -26,26 +25,13 @@ func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
 	return NewNotifyDB(d, ch)
 }
 
-// StartCleanInactiveUsers ...
-func (d *MemoryDB) StartCleanInactiveUsers(each time.Duration, inactivityTimeout time.Duration) {
-	go func() {
-		for {
-			<-time.After(each)
-			d.Lock()
-			d.cleanInactiveUsers(inactivityTimeout)
-			d.Unlock()
-		}
-	}()
-}
-
-func (d *MemoryDB) cleanInactiveUsers(inactivityTimeout time.Duration) {
-	now := time.Now()
-
-	for n, u := range d.users {
-		if diff := now.Sub(u.LastActivity); diff > inactivityTimeout {
-			d.Logout(n)
-		}
+// GetLoggedUsers ...
+func (d *MemoryDB) GetLoggedUsers() []string {
+	res := make([]string, 0, len(d.users))
+	for u := range d.users {
+		res = append(res, u)
 	}
+	return res
 }
 
 // Login ...

@@ -35,10 +35,10 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.store.LoggedDB.Lock()
-	defer s.store.LoggedDB.Unlock()
+	s.Store.LoggedDB.Lock()
+	defer s.Store.LoggedDB.Unlock()
 
-	loggedU, err := s.store.LoggedDB.Login(u.Name)
+	loggedU, err := s.Store.LoggedDB.Login(u.Name)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)
 		return

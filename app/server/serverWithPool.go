@@ -17,10 +17,10 @@ type WithPool struct {
 func NewServerWithPool(s *Server) *WithPool {
 	res := &WithPool{Server: s, pool: pool.NewPool()}
 	ch := res.pool.GetInputChan()
-	res.store.LoggedDB = logged.NewNotifyDB(res.store.LoggedDB, ch)
-	res.store.ChatDB = chat.NewNotifyDB(res.store.ChatDB, ch)
+	res.Store.LoggedDB = logged.NewNotifyDB(res.Store.LoggedDB, ch)
+	res.Store.ChatDB = chat.NewNotifyDB(res.Store.ChatDB, ch)
 	res.pool = res.pool.WithUserChFilter(func(username string) events.FilterPass {
-		return pool.FilterPassIfUserInChat(res.store, username)
+		return pool.FilterPassIfUserInChat(res.Store, username)
 	})
 	res.pool.Run()
 	return res

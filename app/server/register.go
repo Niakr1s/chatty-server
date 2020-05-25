@@ -37,7 +37,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.store.UserDB.Store(&u); err != nil {
+	if err := s.Store.UserDB.Store(&u); err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)
 		return
 	}

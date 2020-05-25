@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 
 	"github.com/stretchr/testify/assert"
@@ -64,7 +65,7 @@ func TestMemoryDB_Logout(t *testing.T) {
 func TestMemoryDB_StartCleanInactiveUsers(t *testing.T) {
 	memoryDB := NewMemoryDB()
 
-	memoryDB.StartCleanInactiveUsers(time.Millisecond*10, time.Millisecond*10)
+	db.StartCleanInactiveUsers(memoryDB, time.Millisecond*10, time.Millisecond*10)
 
 	memoryDB.Lock()
 	memoryDB.Login(username)

@@ -11,10 +11,10 @@ import (
 func (s *Server) Logout(w http.ResponseWriter, r *http.Request) {
 	username := r.Context().Value(config.CtxUserNameKey).(string)
 
-	s.store.LoggedDB.Lock()
-	defer s.store.LoggedDB.Unlock()
+	s.Store.LoggedDB.Lock()
+	defer s.Store.LoggedDB.Unlock()
 
-	err := s.store.LoggedDB.Logout(username)
+	err := s.Store.LoggedDB.Logout(username)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)
 		return

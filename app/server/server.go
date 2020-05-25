@@ -21,7 +21,7 @@ import (
 // Server ...
 type Server struct {
 	router      *mux.Router
-	store       *db.Store
+	Store       *db.Store
 	cookieStore sessions.Store
 	mailer      email.Mailer
 }
@@ -30,7 +30,7 @@ type Server struct {
 func NewServer(s *db.Store, m email.Mailer) *Server {
 	res := &Server{
 		router:      mux.NewRouter(),
-		store:       s,
+		Store:       s,
 		cookieStore: sess.InitStoreFromConfig(),
 		mailer:      m,
 	}
@@ -72,7 +72,7 @@ func (s *Server) generateRoutePaths() {
 
 	// /api/loggedonly
 	loggedRouter := s.router.PathPrefix("/loggedonly").Subrouter()
-	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.store.LoggedDB))
+	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.Store.LoggedDB))
 	loggedRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
 }

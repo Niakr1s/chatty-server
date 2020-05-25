@@ -19,10 +19,10 @@ func TestServer_Authorize(t *testing.T) {
 	storedUser.GeneratePasswordHash()
 	storedUser.Email.Activated = true
 
-	s.store.UserDB.Store(&storedUser)
+	s.Store.UserDB.Store(&storedUser)
 
 	unverifiedUser := models.NewFullUser("unverifiedUser", "user@example.org", "password")
-	s.store.UserDB.Store(&unverifiedUser)
+	s.Store.UserDB.Store(&unverifiedUser)
 
 	testCases := []struct {
 		name       string
