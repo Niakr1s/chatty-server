@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/constants"
+	"github.com/niakr1s/chatty-server/app/internal/httputil"
 )
 
 // Poll ...
@@ -13,5 +14,8 @@ func (s *Server) Poll(w http.ResponseWriter, r *http.Request) {
 
 	event := <-s.pool.GetUserChan(username)
 
-	json.NewEncoder(w).Encode(event)
+	if err := json.NewEncoder(w).Encode(event); err != nil {
+		httputil.WriteError(w, err, http.StatusInternalServerError)
+		return
+	}
 }

@@ -39,6 +39,8 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 	session.Values[constants.SessionLoginToken] = u.LoginToken
 	session.Save(r, w)
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(u.User)
+	if err := json.NewEncoder(w).Encode(u.User); err != nil {
+		httputil.WriteError(w, err, http.StatusInternalServerError)
+		return
+	}
 }

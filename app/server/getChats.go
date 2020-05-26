@@ -14,8 +14,7 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 
 	chats := s.dbStore.ChatDB.GetChats()
 
-	err := json.NewEncoder(w).Encode(chats)
-	if err != nil {
+	if err := json.NewEncoder(w).Encode(chats); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return
 	}
