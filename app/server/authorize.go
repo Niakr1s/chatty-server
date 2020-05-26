@@ -20,7 +20,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storedU, err := s.Store.UserDB.Get(u.Name)
+	storedU, err := s.store.UserDB.Get(u.Name)
 	if err != nil {
 		httputil.WriteError(w, er.ErrUserNotFound, http.StatusBadRequest)
 		return
@@ -42,12 +42,12 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.Store.LoggedDB.Lock()
-	defer s.Store.LoggedDB.Unlock()
+	s.store.LoggedDB.Lock()
+	defer s.store.LoggedDB.Unlock()
 
-	err = s.Store.LoggedDB.Logout(storedU.Name) // force logout, don't check err
+	err = s.store.LoggedDB.Logout(storedU.Name) // force logout, don't check err
 
-	loggedU, err := s.Store.LoggedDB.Login(storedU.Name)
+	loggedU, err := s.store.LoggedDB.Login(storedU.Name)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return

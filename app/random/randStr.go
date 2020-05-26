@@ -6,6 +6,18 @@ import (
 	"time"
 )
 
+// StrGenerator ...
+type StrGenerator interface {
+	RandomStr() string
+}
+
+// StrGen ...
+var StrGen StrGenerator
+
+func init() {
+	StrGen = NewRandStrGenerator()
+}
+
 // RandStrGenerator ...
 type RandStrGenerator struct {
 	r *rand.Rand

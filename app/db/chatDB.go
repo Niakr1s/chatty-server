@@ -17,6 +17,8 @@ type ChatDB interface {
 
 // Chat ...
 type Chat interface {
+	sync.Locker
+
 	ChatName() string
 	AddUser(username string) error
 	RemoveUser(username string) error

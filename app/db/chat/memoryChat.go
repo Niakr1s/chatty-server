@@ -1,12 +1,16 @@
 package chat
 
 import (
+	"sync"
+
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/pool/events"
 )
 
 // MemoryChat ...
 type MemoryChat struct {
+	sync.Mutex
+
 	Name  string
 	users map[string]struct{}
 

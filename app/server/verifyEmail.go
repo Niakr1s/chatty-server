@@ -24,7 +24,7 @@ func (s *Server) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := s.Store.UserDB.Get(username)
+	u, err := s.store.UserDB.Get(username)
 	if err != nil {
 		httputil.WriteError(w, er.ErrUserNotFound, http.StatusBadRequest)
 		return
@@ -37,7 +37,7 @@ func (s *Server) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	u.Activated = true
 
-	if err = s.Store.UserDB.Update(&u); err != nil {
+	if err = s.store.UserDB.Update(&u); err != nil {
 		httputil.WriteError(w, er.ErrCannotUpdateUser, http.StatusInternalServerError)
 		return
 	}

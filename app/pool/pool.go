@@ -15,10 +15,10 @@ type Pool struct {
 	// events.Event inputs here
 	inputCh chan events.Event
 
-	userCh       map[string]*events.EventChan
-	userChFilter func(username string) events.FilterPass
+	userCh       map[string]*EventChan
+	userChFilter func(username string) FilterPass
 
-	innerCh []*events.EventChan
+	innerCh []*EventChan
 }
 
 // NewPool ...
@@ -26,15 +26,15 @@ func NewPool() *Pool {
 	return &Pool{
 		inputCh: make(chan events.Event, 10),
 
-		userCh:       make(map[string]*events.EventChan),
-		userChFilter: func(username string) events.FilterPass { return events.FilterPassAlways },
+		userCh:       make(map[string]*EventChan),
+		userChFilter: func(username string) FilterPass { return FilterPassAlways },
 
-		innerCh: make([]*events.EventChan, 0),
+		innerCh: make([]*EventChan, 0),
 	}
 }
 
 // WithUserChFilter ...
-func (p *Pool) WithUserChFilter(f func(username string) events.FilterPass) *Pool {
+func (p *Pool) WithUserChFilter(f func(username string) FilterPass) *Pool {
 	p.userChFilter = f
 	return p
 }
@@ -64,7 +64,7 @@ func (p *Pool) getUserChan(username string) <-chan events.Event {
 }
 
 func (p *Pool) createUserChan(username string) {
-	p.userCh[username] = events.NewEventChan().
+	p.userCh[username] = NewEventChan().
 		WithFilter(p.userChFilter(username))
 }
 
@@ -77,11 +77,11 @@ func (p *Pool) removeUserChan(username string) {
 
 // CreateChanNoFilter creates chan with no filter
 func (p *Pool) CreateChanNoFilter() <-chan events.Event {
-	return p.CreateChan(events.FilterPassAlways)
+	return p.CreateChan(FilterPassAlways)
 }
 
 // CreateChan creates chan with filter
-func (p *Pool) CreateChan(filter events.FilterPass) <-chan events.Event {
+func (p *Pool) CreateChan(filter FilterPass) <-chan events.Event {
 	p.Lock()
 	defer p.Unlock()
 
@@ -89,8 +89,8 @@ func (p *Pool) CreateChan(filter events.FilterPass) <-chan events.Event {
 }
 
 // CreateChan creates chan with filter
-func (p *Pool) createChan(filter events.FilterPass) <-chan events.Event {
-	ec := events.NewEventChan().WithFilter(filter)
+func (p *Pool) createChan(filter FilterPass) <-chan events.Event {
+	ec := NewEventChan().WithFilter(filter)
 
 	p.innerCh = append(p.innerCh, ec)
 

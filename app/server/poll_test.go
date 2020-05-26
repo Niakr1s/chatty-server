@@ -27,13 +27,13 @@ func TestServer_Poll(t *testing.T) {
 		s.Poll(w, r)
 		done <- struct{}{}
 	}()
-	s.Store.ChatDB.Lock()
+	s.store.ChatDB.Lock()
 
-	chat, _ := s.Store.ChatDB.Add(chatname)
+	chat, _ := s.store.ChatDB.Add(chatname)
 	chat.AddUser(username)
 	chat.AddUser("another user")
 
-	s.Store.ChatDB.Unlock()
+	s.store.ChatDB.Unlock()
 
 	<-done
 

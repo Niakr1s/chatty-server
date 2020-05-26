@@ -28,7 +28,7 @@ func TestServer_Login(t *testing.T) {
 	s.Login(w, r)
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	loggedU, err := s.Store.LoggedDB.Get(username)
+	loggedU, err := s.store.LoggedDB.Get(username)
 	assert.NoError(t, err)
 
 	err = validator.Validate.Struct(loggedU)

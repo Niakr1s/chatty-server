@@ -25,7 +25,7 @@ func (e *mockEvent) String() string {
 func NewMockPool(t *testing.T, inner int, user int) *Pool {
 	t.Helper()
 
-	p := NewPool().WithUserChFilter(func(username string) events.FilterPass { return events.FilterPassAlways })
+	p := NewPool().WithUserChFilter(func(username string) FilterPass { return FilterPassAlways })
 
 	for i := 0; i < inner; i++ {
 		p.CreateChanNoFilter()

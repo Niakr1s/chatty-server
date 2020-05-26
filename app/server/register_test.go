@@ -22,7 +22,7 @@ func TestServer_Register(t *testing.T) {
 	}{
 		{
 			"valid user",
-			mockUser(t),
+			models.NewFullUser("user", "user@example.org", "password"),
 			true,
 		},
 		{
