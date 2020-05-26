@@ -53,3 +53,14 @@ func (d *MemoryDB) Remove(chatname string) error {
 
 	return nil
 }
+
+// GetChats ...
+func (d *MemoryDB) GetChats() []db.Chat {
+	res := make([]db.Chat, 0, len(d.chats))
+
+	for _, c := range d.chats {
+		res = append(res, c)
+	}
+
+	return res
+}

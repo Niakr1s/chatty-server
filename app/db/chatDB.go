@@ -13,6 +13,8 @@ type ChatDB interface {
 
 	Get(chatname string) (Chat, error)
 	Remove(chatname string) error
+
+	GetChats() []Chat
 }
 
 // Chat ...
