@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db/logged"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/server/sess"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,8 +47,8 @@ func TestLoggedOnly_LoggedUser(t *testing.T) {
 	r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(""))
 
 	session, _ := sess.GetSessionFromStore(store, r)
-	session.Values[config.SessionUserName] = u.Name
-	session.Values[config.SessionLoginToken] = u.LoginToken
+	session.Values[constants.SessionUserName] = u.Name
+	session.Values[constants.SessionLoginToken] = u.LoginToken
 	session.Save(r, w)
 
 	LoggedOnly(store, loggedDB)(h).ServeHTTP(w, r)

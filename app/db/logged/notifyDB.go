@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/db"
+	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/pool/events"
 )
 
 // NotifyDB ...

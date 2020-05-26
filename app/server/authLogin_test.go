@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -30,7 +30,7 @@ func TestServer_AuthLogin(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(""))
 		if tt.username != "" {
-			r = r.WithContext(context.WithValue(r.Context(), config.CtxUserNameKey, tt.username))
+			r = r.WithContext(context.WithValue(r.Context(), constants.CtxUserNameKey, tt.username))
 		}
 
 		s.AuthLogin(w, r)

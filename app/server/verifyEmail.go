@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/server/httputil"
+	"github.com/niakr1s/chatty-server/app/internal/httputil"
 )
 
 // VerifyEmail .../{username}/{activationToken}
@@ -24,7 +24,7 @@ func (s *Server) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := s.store.UserDB.Get(username)
+	u, err := s.dbStore.UserDB.Get(username)
 	if err != nil {
 		httputil.WriteError(w, er.ErrUserNotFound, http.StatusBadRequest)
 		return
@@ -37,7 +37,7 @@ func (s *Server) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	u.Activated = true
 
-	if err = s.store.UserDB.Update(&u); err != nil {
+	if err = s.dbStore.UserDB.Update(&u); err != nil {
 		httputil.WriteError(w, er.ErrCannotUpdateUser, http.StatusInternalServerError)
 		return
 	}

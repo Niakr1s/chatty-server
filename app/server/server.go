@@ -9,9 +9,9 @@ import (
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
-	"github.com/niakr1s/chatty-server/app/pool"
+	"github.com/niakr1s/chatty-server/app/eventpool"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/niakr1s/chatty-server/app/server/middleware"
-	"github.com/niakr1s/chatty-server/app/server/sess"
 
 	log "github.com/sirupsen/logrus"
 
@@ -22,27 +22,27 @@ import (
 // Server ...
 type Server struct {
 	router      *mux.Router
-	store       *db.Store
+	dbStore     *db.Store
 	cookieStore sessions.Store
 	mailer      email.Mailer
-	pool        *pool.Pool
+	pool        *eventpool.Pool
 }
 
 // NewServer ...
-func NewServer(s *db.Store, m email.Mailer) *Server {
+func NewServer(dbStore *db.Store, m email.Mailer) *Server {
 	res := &Server{
 		router:      mux.NewRouter(),
-		store:       s,
+		dbStore:     dbStore,
 		cookieStore: sess.InitStoreFromConfig(),
 		mailer:      m,
-		pool:        pool.NewPool(),
+		pool:        eventpool.NewPool(),
 	}
 
 	ch := res.pool.GetInputChan()
-	res.store.LoggedDB = logged.NewNotifyDB(res.store.LoggedDB, ch)
-	res.store.ChatDB = chat.NewNotifyDB(res.store.ChatDB, ch)
-	res.pool = res.pool.WithUserChFilter(func(username string) pool.FilterPass {
-		return pool.FilterPassIfUserInChat(res.store.ChatDB, username)
+	res.dbStore.LoggedDB = logged.NewNotifyDB(res.dbStore.LoggedDB, ch)
+	res.dbStore.ChatDB = chat.NewNotifyDB(res.dbStore.ChatDB, ch)
+	res.pool = res.pool.WithUserChFilter(func(username string) eventpool.FilterPass {
+		return eventpool.FilterPassIfUserInChat(res.dbStore.ChatDB, username)
 	})
 	res.pool.Run()
 
@@ -68,7 +68,7 @@ func (s *Server) ListenAndServe() error {
 		ReadTimeout:  config.C.RequestTimeout.Duration,
 		WriteTimeout: config.C.ResponseTimeout.Duration,
 	}
-	db.StartCleanInactiveUsers(s.store.LoggedDB,
+	db.StartCleanInactiveUsers(s.dbStore.LoggedDB,
 		config.C.CleanInactiveUsersInterval.Duration,
 		config.C.InactivityTimeout.Duration)
 	log.Printf("starting to listening on address %s", address)
@@ -87,7 +87,7 @@ func (s *Server) generateRoutePaths() {
 
 	// /api/loggedonly
 	loggedRouter := s.router.PathPrefix("/loggedonly").Subrouter()
-	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.store.LoggedDB))
+	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.dbStore.LoggedDB))
 	loggedRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/keepalive", http.HandlerFunc(s.KeepAlive)).Methods(http.MethodPut, http.MethodOptions)

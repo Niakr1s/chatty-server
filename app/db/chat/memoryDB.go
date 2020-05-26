@@ -5,7 +5,7 @@ import (
 
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/pool/events"
+	"github.com/niakr1s/chatty-server/app/events"
 )
 
 // MemoryDB ...

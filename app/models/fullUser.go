@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/niakr1s/chatty-server/app/validator"
+	"github.com/niakr1s/chatty-server/app/internal/validator"
 )
 
 // FullUser ...

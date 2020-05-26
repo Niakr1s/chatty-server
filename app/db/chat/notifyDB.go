@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/db"
-	"github.com/niakr1s/chatty-server/app/pool/events"
+	"github.com/niakr1s/chatty-server/app/events"
 )
 
 // NotifyDB is wrapper above ChatDB

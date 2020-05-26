@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/server/sess"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,10 +19,10 @@ func TestServer_Authorize(t *testing.T) {
 	storedUser.GeneratePasswordHash()
 	storedUser.Email.Activated = true
 
-	s.store.UserDB.Store(&storedUser)
+	s.dbStore.UserDB.Store(&storedUser)
 
 	unverifiedUser := models.NewFullUser("unverifiedUser", "user@example.org", "password")
-	s.store.UserDB.Store(&unverifiedUser)
+	s.dbStore.UserDB.Store(&unverifiedUser)
 
 	testCases := []struct {
 		name       string

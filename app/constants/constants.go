@@ -1,4 +1,4 @@
-package config
+package constants
 
 // SessionName is default session name
 const SessionName = "chatty"

@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/internal/httputil"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/server/httputil"
-	"github.com/niakr1s/chatty-server/app/server/sess"
 )
 
 // Authorize ...
@@ -20,7 +20,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storedU, err := s.store.UserDB.Get(u.Name)
+	storedU, err := s.dbStore.UserDB.Get(u.Name)
 	if err != nil {
 		httputil.WriteError(w, er.ErrUserNotFound, http.StatusBadRequest)
 		return
@@ -42,19 +42,19 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.store.LoggedDB.Lock()
-	defer s.store.LoggedDB.Unlock()
+	s.dbStore.LoggedDB.Lock()
+	defer s.dbStore.LoggedDB.Unlock()
 
-	err = s.store.LoggedDB.Logout(storedU.Name) // force logout, don't check err
+	err = s.dbStore.LoggedDB.Logout(storedU.Name) // force logout, don't check err
 
-	loggedU, err := s.store.LoggedDB.Login(storedU.Name)
+	loggedU, err := s.dbStore.LoggedDB.Login(storedU.Name)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	session.Values[config.SessionUserName] = loggedU.Name
-	session.Values[config.SessionLoginToken] = loggedU.LoginToken
+	session.Values[constants.SessionUserName] = loggedU.Name
+	session.Values[constants.SessionLoginToken] = loggedU.LoginToken
 
 	if err := session.Save(r, w); err != nil {
 		httputil.WriteSessionError(w)

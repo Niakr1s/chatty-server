@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/validator"
+	"github.com/niakr1s/chatty-server/app/internal/validator"
 )
 
 // Message ...

@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/pool/events"
 )
 
 // MemoryDB ...

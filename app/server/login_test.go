@@ -7,10 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
+	"github.com/niakr1s/chatty-server/app/internal/validator"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/server/sess"
-	"github.com/niakr1s/chatty-server/app/validator"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +28,7 @@ func TestServer_Login(t *testing.T) {
 	s.Login(w, r)
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	loggedU, err := s.store.LoggedDB.Get(username)
+	loggedU, err := s.dbStore.LoggedDB.Get(username)
 	assert.NoError(t, err)
 
 	err = validator.Validate.Struct(loggedU)
@@ -37,8 +37,8 @@ func TestServer_Login(t *testing.T) {
 
 	session, _ := sess.GetSessionFromStore(s.cookieStore, r)
 
-	assert.Equal(t, loggedU.Name, session.Values[config.SessionUserName].(string))
-	assert.Equal(t, loggedU.LoginToken, session.Values[config.SessionLoginToken].(string))
+	assert.Equal(t, loggedU.Name, session.Values[constants.SessionUserName].(string))
+	assert.Equal(t, loggedU.LoginToken, session.Values[constants.SessionLoginToken].(string))
 }
 
 func TestServer_LoginSameUserTwice(t *testing.T) {

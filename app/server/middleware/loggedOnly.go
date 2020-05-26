@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/server/httputil"
-	"github.com/niakr1s/chatty-server/app/server/sess"
+	"github.com/niakr1s/chatty-server/app/internal/httputil"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 )
 
 // LoggedOnly rejects user with invalid loginToken
@@ -34,7 +34,7 @@ func LoggedOnly(s sessions.Store, loggedDB db.LoggedDB) func(h http.Handler) htt
 				return
 			}
 
-			r = r.WithContext(context.WithValue(r.Context(), config.CtxUserNameKey, username))
+			r = r.WithContext(context.WithValue(r.Context(), constants.CtxUserNameKey, username))
 
 			h.ServeHTTP(w, r)
 		})

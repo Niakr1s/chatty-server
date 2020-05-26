@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/server/httputil"
 )
 
 // Register ...
@@ -37,7 +37,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.store.UserDB.Store(&u); err != nil {
+	if err := s.dbStore.UserDB.Store(&u); err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)
 		return
 	}

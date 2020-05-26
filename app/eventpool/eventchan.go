@@ -1,6 +1,6 @@
-package pool
+package eventpool
 
-import "github.com/niakr1s/chatty-server/app/pool/events"
+import "github.com/niakr1s/chatty-server/app/events"
 
 // EventChan is used to determine if event can pass into channel
 // custome FilterPass can be assigned, which returns true if event is passable

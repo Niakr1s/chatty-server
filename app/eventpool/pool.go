@@ -1,10 +1,10 @@
-package pool
+package eventpool
 
 import (
 	"sync"
 
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/pool/events"
+	"github.com/niakr1s/chatty-server/app/events"
 	log "github.com/sirupsen/logrus"
 )
 

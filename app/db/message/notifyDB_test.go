@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
-	"github.com/niakr1s/chatty-server/app/pool/events"
 	"github.com/stretchr/testify/assert"
 )
 

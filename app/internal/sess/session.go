@@ -4,16 +4,16 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 )
 
 // GetSessionFromStore ...
 func GetSessionFromStore(store sessions.Store, r *http.Request) (*sessions.Session, error) {
-	session, err := store.Get(r, config.SessionName)
+	session, err := store.Get(r, constants.SessionName)
 	if err != nil {
-		session, err = store.New(r, config.SessionName)
+		session, err = store.New(r, constants.SessionName)
 		if err != nil {
 			return nil, err
 		}
@@ -23,8 +23,8 @@ func GetSessionFromStore(store sessions.Store, r *http.Request) (*sessions.Sessi
 
 // IsLogged ...
 func IsLogged(session *sessions.Session, loggedDB db.LoggedDB) bool {
-	usernameI := session.Values[config.SessionUserName]
-	loginTokenI := session.Values[config.SessionLoginToken]
+	usernameI := session.Values[constants.SessionUserName]
+	loginTokenI := session.Values[constants.SessionLoginToken]
 	if usernameI == nil || loginTokenI == nil {
 		return false
 	}
@@ -48,7 +48,7 @@ func IsLogged(session *sessions.Session, loggedDB db.LoggedDB) bool {
 
 // GetUserName ...
 func GetUserName(session *sessions.Session) (string, error) {
-	v := session.Values[config.SessionUserName]
+	v := session.Values[constants.SessionUserName]
 	if v == nil {
 		return "", er.ErrUserNameIsEmpty
 	}

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +19,7 @@ func TestServer_Poll(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(""))
-	r = r.WithContext(context.WithValue(r.Context(), config.CtxUserNameKey, username))
+	r = r.WithContext(context.WithValue(r.Context(), constants.CtxUserNameKey, username))
 
 	done := make(chan struct{})
 	go func() {
@@ -27,13 +27,13 @@ func TestServer_Poll(t *testing.T) {
 		s.Poll(w, r)
 		done <- struct{}{}
 	}()
-	s.store.ChatDB.Lock()
+	s.dbStore.ChatDB.Lock()
 
-	chat, _ := s.store.ChatDB.Add(chatname)
+	chat, _ := s.dbStore.ChatDB.Add(chatname)
 	chat.AddUser(username)
 	chat.AddUser("another user")
 
-	s.store.ChatDB.Unlock()
+	s.dbStore.ChatDB.Unlock()
 
 	<-done
 

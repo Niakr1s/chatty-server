@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/niakr1s/chatty-server/app/random"
+	"github.com/niakr1s/chatty-server/app/internal/random"
 )
 
 // LoggedUser ...
