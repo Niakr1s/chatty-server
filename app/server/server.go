@@ -92,4 +92,5 @@ func (s *Server) generateRoutePaths() {
 	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/keepalive", http.HandlerFunc(s.KeepAlive)).Methods(http.MethodPut, http.MethodOptions)
 	loggedRouter.Handle("/poll", http.HandlerFunc(s.Poll)).Methods(http.MethodGet, http.MethodOptions)
+	loggedRouter.Handle("/joinChat", http.HandlerFunc(s.JoinChat)).Methods(http.MethodPost, http.MethodOptions)
 }
