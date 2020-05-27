@@ -11,11 +11,20 @@ import (
 
 // GetSessionFromStore ...
 func GetSessionFromStore(store sessions.Store, r *http.Request) (*sessions.Session, error) {
+	return getSessionFromStore(store, r, 0)
+}
+
+// GetSessionFromStore deletes cookies and tries again one time
+func getSessionFromStore(store sessions.Store, r *http.Request, times int) (*sessions.Session, error) {
+	if times > 1 {
+		return nil, er.ErrSession
+	}
 	session, err := store.Get(r, constants.SessionName)
 	if err != nil {
 		session, err = store.New(r, constants.SessionName)
 		if err != nil {
-			return nil, err
+			r.Header.Set("Cookie", "")
+			return getSessionFromStore(store, r, times+1)
 		}
 	}
 	return session, nil
