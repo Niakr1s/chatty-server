@@ -2,16 +2,23 @@ package sess
 
 import (
 	"context"
+)
 
-	"github.com/niakr1s/chatty-server/app/constants"
+// CtxKey ...
+type CtxKey int
+
+// Context keys
+const (
+	CtxSessionKey CtxKey = iota
+	CtxUserNameKey
 )
 
 // GetUserNameFromCtx ...
 func GetUserNameFromCtx(ctx context.Context) string {
-	return ctx.Value(constants.CtxUserNameKey).(string)
+	return ctx.Value(CtxUserNameKey).(string)
 }
 
-// SetUserNameFromCtx ...
+// SetUserNameIntoCtx ...
 func SetUserNameIntoCtx(ctx context.Context, username string) context.Context {
-	return context.WithValue(ctx, constants.CtxUserNameKey, username)
+	return context.WithValue(ctx, CtxUserNameKey, username)
 }
