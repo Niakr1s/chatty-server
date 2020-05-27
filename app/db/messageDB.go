@@ -10,7 +10,7 @@ import (
 type MessageDB interface {
 	sync.Locker
 
-	// should update message ID
+	// should update message ID and time
 	Post(*models.Message) error
 
 	GetLastNMessages(chatname string, n int) ([]*models.Message, error)

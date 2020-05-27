@@ -22,6 +22,8 @@ type Config struct {
 	ResponseTimeout duration
 
 	Chats []string
+
+	LastMessages int
 }
 
 // C contains configuration for app
@@ -52,5 +54,7 @@ func NewDefaultConfig() *Config {
 
 		RequestTimeout:  duration{time.Second * 15},
 		ResponseTimeout: duration{time.Second * 30},
+
+		LastMessages: 50,
 	}
 }

@@ -2,6 +2,7 @@ package message
 
 import (
 	"sync"
+	"time"
 
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/events"
@@ -30,7 +31,10 @@ func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
 // Post ...
 func (d *MemoryDB) Post(msg *models.Message) error {
 	chat := d.chats[msg.Chat]
+
 	msg.ID = len(chat) + 1
+	msg.Time = models.UnixTime(time.Now())
+
 	chat = append(chat, msg)
 	d.chats[msg.Chat] = chat
 

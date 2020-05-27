@@ -7,6 +7,7 @@ import (
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/db/logged"
+	"github.com/niakr1s/chatty-server/app/db/message"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
 	"github.com/niakr1s/chatty-server/app/eventpool"
@@ -41,6 +42,7 @@ func NewServer(dbStore *db.Store, m email.Mailer) *Server {
 	ch := res.pool.GetInputChan()
 	res.dbStore.LoggedDB = logged.NewNotifyDB(res.dbStore.LoggedDB, ch)
 	res.dbStore.ChatDB = chat.NewNotifyDB(res.dbStore.ChatDB, ch)
+	res.dbStore.MessageDB = message.NewNotifyDB(res.dbStore.MessageDB, ch)
 	res.pool = res.pool.WithUserChFilter(func(username string) eventpool.FilterPass {
 		return eventpool.FilterPassIfUserInChat(res.dbStore.ChatDB, username)
 	})
@@ -56,7 +58,8 @@ func NewMemoryServer() *Server {
 	u := user.NewMemoryDB()
 	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
-	return NewServer(db.NewStore(u, c, l), email.NewMockMailer())
+	m := message.NewMemoryDB()
+	return NewServer(db.NewStore(u, c, l, m), email.NewMockMailer())
 }
 
 // ListenAndServe ...
@@ -100,4 +103,5 @@ func (s *Server) generateRoutePaths() {
 	loggedRouter.Handle("/joinChat", http.HandlerFunc(s.JoinChat)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/leaveChat", http.HandlerFunc(s.LeaveChat)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/getChats", http.HandlerFunc(s.GetChats)).Methods(http.MethodGet, http.MethodOptions)
+	loggedRouter.Handle("/postMessage", http.HandlerFunc(s.PostMessage)).Methods(http.MethodPost, http.MethodOptions)
 }
