@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -32,11 +33,13 @@ func Logger(h http.Handler) http.Handler {
 
 		withCodeW := NewResponseWithCode(w)
 
+		start := time.Now()
+
 		h.ServeHTTP(withCodeW, r)
 
 		if strings.Contains(url.String(), "keepalive") {
 			return
 		}
-		log.Tracef("%s: %s => %d %s", method, url, withCodeW.Code, http.StatusText(withCodeW.Code))
+		log.Tracef("%s: %s => %d %s, %dms", method, url, withCodeW.Code, http.StatusText(withCodeW.Code), time.Now().Sub(start).Milliseconds())
 	})
 }
