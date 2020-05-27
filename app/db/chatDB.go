@@ -26,3 +26,12 @@ type Chat interface {
 	RemoveUser(username string) error
 	IsInChat(username string) bool
 }
+
+// Chatnames ...
+func Chatnames(chats []Chat) []string {
+	res := make([]string, 0, len(chats))
+	for _, chat := range chats {
+		res = append(res, chat.ChatName())
+	}
+	return res
+}
