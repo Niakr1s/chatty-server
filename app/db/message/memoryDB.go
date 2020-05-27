@@ -46,7 +46,7 @@ func (d *MemoryDB) GetLastNMessages(chatname string, n int) ([]*models.Message, 
 	chat, ok := d.chats[chatname]
 
 	if !ok {
-		return nil, er.ErrNoSuchChat
+		return []*models.Message{}, er.ErrNoSuchChat
 	}
 
 	if len(chat) <= n {
