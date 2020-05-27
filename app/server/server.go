@@ -71,6 +71,11 @@ func (s *Server) ListenAndServe() error {
 	db.StartCleanInactiveUsers(s.dbStore.LoggedDB,
 		config.C.CleanInactiveUsersInterval.Duration,
 		config.C.InactivityTimeout.Duration)
+
+	for _, c := range config.C.Chats {
+		s.dbStore.ChatDB.Add(c)
+	}
+
 	log.Printf("starting to listening on address %s", address)
 	return srv.ListenAndServe()
 }

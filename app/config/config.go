@@ -20,6 +20,8 @@ type Config struct {
 
 	RequestTimeout  duration
 	ResponseTimeout duration
+
+	Chats []string
 }
 
 // C contains configuration for app
