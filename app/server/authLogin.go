@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/constants"
-	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
 )
@@ -19,11 +18,7 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, ok := r.Context().Value(constants.CtxUserNameKey).(string)
-	if !ok {
-		httputil.WriteError(w, er.ErrUserNameIsEmpty, http.StatusForbidden)
-		return
-	}
+	username := sess.GetUserNameFromCtx(r.Context())
 
 	s.dbStore.LoggedDB.Lock()
 	defer s.dbStore.LoggedDB.Unlock()

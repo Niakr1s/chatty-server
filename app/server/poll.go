@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 )
 
 // Poll ...
 func (s *Server) Poll(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value(constants.CtxUserNameKey).(string)
+	username := sess.GetUserNameFromCtx(r.Context())
 
 	event := <-s.pool.GetUserChan(username)
 

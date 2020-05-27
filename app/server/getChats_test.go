@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,6 +27,8 @@ func TestServer_GetChats(t *testing.T) {
 
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(""))
+
+			r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), "user"))
 
 			s.GetChats(w, r)
 

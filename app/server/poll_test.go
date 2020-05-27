@@ -1,13 +1,12 @@
 package server
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/constants"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +18,7 @@ func TestServer_Poll(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(""))
-	r = r.WithContext(context.WithValue(r.Context(), constants.CtxUserNameKey, username))
+	r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), username))
 
 	done := make(chan struct{})
 	go func() {

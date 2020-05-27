@@ -1,13 +1,12 @@
 package server
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/constants"
+	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,14 +23,13 @@ func TestServer_AuthLogin(t *testing.T) {
 		okExpected bool
 	}{
 		{"valid username", "username", true},
-		{"empty username", "", false},
+		// {"empty username", "", false}, // emtpty user should be handled with LoggedOnly middleware
 	}
 	for _, tt := range tests {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(""))
-		if tt.username != "" {
-			r = r.WithContext(context.WithValue(r.Context(), constants.CtxUserNameKey, tt.username))
-		}
+
+		r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), tt.username))
 
 		s.AuthLogin(w, r)
 

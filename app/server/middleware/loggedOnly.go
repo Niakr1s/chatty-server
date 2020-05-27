@@ -1,11 +1,9 @@
 package middleware
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
@@ -34,7 +32,7 @@ func LoggedOnly(s sessions.Store, loggedDB db.LoggedDB) func(h http.Handler) htt
 				return
 			}
 
-			r = r.WithContext(context.WithValue(r.Context(), constants.CtxUserNameKey, username))
+			r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), username))
 
 			h.ServeHTTP(w, r)
 		})
