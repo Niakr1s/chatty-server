@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/stretchr/testify/assert"
