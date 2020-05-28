@@ -22,10 +22,14 @@ func TestServer_Poll(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
+		<-time.After(time.Millisecond * 10)
+		s.Poll(w, r)
 		s.Poll(w, r)
 		s.Poll(w, r)
 		done <- struct{}{}
 	}()
+
+	s.dbStore.LoggedDB.Login(username)
 	s.dbStore.ChatDB.Lock()
 
 	chat, _ := s.dbStore.ChatDB.Add(chatname)
