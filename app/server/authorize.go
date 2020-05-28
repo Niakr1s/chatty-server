@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
@@ -36,28 +35,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := sess.GetSessionFromStore(s.cookieStore, r)
-	if err != nil {
-		httputil.WriteSessionError(w)
-		return
-	}
+	r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), storedU.Name))
 
-	s.dbStore.LoggedDB.Lock()
-	defer s.dbStore.LoggedDB.Unlock()
-
-	err = s.dbStore.LoggedDB.Logout(storedU.Name) // force logout, don't check err
-
-	loggedU, err := s.dbStore.LoggedDB.Login(storedU.Name)
-	if err != nil {
-		httputil.WriteError(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	session.Values[constants.SessionUserName] = loggedU.Name
-	session.Values[constants.SessionLoginToken] = loggedU.LoginToken
-
-	if err := session.Save(r, w); err != nil {
-		httputil.WriteSessionError(w)
-		return
-	}
+	s.AuthLogin(w, r)
 }

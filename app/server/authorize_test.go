@@ -49,6 +49,8 @@ func TestServer_Authorize(t *testing.T) {
 
 			assert.Equal(t, tt.okExpected, w.Code == http.StatusOK)
 
+			r.Header.Set("Cookie", w.HeaderMap.Get("Set-Cookie"))
+
 			session, _ := sess.GetSessionFromStore(s.cookieStore, r)
 			username, _ := sess.GetUserName(session)
 

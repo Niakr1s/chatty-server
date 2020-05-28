@@ -31,8 +31,13 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	session.Values[constants.SessionUserName] = u.Name
 	session.Values[constants.SessionLoginToken] = u.LoginToken
-	session.Save(r, w)
+
+	if err := session.Save(r, w); err != nil {
+		httputil.WriteSessionError(w)
+		return
+	}
 
 	if err := json.NewEncoder(w).Encode(u.User); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
