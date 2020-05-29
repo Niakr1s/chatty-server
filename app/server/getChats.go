@@ -23,6 +23,7 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 		models.Chat
 		Joined   bool              `json:"joined"`
 		Messages []*models.Message `json:"messages"`
+		Users    []models.User     `json:"users"`
 	}
 
 	res := make([]result, 0, len(chats))
@@ -31,13 +32,16 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 		c.Lock()
 		isInChat := c.IsInChat(username)
 		messages := make([]*models.Message, 0)
+		users := make([]models.User, 0)
 		if isInChat {
 			gotMessages, err := s.dbStore.MessageDB.GetLastNMessages(c.ChatName(), config.C.LastMessages)
 			if err == nil {
 				messages = gotMessages
 			}
+			users = c.GetUsers()
 		}
-		res = append(res, result{models.Chat{ChatName: c.ChatName()}, c.IsInChat(username), messages})
+
+		res = append(res, result{models.Chat{ChatName: c.ChatName()}, c.IsInChat(username), messages, users})
 		c.Unlock()
 	}
 

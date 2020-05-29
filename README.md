@@ -69,13 +69,19 @@
 ```
 
 #### /api/loggedonly/getChats
-- Get all chats, joined status and messages for chats, user permitted.
+- Get all chats, joined status, messages for chats and users, if user permitted.
 - Method: GET
 - Response:
 ```json
-[{"chat":"chat", "joined":true, "messages": [
-    {"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}
-]}]
+[{
+    "chat":"chat", 
+    "joined":true, 
+    "messages": [
+        {"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}
+    ],
+    "users": [
+        {"user": "user"}
+    ]}]
 ```
 
 #### /api/loggedonly/getLastMessages
