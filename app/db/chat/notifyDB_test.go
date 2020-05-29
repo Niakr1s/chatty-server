@@ -2,8 +2,10 @@ package chat
 
 import (
 	"testing"
+	"time"
 
 	"github.com/niakr1s/chatty-server/app/events"
+	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,4 +50,26 @@ func TestNotifyDB_ChatNotify(t *testing.T) {
 	joinedE := e.(*events.ChatJoinEvent)
 	assert.Equal(t, joinedE.ChatName, chatname)
 	assert.Equal(t, joinedE.UserName, "user")
+}
+
+func TestNotifyDB_StartListeningToEvents(t *testing.T) {
+	const (
+		chatname = "chat"
+		username = "user"
+	)
+
+	ch := make(chan events.Event)
+	d := NewNotifyDB(NewMemoryDB(), make(chan<- events.Event))
+	chat, _ := d.Add(chatname)
+	chat.AddUser(username)
+
+	assert.NotEmpty(t, chat.GetUsers())
+
+	d.StartListeningToEvents(ch)
+
+	ch <- &events.LogoutEvent{UserEvent: &events.UserEvent{User: models.User{UserName: username}}}
+
+	<-time.After(time.Millisecond * 10)
+
+	assert.Empty(t, chat.GetUsers())
 }

@@ -14,6 +14,16 @@ func FilterPassAlways(e events.Event) bool {
 	return true
 }
 
+// FilterPassLogoutEvents passes only LogoutEvents
+func FilterPassLogoutEvents(e events.Event) bool {
+	switch e.(type) {
+	case *events.LogoutEvent:
+		return true
+	default:
+		return false
+	}
+}
+
 // FilterPassIfUserInChat event is passable only if user is in same chat as event occurs in
 // or if event global
 func FilterPassIfUserInChat(chatDB db.ChatDB, username string) FilterPass {

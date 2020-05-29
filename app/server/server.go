@@ -41,7 +41,11 @@ func NewServer(dbStore *db.Store, m email.Mailer) *Server {
 
 	ch := res.pool.GetInputChan()
 	res.dbStore.LoggedDB = logged.NewNotifyDB(res.dbStore.LoggedDB, ch)
-	res.dbStore.ChatDB = chat.NewNotifyDB(res.dbStore.ChatDB, ch)
+
+	notifyChatDB := chat.NewNotifyDB(res.dbStore.ChatDB, ch)
+	notifyChatDB.StartListeningToEvents(res.pool.CreateChan(eventpool.FilterPassLogoutEvents))
+	res.dbStore.ChatDB = notifyChatDB
+
 	res.dbStore.MessageDB = message.NewNotifyDB(res.dbStore.MessageDB, ch)
 	res.pool = res.pool.WithUserChFilter(func(username string) eventpool.FilterPass {
 		return eventpool.FilterPassIfUserInChat(res.dbStore.ChatDB, username)
