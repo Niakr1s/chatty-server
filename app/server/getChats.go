@@ -20,7 +20,7 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 	chats := s.dbStore.ChatDB.GetChats()
 
 	type result struct {
-		Chatname string            `json:"name"`
+		models.Chat
 		Joined   bool              `json:"joined"`
 		Messages []*models.Message `json:"messages"`
 	}
@@ -37,7 +37,7 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 				messages = gotMessages
 			}
 		}
-		res = append(res, result{c.ChatName(), c.IsInChat(username), messages})
+		res = append(res, result{models.Chat{ChatName: c.ChatName()}, c.IsInChat(username), messages})
 		c.Unlock()
 	}
 

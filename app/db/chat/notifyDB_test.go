@@ -46,6 +46,6 @@ func TestNotifyDB_ChatNotify(t *testing.T) {
 	assert.True(t, ok)
 
 	joinedE := e.(*events.ChatJoinEvent)
-	assert.Equal(t, joinedE.Chatname, chatname)
-	assert.Equal(t, joinedE.Username, "user")
+	assert.Equal(t, joinedE.ChatName, chatname)
+	assert.Equal(t, joinedE.UserName, "user")
 }

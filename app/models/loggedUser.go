@@ -16,7 +16,7 @@ type LoggedUser struct {
 
 // NewLoggedUser creates new user, updates last activity and updates login token
 func NewLoggedUser(username string) *LoggedUser {
-	res := &LoggedUser{User: User{Name: username}}
+	res := &LoggedUser{User: User{UserName: username}}
 	res.UpdateLastActivity(time.Now())
 	res.UpdateLoginToken()
 	return res

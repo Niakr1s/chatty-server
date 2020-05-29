@@ -33,7 +33,7 @@ func TestServer_GetLastMessages(t *testing.T) {
 			chat.AddUser(username)
 
 			w := httptest.NewRecorder()
-			r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(fmt.Sprintf(`{"chatname":"%s"}`, tt.chat)))
+			r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(fmt.Sprintf(`{"chat":"%s"}`, tt.chat)))
 
 			r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), tt.user))
 

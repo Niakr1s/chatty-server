@@ -5,7 +5,7 @@
 - Method: POST
 - Request:
 ```json
-{"name": "user", "email": "user@example.com", "password": "password"}
+{"user": "user", "email": "user@example.com", "password": "password"}
 ```
 
 #### /api/verifyEmail/{username}/{activationToken}
@@ -17,7 +17,7 @@
 - Method: POST
 - Request:
 ```json
-{"name": "user", "password": "password"}
+{"user": "user", "password": "password"}
 ```
 - Response: valid cookie with session token
 
@@ -26,7 +26,7 @@
 - Method: POST
 - Request:
 ```json
-{"name": "user"}
+{"user": "user"}
 ```
 - Failure: 
 - Response: valid cookie with session token
@@ -56,7 +56,7 @@
 - Method: POST
  - Request:
 ```json
-{"chatname": "chat"}
+{"chat": "chat"}
 ```
 
 #### /api/loggedonly/leaveChat
@@ -64,7 +64,7 @@
 - Method: POST
 - Request:
 ```json
-{"chatname": "chat"}
+{"chat": "chat"}
 ```
 
 #### /api/loggedonly/getChats
@@ -72,7 +72,7 @@
 - Method: GET
 - Response:
 ```json
-[{"name":"chat", "joined":true, "messages": [...Messages]}]
+[{"chat":"chat", "joined":true, "messages": [...Messages]}]
 ```
 
 #### /api/loggedonly/getLastMessages
@@ -80,7 +80,7 @@
 - Method: POST
 - Request:
 ```json
-{"chatname": "chat"}
+{"chat": "chat"}
 ```
 - Response:
 ```json
@@ -92,5 +92,5 @@
 - Method: POST
 - Request:
 ```json
-{"username": "user", "text": "text", "chat": "chat"}
+{"user": "user", "text": "text", "chat": "chat"}
 ```

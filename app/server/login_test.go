@@ -19,7 +19,7 @@ func TestServer_Login(t *testing.T) {
 
 	username := "user"
 
-	u := models.User{Name: username}
+	u := models.User{UserName: username}
 	b, _ := json.Marshal(u)
 
 	w := httptest.NewRecorder()
@@ -33,11 +33,11 @@ func TestServer_Login(t *testing.T) {
 
 	err = validator.Validate.Struct(loggedU)
 	assert.NoError(t, err)
-	assert.Equal(t, username, loggedU.Name)
+	assert.Equal(t, username, loggedU.UserName)
 
 	session, _ := sess.GetSessionFromStore(s.cookieStore, r)
 
-	assert.Equal(t, loggedU.Name, session.Values[constants.SessionUserName].(string))
+	assert.Equal(t, loggedU.UserName, session.Values[constants.SessionUserName].(string))
 	assert.Equal(t, loggedU.LoginToken, session.Values[constants.SessionLoginToken].(string))
 }
 
@@ -46,7 +46,7 @@ func TestServer_LoginSameUserTwice(t *testing.T) {
 
 	username := "user"
 
-	u := models.User{Name: username}
+	u := models.User{UserName: username}
 	b, _ := json.Marshal(u)
 
 	w := httptest.NewRecorder()

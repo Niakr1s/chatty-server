@@ -24,37 +24,37 @@ func TestServer_JoinChat(t *testing.T) {
 		{
 			"other user",
 			"other user",
-			fmt.Sprintf(`{"chatname":"%s"}`, chatname),
+			fmt.Sprintf(`{"chat":"%s"}`, chatname),
 			true,
 		},
 		{
 			"same user",
 			"user",
-			fmt.Sprintf(`{"chatname":"%s"}`, chatname),
+			fmt.Sprintf(`{"chat":"%s"}`, chatname),
 			false,
 		},
 		{
 			"other user non-existent chat",
 			"other user",
-			fmt.Sprintf(`{"chatname":"%s"}`, chatname+"1"),
+			fmt.Sprintf(`{"chat":"%s"}`, chatname+"1"),
 			false,
 		},
 		{
 			"other user empty chat",
 			"other user",
-			fmt.Sprintf(`{"chatname":""}`),
+			fmt.Sprintf(`{"chat":""}`),
 			false,
 		},
 		{
 			"same user non-existent chat",
 			username,
-			fmt.Sprintf(`{"chatname":"%s"}`, chatname+"1"),
+			fmt.Sprintf(`{"chat":"%s"}`, chatname+"1"),
 			false,
 		},
 		{
 			"other user bad request",
 			"other user",
-			fmt.Sprintf(`{"chat":"%s"}`, chatname),
+			fmt.Sprintf(`{"chatasf":"%s"}`, chatname),
 			false,
 		},
 		{

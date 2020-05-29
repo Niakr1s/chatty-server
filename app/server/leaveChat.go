@@ -7,16 +7,14 @@ import (
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // LeaveChat ...
 func (s *Server) LeaveChat(w http.ResponseWriter, r *http.Request) {
 	username := sess.GetUserNameFromCtx(r.Context())
 
-	req := struct {
-		Chatname string `json:"chatname"`
-	}{}
-
+	req := models.Chat{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		httputil.WriteError(w, er.ErrCannotParseData, http.StatusBadRequest)
@@ -26,7 +24,7 @@ func (s *Server) LeaveChat(w http.ResponseWriter, r *http.Request) {
 	s.dbStore.ChatDB.Lock()
 	defer s.dbStore.ChatDB.Unlock()
 
-	chat, err := s.dbStore.ChatDB.Get(req.Chatname)
+	chat, err := s.dbStore.ChatDB.Get(req.ChatName)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return

@@ -8,15 +8,14 @@ import (
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // GetLastMessages ...
 func (s *Server) GetLastMessages(w http.ResponseWriter, r *http.Request) {
 	username := sess.GetUserNameFromCtx(r.Context())
 
-	input := struct {
-		Chatname string `json:"chatname"`
-	}{}
+	input := models.Chat{}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
@@ -26,7 +25,7 @@ func (s *Server) GetLastMessages(w http.ResponseWriter, r *http.Request) {
 	s.dbStore.ChatDB.Lock()
 	defer s.dbStore.ChatDB.Unlock()
 
-	c, err := s.dbStore.ChatDB.Get(input.Chatname)
+	c, err := s.dbStore.ChatDB.Get(input.ChatName)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return

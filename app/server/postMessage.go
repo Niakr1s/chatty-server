@@ -20,7 +20,7 @@ func (s *Server) PostMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mess.Username = sess.GetUserNameFromCtx(r.Context())
+	mess.UserName = sess.GetUserNameFromCtx(r.Context())
 
 	if err := validator.Validate.Struct(mess); err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
@@ -30,7 +30,7 @@ func (s *Server) PostMessage(w http.ResponseWriter, r *http.Request) {
 	s.dbStore.ChatDB.Lock()
 	defer s.dbStore.ChatDB.Unlock()
 
-	chat, err := s.dbStore.ChatDB.Get(mess.Chat)
+	chat, err := s.dbStore.ChatDB.Get(mess.ChatName)
 	if err != nil {
 		httputil.WriteError(w, er.ErrNoSuchChat, http.StatusBadRequest)
 		return
@@ -39,7 +39,7 @@ func (s *Server) PostMessage(w http.ResponseWriter, r *http.Request) {
 	chat.Lock()
 	defer chat.Unlock()
 
-	if !chat.IsInChat(mess.Username) {
+	if !chat.IsInChat(mess.UserName) {
 		httputil.WriteError(w, er.ErrNotInChat, http.StatusBadRequest)
 		return
 	}

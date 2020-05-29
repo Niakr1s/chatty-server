@@ -124,7 +124,7 @@ func (p *Pool) beforeSending(event events.Event) {
 func (p *Pool) processLogoutEvent(event events.Event) {
 	if logout, ok := event.(*events.LogoutEvent); ok {
 		if _, err := logout.InChat(); err == er.ErrGlobalEvent {
-			p.removeUserChan(logout.Username)
+			p.removeUserChan(logout.UserName)
 		}
 	}
 }
@@ -132,8 +132,8 @@ func (p *Pool) processLogoutEvent(event events.Event) {
 func (p *Pool) processLoginEvent(event events.Event) {
 	if login, ok := event.(*events.LoginEvent); ok {
 		if _, err := login.InChat(); err == er.ErrGlobalEvent {
-			p.removeUserChan(login.Username) // to renew channel
-			p.createUserChan(login.Username)
+			p.removeUserChan(login.UserName) // to renew channel
+			p.createUserChan(login.UserName)
 		}
 	}
 }

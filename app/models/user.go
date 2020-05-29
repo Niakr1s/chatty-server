@@ -2,5 +2,10 @@ package models
 
 // User ...
 type User struct {
-	Name string `json:"name" validate:"required"`
+	UserName string `json:"user" validate:"required"`
+}
+
+// NewUser ...
+func NewUser(username string) User {
+	return User{UserName: username}
 }

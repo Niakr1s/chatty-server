@@ -16,13 +16,13 @@ func TestNotifyDB_notify(t *testing.T) {
 	memoryDB.Login(username) // shouldn't fire same event twice
 
 	loginE := (<-ch).(*events.LoginEvent)
-	assert.Equal(t, loginE.Username, username)
+	assert.Equal(t, loginE.UserName, username)
 
 	memoryDB.Logout(username)
 	memoryDB.Logout(username) // shouldn't fire same event twice
 
 	logoutE := (<-ch).(*events.LogoutEvent)
-	assert.Equal(t, logoutE.Username, username)
+	assert.Equal(t, logoutE.UserName, username)
 
 	select {
 	case <-ch:

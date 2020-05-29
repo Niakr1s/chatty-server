@@ -31,7 +31,7 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session.Values[constants.SessionUserName] = u.Name
+	session.Values[constants.SessionUserName] = u.UserName
 	session.Values[constants.SessionLoginToken] = u.LoginToken
 
 	if err := session.Save(r, w); err != nil {

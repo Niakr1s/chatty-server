@@ -63,7 +63,7 @@ func TestUser_ValidateBeforeStoring(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &FullUser{
-				User: User{Name: tt.fields.Name},
+				User: User{UserName: tt.fields.Name},
 				Pass: Pass{
 					PasswordHash: tt.fields.PasswordHash,
 					Password:     tt.fields.Password,

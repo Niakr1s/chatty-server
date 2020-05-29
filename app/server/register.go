@@ -32,7 +32,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.mailer.SendMail(u.Email.Address, u.Name, u.Email.ActivationToken); err != nil {
+	if err := s.mailer.SendMail(u.Email.Address, u.UserName, u.Email.ActivationToken); err != nil {
 		httputil.WriteError(w, er.ErrSendEmail, http.StatusInternalServerError)
 		return
 	}

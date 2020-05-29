@@ -38,13 +38,13 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	s.dbStore.LoggedDB.Lock()
 	defer s.dbStore.LoggedDB.Unlock()
 
-	loggedU, err := s.dbStore.LoggedDB.Login(u.Name)
+	loggedU, err := s.dbStore.LoggedDB.Login(u.UserName)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)
 		return
 	}
 
-	session.Values[constants.SessionUserName] = loggedU.Name
+	session.Values[constants.SessionUserName] = loggedU.UserName
 	session.Values[constants.SessionLoginToken] = loggedU.LoginToken
 
 	if err := session.Save(r, w); err != nil {

@@ -43,7 +43,7 @@ func TestMemoryDB_Get(t *testing.T) {
 
 		db.Store(&u)
 
-		gotU, err := db.Get(u.Name)
+		gotU, err := db.Get(u.UserName)
 
 		assert.NoError(t, err)
 		assert.Equal(t, u, gotU)

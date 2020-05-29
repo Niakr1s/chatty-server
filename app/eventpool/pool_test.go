@@ -3,6 +3,7 @@ package eventpool
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/niakr1s/chatty-server/app/events"
 
@@ -102,7 +103,7 @@ func TestPool_ProcessLogoutEvent(t *testing.T) {
 
 	assert.Len(t, p.userCh, 1)
 
-	logoutEvent := &events.LogoutEvent{UserEvent: &events.UserEvent{Username: username, Chatname: ""}}
+	logoutEvent := events.NewLogoutEvent(username, "", time.Now())
 
 	p.processLogoutEvent(logoutEvent)
 

@@ -22,7 +22,7 @@ func TestLoggedOnly_NewUser(t *testing.T) {
 
 	username := "user"
 
-	u := models.User{Name: username}
+	u := models.User{UserName: username}
 	b, _ := json.Marshal(u)
 
 	w := httptest.NewRecorder()
@@ -47,7 +47,7 @@ func TestLoggedOnly_LoggedUser(t *testing.T) {
 	r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(""))
 
 	session, _ := sess.GetSessionFromStore(store, r)
-	session.Values[constants.SessionUserName] = u.Name
+	session.Values[constants.SessionUserName] = u.UserName
 	session.Values[constants.SessionLoginToken] = u.LoginToken
 	session.Save(r, w)
 

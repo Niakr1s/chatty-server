@@ -19,7 +19,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storedU, err := s.dbStore.UserDB.Get(u.Name)
+	storedU, err := s.dbStore.UserDB.Get(u.UserName)
 	if err != nil {
 		httputil.WriteError(w, er.ErrUserNotFound, http.StatusBadRequest)
 		return
@@ -35,7 +35,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), storedU.Name))
+	r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), storedU.UserName))
 
 	s.AuthLogin(w, r)
 }

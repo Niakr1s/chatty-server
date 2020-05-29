@@ -16,13 +16,13 @@ func TestNotifyChat_notify(t *testing.T) {
 	chat.AddUser(username)
 
 	joinE := (<-ch).(*events.ChatJoinEvent)
-	assert.Equal(t, joinE.Username, username)
+	assert.Equal(t, joinE.UserName, username)
 
 	chat.RemoveUser(username)
 	chat.RemoveUser(username)
 
 	leaveE := (<-ch).(*events.ChatLeaveEvent)
-	assert.Equal(t, leaveE.Username, username)
+	assert.Equal(t, leaveE.UserName, username)
 
 	select {
 	case <-ch:

@@ -13,7 +13,7 @@ type FullUser struct {
 
 // NewFullUser ...
 func NewFullUser(username, email, password string) FullUser {
-	return FullUser{User: User{Name: username}, Email: Email{Address: email}, Pass: Pass{Password: password}}
+	return FullUser{User: User{UserName: username}, Email: Email{Address: email}, Pass: Pass{Password: password}}
 }
 
 // ValidateBeforeStoring used before storing in database
