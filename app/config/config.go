@@ -55,6 +55,8 @@ func NewDefaultConfig() *Config {
 		RequestTimeout:  duration{time.Second * 15},
 		ResponseTimeout: duration{time.Second * 30},
 
+		Chats: []string{"Main"},
+
 		LastMessages: 50,
 	}
 }
