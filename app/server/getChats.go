@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
-	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // GetChats ...
@@ -19,30 +18,12 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 
 	chats := s.dbStore.ChatDB.GetChats()
 
-	type result struct {
-		models.Chat
-		Joined   bool              `json:"joined"`
-		Messages []*models.Message `json:"messages"`
-		Users    []models.User     `json:"users"`
-	}
-
-	res := make([]result, 0, len(chats))
+	res := make([]db.ChatReport, 0, len(chats))
 
 	for _, c := range chats {
-		c.Lock()
-		isInChat := c.IsInChat(username)
-		messages := make([]*models.Message, 0)
-		users := make([]models.User, 0)
-		if isInChat {
-			gotMessages, err := s.dbStore.MessageDB.GetLastNMessages(c.ChatName(), config.C.LastMessages)
-			if err == nil {
-				messages = gotMessages
-			}
-			users = c.GetUsers()
+		if report, err := s.dbStore.MakeChatReportForUser(username, c.ChatName()); err == nil {
+			res = append(res, report)
 		}
-
-		res = append(res, result{models.Chat{ChatName: c.ChatName()}, c.IsInChat(username), messages, users})
-		c.Unlock()
 	}
 
 	err := json.NewEncoder(w).Encode(res)
