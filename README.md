@@ -10,7 +10,7 @@
 
 #### /api/verifyEmail/{username}/{activationToken}
 - Server will set user activated status to true in database
-- Method: PUT
+- Method: GET
 
 #### /api/authorize
 - Server will check if user is in database, if user had verified email and if password is correct, then force logins user.
