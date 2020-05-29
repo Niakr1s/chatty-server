@@ -23,7 +23,7 @@ func (ue *UserEvent) String() string {
 	return fmt.Sprintf("user %s, chat: %s, time: %v", ue.UserName, ue.ChatName, ue.Time)
 }
 
-// LoginEvent ...
+// LoginEvent used to emit when user logins chat globally (ie to db.LoggedDB)
 type LoginEvent struct {
 	*UserEvent
 }
@@ -37,7 +37,7 @@ func (le *LoginEvent) String() string {
 	return fmt.Sprintf("login: %v", le.UserEvent)
 }
 
-// LogoutEvent ...
+// LogoutEvent used to emit when user logouts globally (ie from db.LoggedDB)
 type LogoutEvent struct {
 	*UserEvent
 }
@@ -51,7 +51,7 @@ func (le *LogoutEvent) String() string {
 	return fmt.Sprintf("logout: %v", le.UserEvent)
 }
 
-// ChatJoinEvent ...
+// ChatJoinEvent used to emit when user joins chat (ie to db.Chat)
 type ChatJoinEvent struct {
 	*UserEvent
 }
@@ -65,7 +65,7 @@ func (ce *ChatJoinEvent) String() string {
 	return fmt.Sprintf("join chat: %v", ce.UserEvent)
 }
 
-// ChatLeaveEvent ...
+// ChatLeaveEvent used to emit when user leaves chat (ie from db.Chat)
 type ChatLeaveEvent struct {
 	*UserEvent
 }
