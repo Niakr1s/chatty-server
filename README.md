@@ -24,12 +24,10 @@
 #### /api/login
 - Login for unregistered users, only if user with this name isn't already logged in.
 - Method: POST
-- Request:
+- Response: valid cookie with session token and
 ```json
 {"user": "user"}
 ```
-- Failure: 
-- Response: valid cookie with session token
 
 ### /api/loggedonly/*
 - this routes are only for users with valid cookie, that can be acquired via upper routes
@@ -37,7 +35,10 @@
 #### /api/loggedonly/login
 - Force logins user.
 - Method: POST
-- Response: valid cookie with session token
+- Response: valid cookie with session token and
+```json
+{"user": "user"}
+```
 
 #### /api/loggedonly/logout
 - Logouts user.
