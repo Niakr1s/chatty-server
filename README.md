@@ -1,3 +1,20 @@
+## Common models
+
+- Message
+```json
+{"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}
+```
+
+- User
+```json
+{"user": "user"}
+```
+
+- Chat
+```json
+{"chat": "chat"}
+```
+
 ## API
 
 #### /api/register
@@ -5,7 +22,7 @@
 - Method: POST
 - Request:
 ```json
-{"user": "user", "email": "user@example.com", "password": "password"}
+{User, "email": "user@example.com", "password": "password"}
 ```
 
 #### /api/verifyEmail/{username}/{activationToken}
@@ -17,7 +34,7 @@
 - Method: POST
 - Request:
 ```json
-{"user": "user", "password": "password"}
+{User, "password": "password"}
 ```
 - Response: valid cookie with session token
 
@@ -26,7 +43,7 @@
 - Method: POST
 - Response: valid cookie with session token and
 ```json
-{"user": "user"}
+User
 ```
 
 ### /api/loggedonly/*
@@ -37,7 +54,7 @@
 - Method: POST
 - Response: valid cookie with session token and
 ```json
-{"user": "user"}
+User
 ```
 
 #### /api/loggedonly/logout
@@ -57,7 +74,7 @@
 - Method: POST
  - Request:
 ```json
-{"chat": "chat"}
+Chat
 ```
 
 #### /api/loggedonly/leaveChat
@@ -65,7 +82,7 @@
 - Method: POST
 - Request:
 ```json
-{"chat": "chat"}
+Chat
 ```
 
 #### /api/loggedonly/getChats
@@ -74,14 +91,11 @@
 - Response:
 ```json
 [{
-    "chat":"chat", 
+    Chat, 
     "joined":true, 
-    "messages": [
-        {"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}
-    ],
-    "users": [
-        {"user": "user"}
-    ]}]
+    "messages": [...Message],
+    "users": [...User]
+}]
 ```
 
 #### /api/loggedonly/getLastMessages
@@ -89,11 +103,11 @@
 - Method: POST
 - Request:
 ```json
-{"chat": "chat"}
+Chat
 ```
 - Response:
 ```json
-[{"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}]
+[...Message]
 ```
 
 #### /api/loggedonly/postMessage
@@ -101,7 +115,7 @@
 - Method: POST
 - Request:
 ```json
-{"user": "user", "text": "text", "chat": "chat"}
+{User, "text": "text", Chat}
 ```
 
 #### /api/loggedonly/getUsers
@@ -109,9 +123,9 @@
 - Method: POST
 - Request:
 ```json
-{"chat": "chat"}
+Chat
 ```
 - Response:
 ```json
-[{"user": "user"}]
+[...User]
 ```
