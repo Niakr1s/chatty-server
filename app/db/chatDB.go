@@ -2,6 +2,8 @@ package db
 
 import (
 	"sync"
+
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // ChatDB stores chats in-memory
@@ -25,6 +27,7 @@ type Chat interface {
 	AddUser(username string) error
 	RemoveUser(username string) error
 	IsInChat(username string) bool
+	GetUsers() []models.User
 }
 
 // Chatnames ...

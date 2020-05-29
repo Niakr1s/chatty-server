@@ -5,6 +5,7 @@ import (
 
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/events"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // MemoryChat ...
@@ -56,4 +57,13 @@ func (c *MemoryChat) RemoveUser(username string) error {
 func (c *MemoryChat) IsInChat(username string) bool {
 	_, ok := c.users[username]
 	return ok
+}
+
+// GetUsers ...
+func (c *MemoryChat) GetUsers() []models.User {
+	res := make([]models.User, 0, len(c.users))
+	for u := range c.users {
+		res = append(res, models.User{UserName: u})
+	}
+	return res
 }

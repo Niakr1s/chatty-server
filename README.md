@@ -97,3 +97,15 @@
 ```json
 {"user": "user", "text": "text", "chat": "chat"}
 ```
+
+#### /api/loggedonly/getUsers
+- Gets users in chat if permitted
+- Method: POST
+- Request:
+```json
+{"chat": "chat"}
+```
+- Response:
+```json
+[{"user": "user"}]
+```
