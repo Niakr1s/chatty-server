@@ -21,9 +21,9 @@ func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 	res := make([]db.ChatReport, 0, len(chats))
 
 	for _, c := range chats {
-		if report, err := s.dbStore.MakeChatReportForUser(username, c.ChatName()); err == nil {
-			res = append(res, report)
-		}
+		c.Lock()
+		res = append(res, s.dbStore.MakeChatReportForUser(username, c))
+		c.Unlock()
 	}
 
 	err := json.NewEncoder(w).Encode(res)

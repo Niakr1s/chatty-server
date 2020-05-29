@@ -20,6 +20,7 @@ func NewStore(u UserDB, c ChatDB, l LoggedDB, m MessageDB) *Store {
 
 // ChatReport ...
 type ChatReport struct {
+	models.User
 	models.Chat
 	Joined   bool              `json:"joined"`
 	Messages []*models.Message `json:"messages"`
@@ -27,30 +28,30 @@ type ChatReport struct {
 }
 
 // NewChatReport ...
-func NewChatReport(chatname string, joined bool) ChatReport {
-	return ChatReport{Chat: models.Chat{ChatName: chatname}, Joined: joined, Messages: []*models.Message{}, Users: []models.User{}}
+func NewChatReport(username, chatname string, joined bool) ChatReport {
+	return ChatReport{
+		User:     models.User{UserName: username},
+		Chat:     models.Chat{ChatName: chatname},
+		Joined:   joined,
+		Messages: []*models.Message{},
+		Users:    []models.User{}}
 }
 
-// MakeChatReportForUser returns ChatReport for an user
-// if not joined, Messages and Users fields are always empty
-func (s *Store) MakeChatReportForUser(username string, chatname string) (ChatReport, error) {
-	c, err := s.ChatDB.Get(chatname)
-	if err != nil {
-		return ChatReport{}, err
-	}
-
-	c.Lock()
-	defer c.Unlock()
-
-	res := NewChatReport(chatname, c.IsInChat(username))
+// MakeChatReportForUser returns ChatReport for an user.
+// If not joined, Messages and Users fields are always empty.
+// Chat should be locked.
+func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
+	res := NewChatReport(username, chat.ChatName(), chat.IsInChat(username))
 
 	if res.Joined {
-		gotMessages, err := s.MessageDB.GetLastNMessages(c.ChatName(), config.C.LastMessages)
+		s.MessageDB.Lock()
+		gotMessages, err := s.MessageDB.GetLastNMessages(chat.ChatName(), config.C.LastMessages)
+		s.MessageDB.Unlock()
 		if err == nil {
 			res.Messages = gotMessages
 		}
-		res.Users = c.GetUsers()
+		res.Users = chat.GetUsers()
 	}
 
-	return res, nil
+	return res
 }

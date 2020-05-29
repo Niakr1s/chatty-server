@@ -15,6 +15,17 @@
 {"chat": "chat"}
 ```
 
+- ChatReport: contains info about chat for concrete user. If not joined - fields "messages" and "users" are empty.
+```json
+{
+    User,
+    Chat, 
+    "joined":true, 
+    "messages": [...Message],
+    "users": [...User]
+}
+```
+
 ## API
 
 #### /api/register
@@ -72,9 +83,13 @@ User
 #### /api/loggedonly/joinChat
 - Joins chat
 - Method: POST
- - Request:
+- Request:
 ```json
 Chat
+```
+- Response:
+```json
+ChatReport
 ```
 
 #### /api/loggedonly/leaveChat
@@ -90,12 +105,7 @@ Chat
 - Method: GET
 - Response:
 ```json
-[{
-    Chat, 
-    "joined":true, 
-    "messages": [...Message],
-    "users": [...User]
-}]
+[...ChatReport]
 ```
 
 #### /api/loggedonly/getLastMessages

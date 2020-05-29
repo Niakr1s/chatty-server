@@ -42,4 +42,11 @@ func (s *Server) JoinChat(w http.ResponseWriter, r *http.Request) {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return
 	}
+
+	report := s.dbStore.MakeChatReportForUser(username, chat)
+
+	if err := json.NewEncoder(w).Encode(report); err != nil {
+		httputil.WriteError(w, err, http.StatusInternalServerError)
+		return
+	}
 }
