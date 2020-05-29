@@ -72,7 +72,9 @@
 - Method: GET
 - Response:
 ```json
-[{"chat":"chat", "joined":true, "messages": [...Messages]}]
+[{"chat":"chat", "joined":true, "messages": [
+    {"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}
+]}]
 ```
 
 #### /api/loggedonly/getLastMessages
@@ -84,7 +86,7 @@
 ```
 - Response:
 ```json
-[...Messages]
+[{"user": "user", "chat": "chat", "id": "id", "text": "text", "time": "time"}]
 ```
 
 #### /api/loggedonly/postMessage
