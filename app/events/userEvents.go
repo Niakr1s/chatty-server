@@ -11,12 +11,12 @@ import (
 type UserEvent struct {
 	models.User
 	models.Chat
-	Time time.Time
+	Time models.UnixTime
 }
 
 // NewUserEvent ...
 func NewUserEvent(username string, chatname string, time time.Time) *UserEvent {
-	return &UserEvent{User: models.NewUser(username), Chat: models.NewChat(chatname), Time: time}
+	return &UserEvent{User: models.NewUser(username), Chat: models.NewChat(chatname), Time: models.UnixTime(time)}
 }
 
 func (ue *UserEvent) String() string {

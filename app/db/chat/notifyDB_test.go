@@ -18,13 +18,13 @@ func TestNotifyDB_notify(t *testing.T) {
 	memoryDB.Add(chatname) // shouldn't fire same event twice
 
 	createdE := (<-ch).(*events.ChatCreatedEvent)
-	assert.Equal(t, createdE.Chatname, chatname)
+	assert.Equal(t, createdE.ChatName, chatname)
 
 	memoryDB.Remove(chatname)
 	memoryDB.Remove(chatname) // shouldn't fire same event twice
 
 	removedE := (<-ch).(*events.ChatRemovedEvent)
-	assert.Equal(t, removedE.Chatname, chatname)
+	assert.Equal(t, removedE.ChatName, chatname)
 
 	select {
 	case <-ch:

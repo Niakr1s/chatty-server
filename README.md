@@ -15,6 +15,21 @@
 {"chat": "chat"}
 ```
 
+- Events
+* LoginEvent, LogoutEvent, ChatJoinEvent, ChatLeaveEvent
+```json
+{User, Chat, Time}
+```
+* MessageEvent
+```json
+{Message}
+```
+
+* ChatCreatedEvent, ChatRemovedEvent
+```json
+{Chat, Time}
+```
+
 - ChatReport: contains info about chat for concrete user. If not joined - fields "messages" and "users" are empty.
 ```json
 {
@@ -79,6 +94,10 @@ User
 #### /api/loggedonly/poll
 - Long poll for actions.
 - Method: GET
+- Response: Event
+```json
+{"type": "EventType", "event": Event}
+```
 
 #### /api/loggedonly/joinChat
 - Joins chat

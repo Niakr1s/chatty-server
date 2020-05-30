@@ -4,30 +4,22 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/niakr1s/chatty-server/app/er"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // ChatEvent ...
 type ChatEvent struct {
-	Chatname string
-	Time     time.Time
+	models.Chat
+	Time models.UnixTime
 }
 
 // NewChatEvent ...
 func NewChatEvent(chatname string, t time.Time) *ChatEvent {
-	return &ChatEvent{Chatname: chatname, Time: t}
-}
-
-// InChat ...
-func (ce *ChatEvent) InChat() (string, error) {
-	if ce.Chatname == "" {
-		return "", er.ErrGlobalEvent
-	}
-	return ce.Chatname, nil
+	return &ChatEvent{Chat: models.Chat{ChatName: chatname}, Time: models.UnixTime(t)}
 }
 
 func (ce *ChatEvent) String() string {
-	return fmt.Sprintf("chat: %s, time: %v", ce.Chatname, ce.Time)
+	return fmt.Sprintf("chat: %s, time: %v", ce.ChatName, ce.Time)
 }
 
 // ChatCreatedEvent ...
