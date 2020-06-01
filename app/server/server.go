@@ -100,7 +100,7 @@ func (s *Server) generateRoutePaths() {
 	apiRouter.Handle("/login", http.HandlerFunc(s.Login)).Methods(http.MethodPost, http.MethodOptions)
 
 	// /api/loggedonly
-	loggedRouter := s.router.PathPrefix("/loggedonly").Subrouter()
+	loggedRouter := apiRouter.PathPrefix("/loggedonly").Subrouter()
 	loggedRouter.Use(middleware.LoggedOnly(s.cookieStore, s.dbStore.LoggedDB))
 	loggedRouter.Handle("/login", http.HandlerFunc(s.AuthLogin)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/logout", http.HandlerFunc(s.Logout)).Methods(http.MethodPost, http.MethodOptions)
