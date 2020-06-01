@@ -88,14 +88,16 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) generateRoutePaths() {
-	// /api
-	s.router = s.router.PathPrefix("/api").Subrouter()
 	s.router.Use(middleware.Cors)
 	s.router.Use(middleware.Logger)
-	s.router.Handle("/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
-	s.router.Handle("/authorize", http.HandlerFunc(s.Authorize)).Methods(http.MethodPost, http.MethodOptions)
-	s.router.Handle("/verifyEmail/{username}/{activationToken}", http.HandlerFunc(s.VerifyEmail)).Methods(http.MethodGet, http.MethodOptions)
-	s.router.Handle("/login", http.HandlerFunc(s.Login)).Methods(http.MethodPost, http.MethodOptions)
+
+	// /api
+	apiRouter := s.router.PathPrefix("/api").Subrouter()
+
+	apiRouter.Handle("/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
+	apiRouter.Handle("/authorize", http.HandlerFunc(s.Authorize)).Methods(http.MethodPost, http.MethodOptions)
+	apiRouter.Handle("/verifyEmail/{username}/{activationToken}", http.HandlerFunc(s.VerifyEmail)).Methods(http.MethodGet, http.MethodOptions)
+	apiRouter.Handle("/login", http.HandlerFunc(s.Login)).Methods(http.MethodPost, http.MethodOptions)
 
 	// /api/loggedonly
 	loggedRouter := s.router.PathPrefix("/loggedonly").Subrouter()
@@ -110,4 +112,6 @@ func (s *Server) generateRoutePaths() {
 	loggedRouter.Handle("/getUsers", http.HandlerFunc(s.GetUsers)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/getLastMessages", http.HandlerFunc(s.GetLastMessages)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/postMessage", http.HandlerFunc(s.PostMessage)).Methods(http.MethodPost, http.MethodOptions)
+
+	s.router.PathPrefix("/").HandlerFunc(s.Static).Methods(http.MethodGet)
 }

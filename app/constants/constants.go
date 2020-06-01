@@ -8,3 +8,6 @@ const (
 	SessionUserName   = "userName"
 	SessionLoginToken = "loginToken"
 )
+
+// path for static files
+const StaticFilesPath = "static"
