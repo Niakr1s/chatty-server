@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -60,8 +61,13 @@ func init() {
 
 // NewDefaultConfig ...
 func NewDefaultConfig() *Config {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Infof("env port: %v", os.Getenv("PORT"))
 	return &Config{
-		ServerListenAddress:        "127.0.0.1:8080",
+		ServerListenAddress:        fmt.Sprintf(":%s", port),
 		CleanInactiveUsersInterval: duration{time.Second * 60},
 		InactivityTimeout:          duration{time.Second * 60},
 
