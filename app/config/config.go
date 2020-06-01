@@ -1,12 +1,18 @@
 package config
 
 import (
+	"flag"
+	"os"
 	"time"
 
 	"github.com/BurntSushi/toml"
 
 	log "github.com/sirupsen/logrus"
 )
+
+// CookieStoreSecretKey is key for Cookie store
+// provided by env arg SECRET_KEY
+var CookieStoreSecretKey string
 
 // Config ...
 type Config struct {
@@ -15,8 +21,7 @@ type Config struct {
 	CleanInactiveUsersInterval duration
 	InactivityTimeout          duration
 
-	CookieStoreSecretKey string
-	CookieMaxAge         int
+	CookieMaxAge int
 
 	RequestTimeout  duration
 	ResponseTimeout duration
@@ -30,16 +35,27 @@ type Config struct {
 // Config filename : "config.toml"
 var C *Config
 
-const configFilepath = "config.toml"
+var configFilepath = flag.String("config", "config.toml", "provide custom config path")
 
-func init() {
+// InitConfig inits Config and CookieStoreSecretKey.
+func InitConfig() {
 	C = new(Config)
 	C = NewDefaultConfig()
-	if _, err := toml.DecodeFile(configFilepath, C); err != nil {
-		log.Infof("couldn't load from %s: %v, initializing default config", configFilepath, err)
+	if _, err := toml.DecodeFile(*configFilepath, C); err != nil {
+		log.Warnf("couldn't load config: %v, initializing default config", configFilepath, err)
 	} else {
 		log.Infof("config file succesfully loaded from %s", configFilepath)
 	}
+
+	CookieStoreSecretKey = os.Getenv("SECRET_KEY")
+	if CookieStoreSecretKey == "" {
+		log.Warnf("Using default secret key, for security reasons provide it via env SECRET_KEY arg")
+		CookieStoreSecretKey = "1234567890"
+	}
+}
+
+func init() {
+	C = NewDefaultConfig()
 }
 
 // NewDefaultConfig ...
@@ -49,8 +65,7 @@ func NewDefaultConfig() *Config {
 		CleanInactiveUsersInterval: duration{time.Second * 60},
 		InactivityTimeout:          duration{time.Second * 60},
 
-		CookieStoreSecretKey: "1234567890",
-		CookieMaxAge:         60 * 60 * 24 * 7, // week
+		CookieMaxAge: 60 * 60 * 24 * 7, // week
 
 		RequestTimeout:  duration{time.Second * 15},
 		ResponseTimeout: duration{time.Second * 30},

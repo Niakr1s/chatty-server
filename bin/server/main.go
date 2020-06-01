@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/server"
 
 	log "github.com/sirupsen/logrus"
@@ -33,6 +34,7 @@ func logConfigure() {
 func main() {
 	flag.Parse()
 	logConfigure()
+	config.InitConfig()
 	rand.Seed(time.Now().UnixNano())
 
 	server := server.NewMemoryServer()
