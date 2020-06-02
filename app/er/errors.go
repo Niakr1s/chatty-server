@@ -1,6 +1,11 @@
 package er
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+
+	"github.com/niakr1s/chatty-server/app/constants"
+)
 
 // Chat DB errors
 var (
@@ -71,4 +76,9 @@ var (
 // Type errors
 var (
 	ErrConvertType = errors.New("couldn't convert type")
+)
+
+// Env errors
+var (
+	ErrEnvEmptySendGridAPIKey = fmt.Errorf("empty %s", constants.EnvSendGridAPIKey)
 )

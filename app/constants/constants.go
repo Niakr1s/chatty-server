@@ -11,3 +11,8 @@ const (
 
 // path for static files
 const StaticFilesPath = "static"
+
+// Env keys
+const (
+	EnvSendGridAPIKey = "SENDGRID_KEY"
+)
