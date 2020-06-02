@@ -37,6 +37,7 @@ func TestPostgreDB_StoreAndGetAndUpdate(t *testing.T) {
 
 	u := models.NewFullUser("user", "user1@example1.org", "12345")
 	u.GeneratePasswordHash()
+	u.ErasePassword()
 
 	err := db.Store(&u)
 	assert.NoError(t, err)
@@ -57,7 +58,5 @@ func TestPostgreDB_StoreAndGetAndUpdate(t *testing.T) {
 	storedU, err = db.Get("user")
 	assert.NoError(t, err)
 
-	assert.Equal(t, u.UserName, storedU.UserName)
-	assert.Equal(t, u.Address, storedU.Address)
-	assert.Equal(t, u.PasswordHash, storedU.PasswordHash)
+	assert.Equal(t, u, storedU)
 }
