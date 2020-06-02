@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/sessions v1.2.0
+	github.com/jackc/pgx/v4 v4.6.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/sirupsen/logrus v1.6.0
