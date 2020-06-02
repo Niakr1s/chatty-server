@@ -1,3 +1,16 @@
+## Flags
+
+- dev - dev or prod
+- configFilepath - filepath to config.toml file
+- logLevel - trace / debug / info
+
+## ENV variables
+
+- $PORT - just listen port, defaults to 8080
+- $DATABASE_URL - url to database in format of "postgres://127.0.0.1:5432"
+- $SECRET_KEY - it's key for cookie store, server using this store to store login data.
+- $SENDGRID_KEY - key for sendgrid.com, I'm using it as backend for sending emails.
+
 ## Common models
 
 - Message
