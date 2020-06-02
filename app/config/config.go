@@ -43,9 +43,9 @@ func InitConfig() {
 	C = new(Config)
 	C = NewDefaultConfig()
 	if _, err := toml.DecodeFile(*configFilepath, C); err != nil {
-		log.Warnf("couldn't load config: %v, initializing default config", configFilepath, err)
+		log.Warnf("couldn't load config: %v, initializing default config", err)
 	} else {
-		log.Infof("config file succesfully loaded from %s", configFilepath)
+		log.Infof("config file succesfully loaded from %s", *configFilepath)
 	}
 
 	CookieStoreSecretKey = os.Getenv("SECRET_KEY")
