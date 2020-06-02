@@ -11,7 +11,7 @@ type Pass struct {
 	PasswordHash string `json:"-" validate:"required"`
 }
 
-// GeneratePasswordHash ...
+// GeneratePasswordHash generates hash and removes password
 func (p *Pass) GeneratePasswordHash() error {
 	if p.Password == "" {
 		return er.ErrPasswordIsEmpty

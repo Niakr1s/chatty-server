@@ -37,7 +37,7 @@ func (s *Server) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 
 	u.Activated = true
 
-	if err = s.dbStore.UserDB.Update(&u); err != nil {
+	if err = s.dbStore.UserDB.Update(u); err != nil {
 		httputil.WriteError(w, er.ErrCannotUpdateUser, http.StatusInternalServerError)
 		return
 	}

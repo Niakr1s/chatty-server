@@ -19,7 +19,7 @@ func TestMemoryDB_Store(t *testing.T) {
 		db := NewMemoryDB()
 		u := GenerateMockFullUser(t)
 
-		err := db.Store(&u)
+		err := db.Store(u)
 		assert.NoError(t, err)
 	})
 
@@ -27,10 +27,10 @@ func TestMemoryDB_Store(t *testing.T) {
 		db := NewMemoryDB()
 		u1 := GenerateMockFullUser(t)
 
-		err := db.Store(&u1)
+		err := db.Store(u1)
 		assert.NoError(t, err)
 
-		err = db.Store(&u1)
+		err = db.Store(u1)
 		assert.Error(t, err)
 	})
 }
@@ -41,7 +41,7 @@ func TestMemoryDB_Get(t *testing.T) {
 	t.Run("simple get", func(t *testing.T) {
 		u := GenerateMockFullUser(t)
 
-		db.Store(&u)
+		db.Store(u)
 
 		gotU, err := db.Get(u.UserName)
 
