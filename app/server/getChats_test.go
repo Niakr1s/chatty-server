@@ -26,7 +26,7 @@ func TestServer_GetChats(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := NewMemoryServer()
+			s := newMockServer()
 			c, _ := s.dbStore.ChatDB.Add("chat")
 			s.dbStore.LoggedDB.Login(username)
 			c.AddUser(username)

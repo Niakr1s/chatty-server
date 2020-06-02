@@ -12,7 +12,7 @@ import (
 )
 
 func TestServer_Poll(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 
 	const chatname = "chat"
 	const username = "user"

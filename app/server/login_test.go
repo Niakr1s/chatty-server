@@ -15,7 +15,7 @@ import (
 )
 
 func TestServer_Login(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 
 	username := "user"
 
@@ -42,7 +42,7 @@ func TestServer_Login(t *testing.T) {
 }
 
 func TestServer_LoginSameUserTwice(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 
 	username := "user"
 

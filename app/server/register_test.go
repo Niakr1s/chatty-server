@@ -13,7 +13,7 @@ import (
 )
 
 func TestServer_Register(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 
 	tests := []struct {
 		name       string

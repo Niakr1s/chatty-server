@@ -41,7 +41,7 @@ func TestServer_PostMessage(t *testing.T) {
 			r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(b))
 			r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), tt.user))
 
-			s := NewMemoryServer()
+			s := newMockServer()
 			chat, _ := s.dbStore.ChatDB.Add(chatname)
 			chat.AddUser(username)
 

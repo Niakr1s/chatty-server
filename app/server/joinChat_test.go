@@ -67,7 +67,7 @@ func TestServer_JoinChat(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			s := NewMemoryServer()
+			s := newMockServer()
 			chat, _ := s.dbStore.ChatDB.Add(chatname)
 			chat.AddUser(username)
 

@@ -11,7 +11,7 @@ import (
 )
 
 func TestServer_AuthLogin(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 
 	type args struct {
 		w http.ResponseWriter

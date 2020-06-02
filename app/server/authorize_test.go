@@ -13,7 +13,7 @@ import (
 )
 
 func TestServer_Authorize(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 
 	storedUser := models.NewFullUser("user", "user@example.org", "password")
 	storedUser.GeneratePasswordHash()

@@ -15,7 +15,7 @@ import (
 )
 
 func TestServer_VerifyEmail(t *testing.T) {
-	s := NewMemoryServer()
+	s := newMockServer()
 	m := s.mailer.(*email.MockMailer)
 
 	u := models.NewFullUser("user", "user@example.com", "password")
