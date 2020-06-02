@@ -15,4 +15,5 @@ const StaticFilesPath = "static"
 // Env keys
 const (
 	EnvSendGridAPIKey = "SENDGRID_KEY"
+	EnvDatabaseURL    = "DATABASE_URL"
 )

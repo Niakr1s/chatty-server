@@ -81,4 +81,5 @@ var (
 // Env errors
 var (
 	ErrEnvEmptySendGridAPIKey = fmt.Errorf("empty %s", constants.EnvSendGridAPIKey)
+	ErrEnvEmptyDatabaseURL    = fmt.Errorf("empty %s", constants.EnvDatabaseURL)
 )
