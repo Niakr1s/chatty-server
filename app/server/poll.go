@@ -15,7 +15,10 @@ func (s *Server) Poll(w http.ResponseWriter, r *http.Request) {
 	username := sess.GetUserNameFromCtx(r.Context())
 
 	select {
-	case event := <-s.pool.GetUserChan(username):
+	case event, ok := <-s.pool.GetUserChan(username):
+		if !ok {
+			return
+		}
 		ewt := events.NewEventWithType(event)
 
 		if err := json.NewEncoder(w).Encode(ewt); err != nil {
