@@ -1,15 +1,19 @@
 package server
 
 import (
+	"context"
 	"net/http"
+	"os"
 
 	"github.com/niakr1s/chatty-server/app/config"
+	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/message"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
+	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/eventpool"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/niakr1s/chatty-server/app/server/middleware"
@@ -57,13 +61,50 @@ func NewServer(dbStore *db.Store, m email.Mailer) *Server {
 	return res
 }
 
-// NewMemoryServer ...
-func NewMemoryServer() *Server {
-	u := user.NewMemoryDB()
+// NewProdServer ...
+func NewProdServer(ctx context.Context) (*Server, error) {
+	url := os.Getenv(constants.EnvDatabaseURL)
+	if url == "" {
+		return nil, er.ErrEnvEmptyDatabaseURL
+	}
+	u, err := user.NewPostgreDB(ctx, url)
+	if err != nil {
+		return nil, err
+	}
 	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
 	m := message.NewMemoryDB()
-	return NewServer(db.NewStore(u, c, l, m), email.NewMockMailer())
+
+	mailer, err := email.NewSMTPMailer()
+	if err != nil {
+		return nil, err
+	}
+	return NewServer(db.NewStore(u, c, l, m), mailer), nil
+}
+
+// NewDevServer ...
+func NewDevServer(ctx context.Context) (*Server, error) {
+	url := os.Getenv(constants.EnvDatabaseURL)
+
+	var u db.UserDB
+	switch url {
+	case "":
+		log.Warnf("Provided empty env %s. It's ok, just using user.MemoryDB", constants.EnvDatabaseURL)
+		u = user.NewMemoryDB()
+	default:
+		var err error
+		u, err = user.NewPostgreDB(ctx, url)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	c := chat.NewMemoryDB()
+	l := logged.NewMemoryDB()
+	m := message.NewMemoryDB()
+
+	mailer := email.NewMockMailer()
+	return NewServer(db.NewStore(u, c, l, m), mailer), nil
 }
 
 // ListenAndServe ...
