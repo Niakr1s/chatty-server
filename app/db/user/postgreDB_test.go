@@ -39,7 +39,7 @@ func TestPostgreDB_StoreAndGetAndUpdate(t *testing.T) {
 	u.GeneratePasswordHash()
 	u.ErasePassword()
 
-	err := db.Store(&u)
+	err := db.Store(u)
 	assert.NoError(t, err)
 
 	storedU, err := db.Get("user")
@@ -52,7 +52,7 @@ func TestPostgreDB_StoreAndGetAndUpdate(t *testing.T) {
 	u.Address = "newemail@newaddres.org"
 	u.PasswordHash = "newPasswordHash"
 
-	err = db.Update(&u)
+	err = db.Update(u)
 	assert.NoError(t, err)
 
 	storedU, err = db.Get("user")
