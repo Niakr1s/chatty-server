@@ -65,7 +65,6 @@ func NewDefaultConfig() *Config {
 	if port == "" {
 		port = "8080"
 	}
-	log.Infof("env port: %v", os.Getenv("PORT"))
 	return &Config{
 		ServerListenAddress:        fmt.Sprintf(":%s", port),
 		CleanInactiveUsersInterval: duration{time.Second * 60},
