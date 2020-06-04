@@ -5,10 +5,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// UserDB is a sub db, that uses pool from DB.
+type UserDB struct {
+	p *DB
+}
+
 // Store ...
-func (d *DB) Store(u models.FullUser) error {
+func (d *UserDB) Store(u models.FullUser) error {
 	log.Tracef("PostgresDB: start storing %v", u)
-	if _, err := d.pool.Exec(d.ctx, `INSERT INTO users 
+	if _, err := d.p.pool.Exec(d.p.ctx, `INSERT INTO users 
 	("user", "email", "email_activation_token", "email_activated", "password_hash") 
 	VALUES ($1, $2, $3, $4, $5);`, u.UserName, u.Address, u.ActivationToken, u.Activated, u.PasswordHash); err != nil {
 		return err
@@ -18,8 +23,8 @@ func (d *DB) Store(u models.FullUser) error {
 }
 
 // Update ...
-func (d *DB) Update(u models.FullUser) error {
-	if _, err := d.pool.Exec(d.ctx, `UPDATE "users" 
+func (d *UserDB) Update(u models.FullUser) error {
+	if _, err := d.p.pool.Exec(d.p.ctx, `UPDATE "users" 
 	SET "user" = $1, "email" = $2, "email_activation_token" = $3, "email_activated" = $4, "password_hash" = $5
 	WHERE "user" = $1;`, u.UserName, u.Address, u.ActivationToken, u.Activated, u.PasswordHash); err != nil {
 		return err
@@ -28,10 +33,10 @@ func (d *DB) Update(u models.FullUser) error {
 }
 
 // Get ...
-func (d *DB) Get(username string) (models.FullUser, error) {
+func (d *UserDB) Get(username string) (models.FullUser, error) {
 	log.Tracef("PostgresDB: start getting %s", username)
 	res := models.FullUser{}
-	row := d.pool.QueryRow(d.ctx, `SELECT "user", "email", "email_activation_token", "email_activated", "password_hash" 
+	row := d.p.pool.QueryRow(d.p.ctx, `SELECT "user", "email", "email_activation_token", "email_activated", "password_hash" 
 	FROM "users" WHERE "user" = $1;`, username)
 	if err := row.Scan(&res.UserName, &res.Address, &res.ActivationToken, &res.Activated, &res.PasswordHash); err != nil {
 		return res, err

@@ -12,8 +12,10 @@ func TestDB_StoreAndGetAndUpdate(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	db, _ := NewDB(ctx, testConnStr)
-	clearDB(t, db)
+	parentDB, _ := NewDB(ctx, testConnStr)
+	clearDB(t, parentDB)
+
+	db := parentDB.GetUserDB()
 
 	u := models.NewFullUser("user", "user1@example1.org", "12345")
 	u.GeneratePasswordHash()
