@@ -68,7 +68,7 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if url == "" {
 		return nil, er.ErrEnvEmptyDatabaseURL
 	}
-	u, err := postgres.NewPostgreDB(ctx, url)
+	u, err := postgres.NewDB(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		log.Warnf("Provided empty env %s. It's ok, just using user.MemoryDB", constants.EnvDatabaseURL)
 		u = user.NewMemoryDB()
 	default:
-		uPostgres, err := postgres.NewPostgreDB(ctx, url)
+		uPostgres, err := postgres.NewDB(ctx, url)
 		if err != nil {
 			return nil, err
 		}

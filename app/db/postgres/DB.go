@@ -8,15 +8,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// PostgreDB ...
-type PostgreDB struct {
+// DB ...
+type DB struct {
 	ctx context.Context
 
 	pool *pgxpool.Pool
 }
 
-// NewPostgreDB ...
-func NewPostgreDB(ctx context.Context, connStr string) (*PostgreDB, error) {
+// NewDB ...
+func NewDB(ctx context.Context, connStr string) (*DB, error) {
 	cfg, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
 		return nil, err
@@ -26,13 +26,13 @@ func NewPostgreDB(ctx context.Context, connStr string) (*PostgreDB, error) {
 		return nil, err
 	}
 
-	log.Infof("PostgreDB: connected to %s sucsessfully", connStr)
-	return &PostgreDB{ctx: ctx, pool: pool}, nil
+	log.Infof("PostgresDB: connected to %s sucsessfully", connStr)
+	return &DB{ctx: ctx, pool: pool}, nil
 }
 
 // ApplyMigrations applies migrations from dir to create valid tables.
 // First naiive impl, applies all migrations from folder, step by step.
-func (d *PostgreDB) ApplyMigrations(migrationsDir string) error {
+func (d *DB) ApplyMigrations(migrationsDir string) error {
 	migr, err := migrations.GetMigrations(migrationsDir)
 	if err != nil {
 		return err

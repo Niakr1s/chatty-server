@@ -8,12 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPostgreDB_StoreAndGetAndUpdate(t *testing.T) {
+func TestDB_StoreAndGetAndUpdate(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	db, _ := NewPostgreDB(ctx, testConnStr)
-	clearPostgreDB(t, db)
+	db, _ := NewDB(ctx, testConnStr)
+	clearDB(t, db)
 
 	u := models.NewFullUser("user", "user1@example1.org", "12345")
 	u.GeneratePasswordHash()
