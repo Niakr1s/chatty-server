@@ -15,7 +15,7 @@ func TestDB_StoreAndGetAndUpdate(t *testing.T) {
 	parentDB, _ := NewDB(ctx, testConnStr)
 	clearDB(t, parentDB)
 
-	db := parentDB.GetUserDB()
+	db := NewUserDB(parentDB)
 
 	u := models.NewFullUser("user", "user1@example1.org", "12345")
 	u.GeneratePasswordHash()

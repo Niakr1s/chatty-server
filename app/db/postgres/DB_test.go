@@ -9,13 +9,13 @@ import (
 
 const testConnStr = "postgres://localhost:5432/users"
 
-func TestNewDB(t *testing.T) {
+func newTestDB(t *testing.T) (*DB, func()) {
+	t.Helper()
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
-	_, err := NewDB(ctx, testConnStr)
-
+	db, err := NewDB(ctx, testConnStr)
 	assert.NoError(t, err)
+	return db, cancel
 }
 
 func clearDB(t *testing.T, db *DB) {
