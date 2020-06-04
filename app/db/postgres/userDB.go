@@ -10,6 +10,11 @@ type UserDB struct {
 	p *DB
 }
 
+// NewUserDB constructs ChatDB with parent DB
+func NewUserDB(p *DB) *UserDB {
+	return &UserDB{p: p}
+}
+
 // Store ...
 func (d *UserDB) Store(u models.FullUser) error {
 	log.Tracef("PostgresDB: start storing %v", u)

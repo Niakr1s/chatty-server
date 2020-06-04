@@ -30,11 +30,6 @@ func NewDB(ctx context.Context, connStr string) (*DB, error) {
 	return &DB{ctx: ctx, pool: pool}, nil
 }
 
-// GetUserDB ...
-func (d *DB) GetUserDB() *UserDB {
-	return &UserDB{p: d}
-}
-
 // ApplyMigrations applies migrations from dir to create valid tables.
 // First naiive impl, applies all migrations from folder, step by step.
 func (d *DB) ApplyMigrations(migrationsDir string) error {
