@@ -14,8 +14,6 @@ type MemoryChat struct {
 
 	Name  string
 	users map[string]struct{}
-
-	notifyCh chan<- events.Event
 }
 
 // NewMemoryChat ...
