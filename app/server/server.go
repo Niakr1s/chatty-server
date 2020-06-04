@@ -75,7 +75,10 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if err := postgresDB.ApplyMigrations(constants.MigrationsDir); err != nil {
 		log.Infof("PostgresDB: no valid migrations found in dir %s, reason: %v", constants.MigrationsDir, err)
 	}
-	c := chat.NewMemoryDB()
+	u := postgres.NewUserDB(postgresDB)
+	c := postgres.NewChatDB(postgresDB)
+	c.LoadChatsFromPostgres()
+
 	l := logged.NewMemoryDB()
 	m := message.NewMemoryDB()
 
@@ -83,7 +86,7 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewServer(db.NewStore(postgresDB.GetUserDB(), c, l, m), mailer), nil
+	return NewServer(db.NewStore(u, c, l, m), mailer), nil
 }
 
 // NewDevServer ...
@@ -91,10 +94,12 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 	url := os.Getenv(constants.EnvDatabaseURL)
 
 	var u db.UserDB
+	var c db.ChatDB
 	switch url {
 	case "":
 		log.Warnf("Provided empty env %s. It's ok, just using user.MemoryDB", constants.EnvDatabaseURL)
 		u = user.NewMemoryDB()
+		c = chat.NewMemoryDB()
 	default:
 		postgresDB, err := postgres.NewDB(ctx, url)
 		if err != nil {
@@ -103,10 +108,12 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		if err := postgresDB.ApplyMigrations(constants.MigrationsDir); err != nil {
 			log.Infof("PostgresDB: no migrations found in dir %s, reason: %v", constants.MigrationsDir, err)
 		}
-		u = postgresDB.GetUserDB()
+		u = postgres.NewUserDB(postgresDB)
+		cp := postgres.NewChatDB(postgresDB)
+		cp.LoadChatsFromPostgres()
+		c = cp
 	}
 
-	c := chat.NewMemoryDB()
 	l := logged.NewMemoryDB()
 	m := message.NewMemoryDB()
 

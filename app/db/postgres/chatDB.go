@@ -19,6 +19,24 @@ func NewChatDB(p *DB) *ChatDB {
 	return &ChatDB{p: p, MemoryDB: chat.NewMemoryDB()}
 }
 
+// LoadChatsFromPostgres loads chats from postgres
+func (d *ChatDB) LoadChatsFromPostgres() {
+	rows, err := d.p.pool.Query(d.p.ctx, `SELECT "chat" FROM "chats" ORDER BY "chat" ASC;`)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	var s string
+	for rows.Next() {
+		err := rows.Scan(&s)
+		if err != nil || s == "" {
+			return
+		}
+		d.Add(s)
+	}
+}
+
 // Add ...
 // if err == ErrChatAlreadyExists, returned *Chat must be valid
 func (d *ChatDB) Add(chatname string) (db.Chat, error) {

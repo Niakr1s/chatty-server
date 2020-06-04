@@ -1,11 +1,14 @@
 package postgres
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+// I made everything in one test, because of concurrency.
+// TODO: search internet and refactor it via mock or something else.
 func TestChatDB_Add(t *testing.T) {
 	const chatname = "chat"
 	parentDB, cancel := newTestDB(t)
@@ -31,4 +34,18 @@ func TestChatDB_Add(t *testing.T) {
 
 	err = chatDB.Remove(chatname)
 	assert.Error(t, err)
+
+	clearDB(t, parentDB)
+
+	for i := 0; i < 10; i++ {
+		cn := fmt.Sprintf("chat%d", i)
+		chatDB.Add(cn)
+		// removing chats from memory
+		chatDB.MemoryDB.Remove(cn)
+	}
+	assert.Empty(t, chatDB.MemoryDB.GetChats())
+
+	chatDB.LoadChatsFromPostgres()
+
+	assert.Len(t, chatDB.GetChats(), 10)
 }
