@@ -17,3 +17,7 @@ const (
 	EnvSendGridAPIKey = "SENDGRID_KEY"
 	EnvDatabaseURL    = "DATABASE_URL"
 )
+
+const (
+	MigrationsDir = "migrations"
+)

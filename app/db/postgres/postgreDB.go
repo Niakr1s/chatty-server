@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/niakr1s/chatty-server/app/internal/migrations"
 	"github.com/niakr1s/chatty-server/app/models"
 	log "github.com/sirupsen/logrus"
 )
@@ -15,16 +16,6 @@ type PostgreDB struct {
 	pool *pgxpool.Pool
 }
 
-// CreateTableCmd ...
-var CreateTableCmd = `CREATE TABLE IF NOT EXISTS users (
-	"id" SERIAL PRIMARY KEY,
-	"user" VARCHAR(50) NOT NULL UNIQUE,
-	"email" VARCHAR(50) NOT NULL UNIQUE,
-	"email_activation_token" VARCHAR(50) NOT NULL,
-	"email_activated" BOOLEAN NOT NULL DEFAULT FALSE,
-	"password_hash" VARCHAR(255) NOT NULL
-);`
-
 // NewPostgreDB ...
 func NewPostgreDB(ctx context.Context, connStr string) (*PostgreDB, error) {
 	cfg, err := pgxpool.ParseConfig(connStr)
@@ -35,11 +26,24 @@ func NewPostgreDB(ctx context.Context, connStr string) (*PostgreDB, error) {
 	if err != nil {
 		return nil, err
 	}
-	// creating our table
-	if _, err := pool.Exec(ctx, CreateTableCmd); err != nil {
-		return nil, err
-	}
+
 	return &PostgreDB{ctx: ctx, pool: pool}, nil
+}
+
+// ApplyMigrations applies migrations from dir to create valid tables.
+// First naiive impl, applies all migrations from folder, step by step.
+func (d *PostgreDB) ApplyMigrations(migrationsDir string) error {
+	migr, err := migrations.GetMigrations(migrationsDir)
+	if err != nil {
+		return err
+	}
+	for _, m := range migr {
+		if _, err := d.pool.Exec(d.ctx, m.Contents); err != nil {
+			return err
+		}
+	}
+	log.Infof("PostgresDB: %d migrations from dir %s applied succesfully", len(migr), migrationsDir)
+	return nil
 }
 
 // Store ...
