@@ -11,6 +11,7 @@ import (
 	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/message"
+	"github.com/niakr1s/chatty-server/app/db/postgres"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
 	"github.com/niakr1s/chatty-server/app/er"
@@ -67,7 +68,7 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if url == "" {
 		return nil, er.ErrEnvEmptyDatabaseURL
 	}
-	u, err := user.NewPostgreDB(ctx, url)
+	u, err := postgres.NewPostgreDB(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +94,7 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		u = user.NewMemoryDB()
 	default:
 		var err error
-		u, err = user.NewPostgreDB(ctx, url)
+		u, err = postgres.NewPostgreDB(ctx, url)
 		if err != nil {
 			return nil, err
 		}
