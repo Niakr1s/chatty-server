@@ -27,6 +27,7 @@ func NewPostgreDB(ctx context.Context, connStr string) (*PostgreDB, error) {
 		return nil, err
 	}
 
+	log.Infof("PostgreDB: connected to %s sucsessfully", connStr)
 	return &PostgreDB{ctx: ctx, pool: pool}, nil
 }
 
