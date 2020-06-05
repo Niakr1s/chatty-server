@@ -78,9 +78,9 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	u := postgres.NewUserDB(postgresDB)
 	c := postgres.NewChatDB(postgresDB)
 	c.LoadChatsFromPostgres()
+	m := postgres.NewMessageDB(postgresDB)
 
 	l := logged.NewMemoryDB()
-	m := message.NewMemoryDB()
 
 	mailer, err := email.NewSMTPMailer()
 	if err != nil {
@@ -95,11 +95,13 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 
 	var u db.UserDB
 	var c db.ChatDB
+	var m db.MessageDB
 	switch url {
 	case "":
 		log.Warnf("Provided empty env %s. It's ok, just using user.MemoryDB", constants.EnvDatabaseURL)
 		u = user.NewMemoryDB()
 		c = chat.NewMemoryDB()
+		m = message.NewMemoryDB()
 	default:
 		postgresDB, err := postgres.NewDB(ctx, url)
 		if err != nil {
@@ -112,10 +114,10 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		cp := postgres.NewChatDB(postgresDB)
 		cp.LoadChatsFromPostgres()
 		c = cp
+		m = postgres.NewMessageDB(postgresDB)
 	}
 
 	l := logged.NewMemoryDB()
-	m := message.NewMemoryDB()
 
 	mailer := email.NewMockMailer()
 	return NewServer(db.NewStore(u, c, l, m), mailer), nil
