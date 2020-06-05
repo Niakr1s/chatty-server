@@ -59,3 +59,19 @@ func TestServer_LoginSameUserTwice(t *testing.T) {
 	s.Login(w, r)
 	assert.NotEqual(t, http.StatusOK, w.Code)
 }
+
+func TestServer_CannotLoginAsVerifiedUser(t *testing.T) {
+	s := newMockServer()
+
+	username := "user"
+
+	s.dbStore.UserDB.Store(models.FullUser{User: models.User{UserName: username}, Email: models.Email{Activated: true}})
+
+	u := models.User{UserName: username}
+	b, _ := json.Marshal(u)
+
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(b))
+	s.Login(w, r)
+	assert.NotEqual(t, http.StatusOK, w.Code)
+}
