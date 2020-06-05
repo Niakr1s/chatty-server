@@ -20,6 +20,6 @@ func (m *MockMailer) SendMail(email string, user string, activationToken string)
 	m.User = user
 	m.ActivationToken = activationToken
 
-	log.Debugf("activation link: /api/verifyEmail/%s/%s", user, activationToken)
+	log.Infof("activation link: /api/verifyEmail/%s/%s", user, activationToken)
 	return nil
 }
