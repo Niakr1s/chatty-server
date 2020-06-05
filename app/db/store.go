@@ -50,10 +50,13 @@ func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 		if err == nil {
 			res.Messages = gotMessages
 		}
+		verifiedCache := map[string]bool{}
 		res.Users = chat.GetUsers()
 		for _, m := range res.Messages {
-			// TODO: maybe it will be very slow
-			m.Verified = IsUserVerified(s.UserDB, m.UserName)
+			if _, ok := verifiedCache[m.UserName]; !ok {
+				verifiedCache[m.UserName] = IsUserVerified(s.UserDB, m.UserName)
+			}
+			m.Verified = verifiedCache[m.UserName]
 		}
 	}
 
