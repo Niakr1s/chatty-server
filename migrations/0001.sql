@@ -1,0 +1,1 @@
+ALTER TABLE messages ADD column IF NOT EXISTS "verified" BOOLEAN;

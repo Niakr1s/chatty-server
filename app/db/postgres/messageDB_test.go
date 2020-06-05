@@ -25,6 +25,7 @@ func TestMessageDB(t *testing.T) {
 	for i := range messages {
 		messages[i] = models.NewMessage("user", "hello", "main")
 		m := messages[i]
+		m.Verified = true
 		err := messageDB.postWithUserID(messages[i], 1)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, m.ID)
@@ -45,6 +46,7 @@ func TestMessageDB(t *testing.T) {
 		assert.Equal(t, m.UserName, lastM.UserName)
 		assert.Equal(t, m.Text, lastM.Text)
 		assert.Equal(t, m.ChatName, lastM.ChatName)
+		assert.Equal(t, m.Verified, lastM.Verified)
 
 		assert.Equal(t, time.Time(m.Time).Year(), time.Time(lastM.Time).Year())
 		assert.Equal(t, time.Time(m.Time).Month(), time.Time(lastM.Time).Month())
