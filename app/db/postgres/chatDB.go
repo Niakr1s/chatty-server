@@ -44,6 +44,8 @@ func (d *ChatDB) Add(chatname string) (db.Chat, error) {
 	// we are trusting MemoryDB, so if added - adding it into postgres
 	if err == nil {
 		if _, err := d.p.pool.Exec(d.p.ctx, `INSERT INTO "chats" ("chat") VALUES ($1) ON CONFLICT DO NOTHING;`, chatname); err != nil {
+			// restoring state in case sql problem
+			d.MemoryDB.Remove(chatname)
 			return res, err
 		}
 	}
@@ -60,6 +62,8 @@ func (d *ChatDB) Remove(chatname string) error {
 	err := d.MemoryDB.Remove(chatname)
 	if err == nil {
 		if _, err := d.p.pool.Exec(d.p.ctx, `DELETE FROM "chats" WHERE "chat"=$1;`, chatname); err != nil {
+			// restoring state in case sql problem
+			d.MemoryDB.Add(chatname)
 			return err
 		}
 	}
