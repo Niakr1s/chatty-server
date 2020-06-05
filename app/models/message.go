@@ -16,6 +16,9 @@ type Message struct {
 	ID   int      `json:"id"`
 	Text string   `json:"text" validate:"required"`
 	Time UnixTime `json:"time"`
+
+	// Status of user, posted this message.
+	Verified bool `json:"verified"`
 }
 
 // NewMessage constructs message with Time=time.Now().UTC()

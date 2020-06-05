@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
@@ -46,6 +47,8 @@ func (s *Server) PostMessage(w http.ResponseWriter, r *http.Request) {
 
 	s.dbStore.MessageDB.Lock()
 	defer s.dbStore.MessageDB.Unlock()
+
+	mess.Verified = db.IsUserVerified(s.dbStore.UserDB, mess.UserName)
 
 	err = s.dbStore.MessageDB.Post(mess)
 	if err != nil {

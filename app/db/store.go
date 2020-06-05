@@ -51,6 +51,10 @@ func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 			res.Messages = gotMessages
 		}
 		res.Users = chat.GetUsers()
+		for _, m := range res.Messages {
+			// TODO: maybe it will be very slow
+			m.Verified = IsUserVerified(s.UserDB, m.UserName)
+		}
 	}
 
 	return res
