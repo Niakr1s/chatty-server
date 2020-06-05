@@ -13,10 +13,10 @@ func TestUnixTime_ToSQLTimeStamp(t *testing.T) {
 		name string
 		t    time.Time
 	}{
-		{"now", time.Now()},
-		{"now+6", time.Now().Add(time.Hour * 6)},
-		{"now+12", time.Now().Add(time.Hour * 12)},
-		{"now+18", time.Now().Add(time.Hour * 18)},
+		{"now", time.Now().UTC()},
+		{"now+6", time.Now().UTC().Add(time.Hour * 6)},
+		{"now+12", time.Now().UTC().Add(time.Hour * 12)},
+		{"now+18", time.Now().UTC().Add(time.Hour * 18)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

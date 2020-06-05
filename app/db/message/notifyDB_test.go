@@ -14,7 +14,7 @@ func TestNotifyDB_notify(t *testing.T) {
 
 	db := NewMemoryDB().WithNotifyCh(ch)
 
-	msg := models.NewMessage(username, text, chatname).WithTime(time.Now())
+	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 
 	for i := 0; i < 3; i++ {
 		db.Post(msg)

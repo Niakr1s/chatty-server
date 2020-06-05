@@ -33,7 +33,7 @@ func (d *MemoryDB) Post(msg *models.Message) error {
 	chat := d.chats[msg.ChatName]
 
 	msg.ID = len(chat) + 1
-	msg.Time = models.UnixTime(time.Now())
+	msg.Time = models.UnixTime(time.Now().UTC())
 
 	chat = append(chat, msg)
 	d.chats[msg.ChatName] = chat

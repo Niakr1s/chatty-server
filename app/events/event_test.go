@@ -16,9 +16,9 @@ func TestNewEventWithType(t *testing.T) {
 		e            Event
 		expectedType string
 	}{
-		{NewLoginEvent(user, chat, time.Now()), "LoginEvent"},
-		{NewLogoutEvent(user, chat, time.Now()), "LogoutEvent"},
-		{NewChatEvent(chat, time.Now()), "ChatEvent"},
+		{NewLoginEvent(user, chat, time.Now().UTC()), "LoginEvent"},
+		{NewLogoutEvent(user, chat, time.Now().UTC()), "LogoutEvent"},
+		{NewChatEvent(chat, time.Now().UTC()), "ChatEvent"},
 	}
 
 	for _, tt := range testCases {

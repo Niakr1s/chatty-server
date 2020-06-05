@@ -33,13 +33,13 @@ func Logger(h http.Handler) http.Handler {
 
 		withCodeW := NewResponseWithCode(w)
 
-		start := time.Now()
+		start := time.Now().UTC()
 
 		h.ServeHTTP(withCodeW, r)
 
 		if strings.Contains(url.String(), "keepalive") {
 			return
 		}
-		log.Tracef("%s: %s => %d %s, %dms", method, url, withCodeW.Code, http.StatusText(withCodeW.Code), time.Now().Sub(start).Milliseconds())
+		log.Tracef("%s: %s => %d %s, %dms", method, url, withCodeW.Code, http.StatusText(withCodeW.Code), time.Now().UTC().Sub(start).Milliseconds())
 	})
 }

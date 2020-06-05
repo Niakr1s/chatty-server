@@ -44,7 +44,7 @@ func (d *NotifyDB) Add(chatname string) (db.Chat, error) {
 	// converting chat to notifyChat
 	c = NewNotifyChat(c, d.notifyCh)
 
-	d.notifyChatCreated(chatname, time.Now())
+	d.notifyChatCreated(chatname, time.Now().UTC())
 
 	return c, nil
 }
@@ -66,7 +66,7 @@ func (d *NotifyDB) Remove(chatname string) error {
 		return err
 	}
 
-	d.notifyChatRemoved(chatname, time.Now())
+	d.notifyChatRemoved(chatname, time.Now().UTC())
 
 	return nil
 }

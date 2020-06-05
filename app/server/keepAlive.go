@@ -22,5 +22,5 @@ func (s *Server) KeepAlive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u.LastActivity = time.Now()
+	u.LastActivity = time.Now().UTC()
 }

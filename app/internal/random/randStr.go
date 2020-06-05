@@ -26,7 +26,7 @@ type RandStrGenerator struct {
 // NewRandStrGenerator ...
 func NewRandStrGenerator() *RandStrGenerator {
 	res := &RandStrGenerator{}
-	res.r = rand.New(rand.NewSource(time.Now().UnixNano()))
+	res.r = rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
 	return res
 }
 

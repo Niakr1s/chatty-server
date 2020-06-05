@@ -8,7 +8,8 @@ import (
 	"github.com/niakr1s/chatty-server/app/internal/validator"
 )
 
-// Message ...
+// Message is representation of message.
+// Time must contain UTC time, not local.
 type Message struct {
 	User
 	Chat
@@ -17,9 +18,11 @@ type Message struct {
 	Time UnixTime `json:"time"`
 }
 
-// NewMessage ...
+// NewMessage constructs message with Time=time.Now().UTC()
 func NewMessage(username, text, chat string) *Message {
-	return &Message{User: User{UserName: username}, Text: text, Chat: Chat{ChatName: chat}, Time: UnixTime(time.Now())}
+	return &Message{User: User{UserName: username},
+		Text: text, Chat: Chat{ChatName: chat},
+		Time: UnixTime(time.Now().UTC())}
 }
 
 // WithTime ...
@@ -30,7 +33,7 @@ func (m *Message) WithTime(t time.Time) *Message {
 
 // ValidateBeforeStoring ...
 func (m *Message) ValidateBeforeStoring() error {
-	if time.Now().Sub(time.Time(m.Time)) > time.Minute {
+	if time.Now().UTC().Sub(time.Time(m.Time)) > time.Minute {
 		return er.ErrTooOld
 	}
 	return validator.Validate.Struct(*m)

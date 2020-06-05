@@ -41,7 +41,7 @@ func (d *NotifyDB) Logout(username string) error {
 		return err
 	}
 
-	d.notifyLogout(username, time.Now())
+	d.notifyLogout(username, time.Now().UTC())
 
 	return nil
 }

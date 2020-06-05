@@ -103,7 +103,7 @@ func TestPool_ProcessLogoutEvent(t *testing.T) {
 
 	assert.Len(t, p.userCh, 1)
 
-	logoutEvent := events.NewLogoutEvent(username, "", time.Now())
+	logoutEvent := events.NewLogoutEvent(username, "", time.Now().UTC())
 
 	p.processLogoutEvent(logoutEvent)
 

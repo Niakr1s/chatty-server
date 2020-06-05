@@ -41,7 +41,7 @@ func cleanInactiveUsers(d LoggedDB, inactivityTimeout time.Duration) {
 	defer d.Unlock()
 
 	users := d.GetLoggedUsers()
-	now := time.Now()
+	now := time.Now().UTC()
 	for _, username := range users {
 		user, err := d.Get(username)
 		if err != nil {

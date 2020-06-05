@@ -21,27 +21,27 @@ func TestMessage_ValidateBeforeStoring(t *testing.T) {
 	}{
 		{
 			"valid message",
-			NewMessage(username, text, chat).WithTime(time.Now()),
+			NewMessage(username, text, chat).WithTime(time.Now().UTC()),
 			false,
 		},
 		{
 			"old message",
-			NewMessage(username, text, chat).WithTime(time.Now().Add(-time.Hour * 24)),
+			NewMessage(username, text, chat).WithTime(time.Now().UTC().Add(-time.Hour * 24)),
 			true,
 		},
 		{
 			"empty user",
-			NewMessage("", text, chat).WithTime(time.Now()),
+			NewMessage("", text, chat).WithTime(time.Now().UTC()),
 			true,
 		},
 		{
 			"empty text",
-			NewMessage(username, "", chat).WithTime(time.Now()),
+			NewMessage(username, "", chat).WithTime(time.Now().UTC()),
 			true,
 		},
 		{
 			"empty chat",
-			NewMessage(username, text, "").WithTime(time.Now()),
+			NewMessage(username, text, "").WithTime(time.Now().UTC()),
 			true,
 		},
 	}

@@ -27,7 +27,7 @@ func (c *NotifyChat) AddUser(username string) error {
 		return err
 	}
 
-	c.notifyUserJoined(username, c.Chat.ChatName(), time.Now())
+	c.notifyUserJoined(username, c.Chat.ChatName(), time.Now().UTC())
 
 	return nil
 }
@@ -40,7 +40,7 @@ func (c *NotifyChat) RemoveUser(username string) error {
 		return err
 	}
 
-	c.notifyUserLeaved(username, c.Chat.ChatName(), time.Now())
+	c.notifyUserLeaved(username, c.Chat.ChatName(), time.Now().UTC())
 
 	return nil
 }

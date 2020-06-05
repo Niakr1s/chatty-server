@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/models"
+	log "github.com/sirupsen/logrus"
 )
 
 // MessageDB is db.MessageDB impl
@@ -25,7 +26,7 @@ func (d *MessageDB) Post(m *models.Message) error {
 	if err != nil {
 		id = -1
 	}
-	m = m.WithTime(time.Now())
+	m = m.WithTime(time.Now().UTC())
 	return d.postWithUserID(m, id)
 }
 
@@ -60,7 +61,7 @@ func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message,
 		if err != nil {
 			return nil, err
 		}
-		t = t.Local()
+		log.Tracef("GetLastNMessages: Got time %v", t)
 		m = m.WithTime(t)
 		m.ChatName = chatname
 		res = append(res, m)

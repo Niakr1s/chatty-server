@@ -18,7 +18,7 @@ const (
 func TestMemoryDB_Post(t *testing.T) {
 	db := NewMemoryDB()
 
-	msg := models.NewMessage(username, text, chatname).WithTime(time.Now())
+	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 	assert.Equal(t, msg.ID, 0)
 
 	err := db.Post(msg)
@@ -30,7 +30,7 @@ func TestMemoryDB_Post(t *testing.T) {
 func TestMemoryDB_GetLastNMessages(t *testing.T) {
 	db := NewMemoryDB()
 
-	msg := models.NewMessage(username, text, chatname).WithTime(time.Now())
+	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 
 	for i := 0; i < 10; i++ {
 		db.Post(msg)

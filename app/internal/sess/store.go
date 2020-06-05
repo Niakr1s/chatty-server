@@ -12,7 +12,7 @@ import (
 // InitStoreFromTimeNow ...
 func InitStoreFromTimeNow() *sessions.CookieStore {
 	return sessions.NewCookieStore([]byte(
-		fmt.Sprintf("%d", rand.New(rand.NewSource(time.Now().UnixNano())).Uint64())))
+		fmt.Sprintf("%d", rand.New(rand.NewSource(time.Now().UTC().UnixNano())).Uint64())))
 }
 
 // InitStoreFromConfig ...

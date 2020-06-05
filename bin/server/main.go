@@ -39,7 +39,7 @@ func main() {
 	flag.Parse()
 	logConfigure()
 	config.InitConfig()
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UTC().UnixNano())
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
