@@ -10,9 +10,12 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceRoot}/bin/server",
-            "env": {},
+            "env": {
+                "DATABASE_URL": "postgres://localhost:5432/users"
+            },
             "args": [
-                "-loglevel=trace"
+                "-loglevel=trace",
+                "-dev"
             ]
         }
     ]
