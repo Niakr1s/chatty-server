@@ -1,4 +1,4 @@
-package message
+package memory
 
 import (
 	"testing"
@@ -9,14 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	username = "user"
-	text     = "text"
-	chatname = "chat"
-)
-
-func TestMemoryDB_Post(t *testing.T) {
-	db := NewMemoryDB()
+func TestMessageDB_Post(t *testing.T) {
+	db := NewMessageDB()
 
 	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 	assert.Equal(t, msg.ID, 0)
@@ -27,8 +21,8 @@ func TestMemoryDB_Post(t *testing.T) {
 	assert.Equal(t, msg.ID, 1)
 }
 
-func TestMemoryDB_GetLastNMessages(t *testing.T) {
-	db := NewMemoryDB()
+func TestMessageDB_GetLastNMessages(t *testing.T) {
+	db := NewMessageDB()
 
 	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 

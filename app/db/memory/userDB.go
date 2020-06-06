@@ -1,4 +1,4 @@
-package user
+package memory
 
 import (
 	"sync"
@@ -7,20 +7,20 @@ import (
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
-// MemoryDB ...
-type MemoryDB struct {
+// UserDB ...
+type UserDB struct {
 	sync.RWMutex
 
 	users map[string]models.FullUser
 }
 
-// NewMemoryDB ...
-func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{users: make(map[string]models.FullUser)}
+// NewUserDB ...
+func NewUserDB() *UserDB {
+	return &UserDB{users: make(map[string]models.FullUser)}
 }
 
 // Store ...
-func (d *MemoryDB) Store(u models.FullUser) error {
+func (d *UserDB) Store(u models.FullUser) error {
 	d.Lock()
 	defer d.Unlock()
 
@@ -33,7 +33,7 @@ func (d *MemoryDB) Store(u models.FullUser) error {
 }
 
 // Update ...
-func (d *MemoryDB) Update(u models.FullUser) error {
+func (d *UserDB) Update(u models.FullUser) error {
 	d.Lock()
 	defer d.Unlock()
 
@@ -42,7 +42,7 @@ func (d *MemoryDB) Update(u models.FullUser) error {
 }
 
 // Get ...
-func (d *MemoryDB) Get(username string) (models.FullUser, error) {
+func (d *UserDB) Get(username string) (models.FullUser, error) {
 	d.RLock()
 	defer d.RUnlock()
 

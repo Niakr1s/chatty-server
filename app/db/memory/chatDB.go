@@ -1,4 +1,4 @@
-package chat
+package memory
 
 import (
 	"sync"
@@ -7,31 +7,31 @@ import (
 	"github.com/niakr1s/chatty-server/app/er"
 )
 
-// MemoryDB ...
-type MemoryDB struct {
+// ChatDB ...
+type ChatDB struct {
 	sync.Mutex
 
 	chats map[string]db.Chat
 }
 
-// NewMemoryDB ...
-func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{chats: make(map[string]db.Chat)}
+// NewChatDB ...
+func NewChatDB() *ChatDB {
+	return &ChatDB{chats: make(map[string]db.Chat)}
 }
 
 // Add ...
-func (d *MemoryDB) Add(chatname string) (db.Chat, error) {
+func (d *ChatDB) Add(chatname string) (db.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, er.ErrChatAlreadyExists
 	}
-	c := NewMemoryChat(chatname)
+	c := NewChat(chatname)
 	d.chats[chatname] = c
 
 	return c, nil
 }
 
 // Get ...
-func (d *MemoryDB) Get(chatname string) (db.Chat, error) {
+func (d *ChatDB) Get(chatname string) (db.Chat, error) {
 	if c, ok := d.chats[chatname]; ok {
 		return c, nil
 	}
@@ -39,7 +39,7 @@ func (d *MemoryDB) Get(chatname string) (db.Chat, error) {
 }
 
 // Remove ...
-func (d *MemoryDB) Remove(chatname string) error {
+func (d *ChatDB) Remove(chatname string) error {
 	if _, ok := d.chats[chatname]; !ok {
 		return er.ErrNoSuchChat
 	}
@@ -49,7 +49,7 @@ func (d *MemoryDB) Remove(chatname string) error {
 }
 
 // GetChats ...
-func (d *MemoryDB) GetChats() []db.Chat {
+func (d *ChatDB) GetChats() []db.Chat {
 	res := make([]db.Chat, 0, len(d.chats))
 
 	for _, c := range d.chats {

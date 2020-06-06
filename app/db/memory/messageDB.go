@@ -1,4 +1,4 @@
-package message
+package memory
 
 import (
 	"sync"
@@ -9,8 +9,8 @@ import (
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
-// MemoryDB ...
-type MemoryDB struct {
+// MessageDB ...
+type MessageDB struct {
 	sync.Mutex
 
 	chats map[string][]*models.Message
@@ -18,13 +18,13 @@ type MemoryDB struct {
 	notifyCh chan<- events.Event
 }
 
-// NewMemoryDB ...
-func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{chats: make(map[string][]*models.Message)}
+// NewMessageDB ...
+func NewMessageDB() *MessageDB {
+	return &MessageDB{chats: make(map[string][]*models.Message)}
 }
 
 // Post ...
-func (d *MemoryDB) Post(msg *models.Message) error {
+func (d *MessageDB) Post(msg *models.Message) error {
 	chat := d.chats[msg.ChatName]
 
 	msg.ID = len(chat) + 1
@@ -37,7 +37,7 @@ func (d *MemoryDB) Post(msg *models.Message) error {
 }
 
 // GetLastNMessages ...
-func (d *MemoryDB) GetLastNMessages(chatname string, n int) ([]*models.Message, error) {
+func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message, error) {
 	chat, ok := d.chats[chatname]
 
 	if !ok {

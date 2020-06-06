@@ -8,12 +8,9 @@ import (
 	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
-	"github.com/niakr1s/chatty-server/app/db/chat"
-	"github.com/niakr1s/chatty-server/app/db/logged"
-	"github.com/niakr1s/chatty-server/app/db/message"
+	"github.com/niakr1s/chatty-server/app/db/memory"
 	"github.com/niakr1s/chatty-server/app/db/notify"
 	"github.com/niakr1s/chatty-server/app/db/postgres"
-	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/eventpool"
@@ -81,7 +78,7 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	c.LoadChatsFromPostgres()
 	m := postgres.NewMessageDB(postgresDB)
 
-	l := logged.NewMemoryDB()
+	l := memory.NewLoggedDB()
 
 	mailer, err := email.NewSMTPMailer()
 	if err != nil {
@@ -100,9 +97,9 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 	switch url {
 	case "":
 		log.Warnf("Provided empty env %s. It's ok, just using user.MemoryDB", constants.EnvDatabaseURL)
-		u = user.NewMemoryDB()
-		c = chat.NewMemoryDB()
-		m = message.NewMemoryDB()
+		u = memory.NewUserDB()
+		c = memory.NewChatDB()
+		m = memory.NewMessageDB()
 	default:
 		postgresDB, err := postgres.NewDB(ctx, url)
 		if err != nil {
@@ -118,7 +115,7 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		m = postgres.NewMessageDB(postgresDB)
 	}
 
-	l := logged.NewMemoryDB()
+	l := memory.NewLoggedDB()
 
 	mailer := email.NewMockMailer()
 	return NewServer(db.NewStore(u, c, l, m), mailer), nil

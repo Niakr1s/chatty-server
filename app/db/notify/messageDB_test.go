@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/niakr1s/chatty-server/app/db/message"
+	"github.com/niakr1s/chatty-server/app/db/memory"
 	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +13,7 @@ import (
 func TestMessageDB_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	db := NewMessageDB(message.NewMemoryDB(), ch)
+	db := NewMessageDB(memory.NewMessageDB(), ch)
 
 	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 

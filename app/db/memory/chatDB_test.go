@@ -1,4 +1,4 @@
-package chat
+package memory
 
 import (
 	"testing"
@@ -6,10 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const chatname = "chat"
-
-func TestMemoryDB_Add(t *testing.T) {
-	chatDB := NewMemoryDB()
+func TestChatDB_Add(t *testing.T) {
+	chatDB := NewChatDB()
 
 	c1, err := chatDB.Add("chat1")
 
@@ -21,8 +19,8 @@ func TestMemoryDB_Add(t *testing.T) {
 	assert.Equal(t, c1, c1New)
 }
 
-func TestMemoryDB_Get(t *testing.T) {
-	chatDB := NewMemoryDB()
+func TestChatDB_Get(t *testing.T) {
+	chatDB := NewChatDB()
 
 	c1, _ := chatDB.Add("chat1")
 	c1New, _ := chatDB.Get("chat1")
@@ -30,8 +28,8 @@ func TestMemoryDB_Get(t *testing.T) {
 	assert.Equal(t, c1, c1New)
 }
 
-func TestMemoryDB_Remove(t *testing.T) {
-	chatDB := NewMemoryDB()
+func TestChatDB_Remove(t *testing.T) {
+	chatDB := NewChatDB()
 
 	chatDB.Add("chat1")
 

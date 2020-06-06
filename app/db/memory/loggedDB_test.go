@@ -1,4 +1,4 @@
-package logged
+package memory
 
 import (
 	"testing"
@@ -10,12 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	username = "user"
-)
-
-func TestMemoryDB_Login(t *testing.T) {
-	db := NewMemoryDB()
+func TestLoggedDB_Login(t *testing.T) {
+	db := NewLoggedDB()
 
 	u1, err := db.Login("user1")
 
@@ -38,8 +34,8 @@ func TestMemoryDB_Login(t *testing.T) {
 	assert.NotEqual(t, u1.LoginToken, u2.LoginToken)
 }
 
-func TestMemoryDB_Get(t *testing.T) {
-	db := NewMemoryDB()
+func TestLoggedDB_Get(t *testing.T) {
+	db := NewLoggedDB()
 
 	u1, _ := db.Login("user1")
 
@@ -50,8 +46,8 @@ func TestMemoryDB_Get(t *testing.T) {
 	assert.Equal(t, u1, got1)
 }
 
-func TestMemoryDB_Logout(t *testing.T) {
-	db := NewMemoryDB()
+func TestLoggedDB_Logout(t *testing.T) {
+	db := NewLoggedDB()
 
 	db.Login("user1")
 
@@ -62,8 +58,8 @@ func TestMemoryDB_Logout(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestMemoryDB_StartCleanInactiveUsers(t *testing.T) {
-	memoryDB := NewMemoryDB()
+func TestLoggedDB_StartCleanInactiveUsers(t *testing.T) {
+	memoryDB := NewLoggedDB()
 
 	db.StartCleanInactiveUsers(memoryDB, time.Millisecond*10, time.Millisecond*10)
 

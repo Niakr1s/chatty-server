@@ -1,4 +1,4 @@
-package user
+package memory
 
 import (
 	"testing"
@@ -13,10 +13,10 @@ func GenerateMockFullUser(t *testing.T) models.FullUser {
 	return models.NewFullUser("user", "user@example.com", "password")
 }
 
-func TestMemoryDB_Store(t *testing.T) {
+func TestUserDB_Store(t *testing.T) {
 
 	t.Run("simple storing", func(t *testing.T) {
-		db := NewMemoryDB()
+		db := NewUserDB()
 		u := GenerateMockFullUser(t)
 
 		err := db.Store(u)
@@ -24,7 +24,7 @@ func TestMemoryDB_Store(t *testing.T) {
 	})
 
 	t.Run("same user storing twice", func(t *testing.T) {
-		db := NewMemoryDB()
+		db := NewUserDB()
 		u1 := GenerateMockFullUser(t)
 
 		err := db.Store(u1)
@@ -35,8 +35,8 @@ func TestMemoryDB_Store(t *testing.T) {
 	})
 }
 
-func TestMemoryDB_Get(t *testing.T) {
-	db := NewMemoryDB()
+func TestUserDB_Get(t *testing.T) {
+	db := NewUserDB()
 
 	t.Run("simple get", func(t *testing.T) {
 		u := GenerateMockFullUser(t)

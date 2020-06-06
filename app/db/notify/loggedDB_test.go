@@ -3,7 +3,7 @@ package notify
 import (
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/db/logged"
+	"github.com/niakr1s/chatty-server/app/db/memory"
 	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +11,7 @@ import (
 func TestLoggedDB_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	memoryDB := NewLoggedDB(logged.NewMemoryDB(), ch)
+	memoryDB := NewLoggedDB(memory.NewLoggedDB(), ch)
 
 	memoryDB.Login(username)
 	memoryDB.Login(username) // shouldn't fire same event twice

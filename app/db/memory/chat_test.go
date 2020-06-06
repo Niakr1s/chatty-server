@@ -1,4 +1,4 @@
-package chat
+package memory
 
 import (
 	"testing"
@@ -6,10 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const username = "user"
-
-func TestMemoryChat_AddUser(t *testing.T) {
-	chat := NewMemoryChat(chatname)
+func TestChat_AddUser(t *testing.T) {
+	chat := NewChat(chatname)
 
 	err := chat.AddUser(username)
 	assert.NoError(t, err)
@@ -21,8 +19,8 @@ func TestMemoryChat_AddUser(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestMemoryChat_RemoveUser(t *testing.T) {
-	chat := NewMemoryChat(chatname)
+func TestChat_RemoveUser(t *testing.T) {
+	chat := NewChat(chatname)
 
 	chat.AddUser(username)
 
@@ -36,8 +34,8 @@ func TestMemoryChat_RemoveUser(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestMemoryChat_IsInChat(t *testing.T) {
-	chat := NewMemoryChat(chatname)
+func TestChat_IsInChat(t *testing.T) {
+	chat := NewChat(chatname)
 	assert.False(t, chat.IsInChat(username))
 
 	chat.AddUser(username)

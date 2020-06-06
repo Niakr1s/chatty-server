@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/niakr1s/chatty-server/app/constants"
-	"github.com/niakr1s/chatty-server/app/db/logged"
+	"github.com/niakr1s/chatty-server/app/db/memory"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
 	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/stretchr/testify/assert"
@@ -17,7 +17,7 @@ import (
 
 func TestLoggedOnly_NewUser(t *testing.T) {
 	store := sess.InitStoreFromTimeNow()
-	loggedDB := logged.NewMemoryDB()
+	loggedDB := memory.NewLoggedDB()
 	h := &executedHandler{}
 
 	username := "user"
@@ -38,7 +38,7 @@ func TestLoggedOnly_LoggedUser(t *testing.T) {
 	username := "user"
 
 	store := sess.InitStoreFromTimeNow()
-	loggedDB := logged.NewMemoryDB()
+	loggedDB := memory.NewLoggedDB()
 	h := &executedHandler{}
 
 	u, _ := loggedDB.Login(username)

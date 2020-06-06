@@ -3,7 +3,7 @@ package notify
 import (
 	"testing"
 
-	"github.com/niakr1s/chatty-server/app/db/chat"
+	"github.com/niakr1s/chatty-server/app/db/memory"
 	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +11,7 @@ import (
 func TestChat_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	chat := NewChat(chat.NewMemoryChat(chatname), ch)
+	chat := NewChat(memory.NewChat(chatname), ch)
 
 	chat.AddUser(username)
 	chat.AddUser(username)

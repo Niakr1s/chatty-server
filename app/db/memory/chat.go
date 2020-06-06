@@ -1,4 +1,4 @@
-package chat
+package memory
 
 import (
 	"sync"
@@ -7,26 +7,26 @@ import (
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
-// MemoryChat ...
-type MemoryChat struct {
+// Chat ...
+type Chat struct {
 	sync.Mutex
 
 	Name  string
 	users map[string]struct{}
 }
 
-// NewMemoryChat ...
-func NewMemoryChat(chatname string) *MemoryChat {
-	return &MemoryChat{Name: chatname, users: make(map[string]struct{})}
+// NewChat ...
+func NewChat(chatname string) *Chat {
+	return &Chat{Name: chatname, users: make(map[string]struct{})}
 }
 
 // ChatName ...
-func (c *MemoryChat) ChatName() string {
+func (c *Chat) ChatName() string {
 	return c.Name
 }
 
 // AddUser ...
-func (c *MemoryChat) AddUser(username string) error {
+func (c *Chat) AddUser(username string) error {
 	if _, ok := c.users[username]; ok {
 		return er.ErrAlreadyInChat
 	}
@@ -36,7 +36,7 @@ func (c *MemoryChat) AddUser(username string) error {
 }
 
 // RemoveUser ...
-func (c *MemoryChat) RemoveUser(username string) error {
+func (c *Chat) RemoveUser(username string) error {
 	if _, ok := c.users[username]; !ok {
 		return er.ErrNotInChat
 	}
@@ -46,13 +46,13 @@ func (c *MemoryChat) RemoveUser(username string) error {
 }
 
 // IsInChat ...
-func (c *MemoryChat) IsInChat(username string) bool {
+func (c *Chat) IsInChat(username string) bool {
 	_, ok := c.users[username]
 	return ok
 }
 
 // GetUsers ...
-func (c *MemoryChat) GetUsers() []models.User {
+func (c *Chat) GetUsers() []models.User {
 	res := make([]models.User, 0, len(c.users))
 	for u := range c.users {
 		res = append(res, models.User{UserName: u})

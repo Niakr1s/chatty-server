@@ -1,4 +1,4 @@
-package logged
+package memory
 
 import (
 	"sync"
@@ -7,20 +7,20 @@ import (
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
-// MemoryDB ...
-type MemoryDB struct {
+// LoggedDB ...
+type LoggedDB struct {
 	sync.Mutex
 
 	users map[string]*models.LoggedUser
 }
 
-// NewMemoryDB ...
-func NewMemoryDB() *MemoryDB {
-	return &MemoryDB{users: make(map[string]*models.LoggedUser)}
+// NewLoggedDB ...
+func NewLoggedDB() *LoggedDB {
+	return &LoggedDB{users: make(map[string]*models.LoggedUser)}
 }
 
 // GetLoggedUsers ...
-func (d *MemoryDB) GetLoggedUsers() []string {
+func (d *LoggedDB) GetLoggedUsers() []string {
 	res := make([]string, 0, len(d.users))
 	for u := range d.users {
 		res = append(res, u)
@@ -29,7 +29,7 @@ func (d *MemoryDB) GetLoggedUsers() []string {
 }
 
 // Login ...
-func (d *MemoryDB) Login(username string) (*models.LoggedUser, error) {
+func (d *LoggedDB) Login(username string) (*models.LoggedUser, error) {
 	u, ok := d.users[username]
 
 	if ok {
@@ -43,7 +43,7 @@ func (d *MemoryDB) Login(username string) (*models.LoggedUser, error) {
 }
 
 // Update ...
-func (d *MemoryDB) Update(user *models.LoggedUser) error {
+func (d *LoggedDB) Update(user *models.LoggedUser) error {
 	if _, ok := d.users[user.UserName]; !ok {
 		return er.ErrNotLogged
 	}
@@ -52,7 +52,7 @@ func (d *MemoryDB) Update(user *models.LoggedUser) error {
 }
 
 // Get ...
-func (d *MemoryDB) Get(username string) (*models.LoggedUser, error) {
+func (d *LoggedDB) Get(username string) (*models.LoggedUser, error) {
 	if u, ok := d.users[username]; ok {
 		return u, nil
 	}
@@ -61,7 +61,7 @@ func (d *MemoryDB) Get(username string) (*models.LoggedUser, error) {
 }
 
 // Logout ...
-func (d *MemoryDB) Logout(username string) error {
+func (d *LoggedDB) Logout(username string) error {
 	if _, ok := d.users[username]; !ok {
 		return er.ErrNotLogged
 	}
