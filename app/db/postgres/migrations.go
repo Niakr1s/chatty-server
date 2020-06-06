@@ -21,7 +21,8 @@ var migrations = []string{
 		"time" TIMESTAMP NOT NULL
 	);`,
 
-	`ALTER TABLE messages ADD column IF NOT EXISTS "verified" BOOLEAN;`,
+	`ALTER TABLE messages ADD column IF NOT EXISTS "verified" BOOLEAN default false;`,
 
 	`ALTER TABLE users RENAME "email_activated" TO "verified";`,
+	`ALTER TABLE users ADD column IF NOT EXISTS "admin" BOOLEAN default false;`,
 }
