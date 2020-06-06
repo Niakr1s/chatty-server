@@ -5,6 +5,7 @@ import (
 
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/events"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // Chat ...
@@ -48,7 +49,13 @@ func (c *Chat) RemoveUser(username string) error {
 
 func (c *Chat) notifyUserJoined(username, chatname string, t time.Time) {
 	go func() {
-		c.notifyCh <- events.NewChatJoinEvent(username, chatname, t)
+		c.logged.Lock()
+		status := models.UserStatus{}
+		if loggedU, err := c.logged.Get(username); err == nil {
+			status = loggedU.UserStatus
+		}
+		c.logged.Unlock()
+		c.notifyCh <- events.NewChatJoinEvent(username, chatname, t).WithStatus(status)
 	}()
 }
 

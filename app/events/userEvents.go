@@ -54,11 +54,18 @@ func (le *LogoutEvent) String() string {
 // ChatJoinEvent used to emit when user joins chat (ie to db.Chat)
 type ChatJoinEvent struct {
 	*UserEvent
+	models.UserStatus
 }
 
 // NewChatJoinEvent ...
 func NewChatJoinEvent(username string, chatname string, time time.Time) *ChatJoinEvent {
-	return &ChatJoinEvent{NewUserEvent(username, chatname, time)}
+	return &ChatJoinEvent{UserEvent: NewUserEvent(username, chatname, time)}
+}
+
+// WithStatus ...
+func (ce *ChatJoinEvent) WithStatus(status models.UserStatus) *ChatJoinEvent {
+	ce.UserStatus = status
+	return ce
 }
 
 func (ce *ChatJoinEvent) String() string {
