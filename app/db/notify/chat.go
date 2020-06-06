@@ -49,12 +49,10 @@ func (c *Chat) RemoveUser(username string) error {
 
 func (c *Chat) notifyUserJoined(username, chatname string, t time.Time) {
 	go func() {
-		c.logged.Lock()
 		status := models.UserStatus{}
 		if loggedU, err := c.logged.Get(username); err == nil {
 			status = loggedU.UserStatus
 		}
-		c.logged.Unlock()
 		c.notifyCh <- events.NewChatJoinEvent(username, chatname, t).WithStatus(status)
 	}()
 }

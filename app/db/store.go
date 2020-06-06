@@ -50,14 +50,12 @@ func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 		if err == nil {
 			res.Messages = gotMessages
 		}
-		s.LoggedDB.Lock()
 		for _, u := range chat.GetUsers() {
 			if loggedU, err := s.LoggedDB.Get(u.UserName); err == nil {
 				userToAppend := models.NewUserWithStatus(loggedU.User, loggedU.UserStatus)
 				res.Users = append(res.Users, userToAppend)
 			}
 		}
-		s.LoggedDB.Unlock()
 	}
 
 	return res

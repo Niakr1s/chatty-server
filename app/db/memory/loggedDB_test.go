@@ -63,15 +63,11 @@ func TestLoggedDB_StartCleanInactiveUsers(t *testing.T) {
 
 	db.StartCleanInactiveUsers(memoryDB, time.Millisecond*10, time.Millisecond*10)
 
-	memoryDB.Lock()
 	memoryDB.Login(username)
-	memoryDB.Unlock()
 
 	<-time.After(time.Millisecond * 50)
 
-	memoryDB.Lock()
 	_, err := memoryDB.Get(username)
-	memoryDB.Unlock()
 
 	assert.Error(t, err)
 }

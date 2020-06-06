@@ -45,8 +45,6 @@ func IsLogged(session *sessions.Session, loggedDB db.LoggedDB) bool {
 		return false
 	}
 
-	loggedDB.Lock()
-	defer loggedDB.Unlock()
 	loggedU, err := loggedDB.Get(username)
 	if err != nil {
 		return false

@@ -11,9 +11,6 @@ import (
 func (s *Server) Logout(w http.ResponseWriter, r *http.Request) {
 	username := sess.GetUserNameFromCtx(r.Context())
 
-	s.dbStore.LoggedDB.Lock()
-	defer s.dbStore.LoggedDB.Unlock()
-
 	err := s.dbStore.LoggedDB.Logout(username)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusConflict)

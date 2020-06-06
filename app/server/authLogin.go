@@ -21,9 +21,6 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 
 	username := sess.GetUserNameFromCtx(r.Context())
 
-	s.dbStore.LoggedDB.Lock()
-	defer s.dbStore.LoggedDB.Unlock()
-
 	s.dbStore.LoggedDB.Logout(username) // we are authorized, do forced login
 	loggedu, err := s.dbStore.LoggedDB.Login(username)
 	if err != nil {

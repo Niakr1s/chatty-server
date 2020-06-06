@@ -27,13 +27,11 @@ func AdminOnly(s sessions.Store, loggedDB db.LoggedDB) func(h http.Handler) http
 				return
 			}
 
-			loggedDB.Lock()
 			loggedU, err := loggedDB.Get(username)
 			if err != nil {
 				httputil.WriteError(w, er.ErrNotLogged, http.StatusBadRequest)
 				return
 			}
-			loggedDB.Unlock()
 
 			if loggedU.Verified && loggedU.Admin {
 				r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), username))
