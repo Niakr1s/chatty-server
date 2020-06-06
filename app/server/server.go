@@ -162,5 +162,9 @@ func (s *Server) generateRoutePaths() {
 	loggedRouter.Handle("/getLastMessages", http.HandlerFunc(s.GetLastMessages)).Methods(http.MethodPost, http.MethodOptions)
 	loggedRouter.Handle("/postMessage", http.HandlerFunc(s.PostMessage)).Methods(http.MethodPost, http.MethodOptions)
 
+	adminRouter := apiRouter.PathPrefix("/adminonly").Subrouter()
+	adminRouter.Handle("/createChat", http.HandlerFunc(s.CreateChat)).Methods(http.MethodPost, http.MethodOptions)
+	adminRouter.Handle("/removeChat", http.HandlerFunc(s.RemoveChat)).Methods(http.MethodPost, http.MethodOptions)
+
 	s.router.PathPrefix("/").HandlerFunc(s.Static).Methods(http.MethodGet)
 }

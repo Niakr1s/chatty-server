@@ -171,3 +171,22 @@ Chat
 ```json
 [...User]
 ```
+
+### /api/adminonly/*
+- this routes are only for admins
+
+#### /api/adminonly/createChat
+- Creates new chat
+- Method: POST
+- Request:
+```json
+Chat
+```
+
+#### /api/adminonly/removeChat
+- Removes a chat
+- Method: POST
+- Request:
+```json
+Chat
+```
