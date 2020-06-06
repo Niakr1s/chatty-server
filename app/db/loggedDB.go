@@ -18,6 +18,8 @@ type LoggedDB interface {
 	// also should generate valid LoginToken and LastActivity
 	Login(username string) (*models.LoggedUser, error)
 
+	Update(*models.LoggedUser) error
+
 	Get(username string) (*models.LoggedUser, error)
 
 	Logout(username string) error

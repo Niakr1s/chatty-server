@@ -48,6 +48,15 @@ func (d *MemoryDB) Login(username string) (*models.LoggedUser, error) {
 	return u, nil
 }
 
+// Update ...
+func (d *MemoryDB) Update(user *models.LoggedUser) error {
+	if _, ok := d.users[user.UserName]; !ok {
+		return er.ErrNotLogged
+	}
+	d.users[user.UserName] = user
+	return nil
+}
+
 // Get ...
 func (d *MemoryDB) Get(username string) (*models.LoggedUser, error) {
 	if u, ok := d.users[username]; ok {
