@@ -22,9 +22,9 @@ func NewStore(u UserDB, c ChatDB, l LoggedDB, m MessageDB) *Store {
 type ChatReport struct {
 	models.User
 	models.Chat
-	Joined   bool                `json:"joined"`
-	Messages []*models.Message   `json:"messages"`
-	Users    []models.LoggedUser `json:"users"`
+	Joined   bool                    `json:"joined"`
+	Messages []*models.Message       `json:"messages"`
+	Users    []models.UserWithStatus `json:"users"`
 }
 
 // NewChatReport ...
@@ -34,7 +34,7 @@ func NewChatReport(username, chatname string, joined bool) ChatReport {
 		Chat:     models.Chat{ChatName: chatname},
 		Joined:   joined,
 		Messages: []*models.Message{},
-		Users:    []models.LoggedUser{}}
+		Users:    []models.UserWithStatus{}}
 }
 
 // MakeChatReportForUser returns ChatReport for an user.
@@ -53,7 +53,8 @@ func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 		s.LoggedDB.Lock()
 		for _, u := range chat.GetUsers() {
 			if loggedU, err := s.LoggedDB.Get(u.UserName); err == nil {
-				res.Users = append(res.Users, *loggedU)
+				userToAppend := models.NewUserWithStatus(loggedU.User, loggedU.UserStatus)
+				res.Users = append(res.Users, userToAppend)
 			}
 		}
 		s.LoggedDB.Unlock()

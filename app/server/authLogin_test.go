@@ -58,7 +58,7 @@ func TestServer_AuthLoginShouldReturnCorrectUserStatus(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	res := models.LoggedUser{}
+	res := models.UserWithStatus{}
 	err := json.NewDecoder(w.Body).Decode(&res)
 	assert.NoError(t, err)
 

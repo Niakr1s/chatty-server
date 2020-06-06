@@ -7,6 +7,7 @@ import (
 	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // AuthLogin should be used always after AuthOnly middleware
@@ -43,7 +44,9 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(loggedu); err != nil {
+	userToReturn := models.NewUserWithStatus(loggedu.User, loggedu.UserStatus)
+
+	if err := json.NewEncoder(w).Encode(userToReturn); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return
 	}

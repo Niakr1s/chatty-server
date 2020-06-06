@@ -40,7 +40,7 @@ func TestServer_Login(t *testing.T) {
 	assert.Equal(t, loggedU.UserName, session.Values[constants.SessionUserName].(string))
 	assert.Equal(t, loggedU.LoginToken, session.Values[constants.SessionLoginToken].(string))
 
-	res := models.LoggedUser{}
+	res := models.UserWithStatus{}
 	err = json.NewDecoder(w.Body).Decode(&res)
 	assert.NoError(t, err)
 
