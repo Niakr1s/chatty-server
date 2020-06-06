@@ -25,10 +25,14 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 
 	s.dbStore.LoggedDB.Logout(username) // we are authorized, do forced login
 	u, err := s.dbStore.LoggedDB.Login(username)
-
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusForbidden)
 		return
+	}
+
+	if storedU, err := s.dbStore.UserDB.Get(u.UserName); err == nil {
+		u.UserStatus = storedU.UserStatus
+		s.dbStore.LoggedDB.Update(u)
 	}
 
 	session.Values[constants.SessionUserName] = u.UserName
