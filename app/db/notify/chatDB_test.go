@@ -1,9 +1,10 @@
-package chat
+package notify
 
 import (
 	"testing"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/stretchr/testify/assert"
@@ -12,7 +13,7 @@ import (
 func TestNotifyDB_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	memoryDB := NewMemoryDB().WithNotifyCh(ch)
+	memoryDB := NewChatDB(chat.NewMemoryDB(), ch)
 
 	memoryDB.Add(chatname)
 	memoryDB.Add(chatname) // shouldn't fire same event twice
@@ -36,7 +37,7 @@ func TestNotifyDB_notify(t *testing.T) {
 func TestNotifyDB_ChatNotify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	memoryDB := NewMemoryDB().WithNotifyCh(ch)
+	memoryDB := NewChatDB(chat.NewMemoryDB(), ch)
 
 	chat, err := memoryDB.Add(chatname)
 	assert.NoError(t, err)
@@ -59,7 +60,7 @@ func TestNotifyDB_StartListeningToEvents(t *testing.T) {
 	)
 
 	ch := make(chan events.Event)
-	d := NewNotifyDB(NewMemoryDB(), make(chan<- events.Event))
+	d := NewChatDB(chat.NewMemoryDB(), make(chan<- events.Event))
 	chat, _ := d.Add(chatname)
 	chat.AddUser(username)
 

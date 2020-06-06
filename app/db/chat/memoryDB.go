@@ -5,7 +5,6 @@ import (
 
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/events"
 )
 
 // MemoryDB ...
@@ -18,11 +17,6 @@ type MemoryDB struct {
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
 	return &MemoryDB{chats: make(map[string]db.Chat)}
-}
-
-// WithNotifyCh ...
-func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
-	return NewNotifyDB(d, ch)
 }
 
 // Add ...

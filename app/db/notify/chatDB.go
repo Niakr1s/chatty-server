@@ -1,4 +1,4 @@
-package chat
+package notify
 
 import (
 	"time"
@@ -7,21 +7,21 @@ import (
 	"github.com/niakr1s/chatty-server/app/events"
 )
 
-// NotifyDB is wrapper above ChatDB
-type NotifyDB struct {
+// ChatDB is wrapper above ChatDB
+type ChatDB struct {
 	db.ChatDB
 
 	notifyCh chan<- events.Event
 }
 
-// NewNotifyDB ...
-func NewNotifyDB(db db.ChatDB, ch chan<- events.Event) *NotifyDB {
-	return &NotifyDB{ChatDB: db, notifyCh: ch}
+// NewChatDB ...
+func NewChatDB(db db.ChatDB, ch chan<- events.Event) *ChatDB {
+	return &ChatDB{ChatDB: db, notifyCh: ch}
 }
 
 // StartListeningToEvents starts to listen to events from input channel.
 // Don't call it twice!
-func (d *NotifyDB) StartListeningToEvents(ch <-chan events.Event) {
+func (d *ChatDB) StartListeningToEvents(ch <-chan events.Event) {
 	go func() {
 		for {
 			event := <-ch
@@ -34,7 +34,7 @@ func (d *NotifyDB) StartListeningToEvents(ch <-chan events.Event) {
 }
 
 // Add ...
-func (d *NotifyDB) Add(chatname string) (db.Chat, error) {
+func (d *ChatDB) Add(chatname string) (db.Chat, error) {
 	c, err := d.ChatDB.Add(chatname)
 
 	if err != nil {
@@ -42,7 +42,7 @@ func (d *NotifyDB) Add(chatname string) (db.Chat, error) {
 	}
 
 	// converting chat to notifyChat
-	c = NewNotifyChat(c, d.notifyCh)
+	c = NewChat(c, d.notifyCh)
 
 	d.notifyChatCreated(chatname, time.Now().UTC())
 
@@ -50,16 +50,16 @@ func (d *NotifyDB) Add(chatname string) (db.Chat, error) {
 }
 
 // Get ...
-func (d *NotifyDB) Get(chatname string) (db.Chat, error) {
+func (d *ChatDB) Get(chatname string) (db.Chat, error) {
 	c, err := d.ChatDB.Get(chatname)
 	if err != nil {
 		return c, err
 	}
-	return NewNotifyChat(c, d.notifyCh), nil
+	return NewChat(c, d.notifyCh), nil
 }
 
 // Remove ...
-func (d *NotifyDB) Remove(chatname string) error {
+func (d *ChatDB) Remove(chatname string) error {
 	err := d.ChatDB.Remove(chatname)
 
 	if err != nil {
@@ -72,21 +72,21 @@ func (d *NotifyDB) Remove(chatname string) error {
 }
 
 // GetChats ...
-func (d *NotifyDB) GetChats() []db.Chat {
+func (d *ChatDB) GetChats() []db.Chat {
 	chats := d.ChatDB.GetChats()
 	for i, chat := range chats {
-		chats[i] = NewNotifyChat(chat, d.notifyCh)
+		chats[i] = NewChat(chat, d.notifyCh)
 	}
 	return chats
 }
 
-func (d *NotifyDB) notifyChatCreated(chatname string, t time.Time) {
+func (d *ChatDB) notifyChatCreated(chatname string, t time.Time) {
 	go func() {
 		d.notifyCh <- events.NewChatCreatedEvent(chatname, t)
 	}()
 }
 
-func (d *NotifyDB) notifyChatRemoved(chatname string, t time.Time) {
+func (d *ChatDB) notifyChatRemoved(chatname string, t time.Time) {
 	go func() {
 		d.notifyCh <- events.NewChatRemovedEvent(chatname, t)
 	}()

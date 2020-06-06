@@ -1,4 +1,4 @@
-package chat
+package notify
 
 import (
 	"time"
@@ -7,20 +7,20 @@ import (
 	"github.com/niakr1s/chatty-server/app/events"
 )
 
-// NotifyChat ...
-type NotifyChat struct {
+// Chat ...
+type Chat struct {
 	db.Chat
 
 	notifyCh chan<- events.Event
 }
 
-// NewNotifyChat ...
-func NewNotifyChat(chat db.Chat, ch chan<- events.Event) *NotifyChat {
-	return &NotifyChat{chat, ch}
+// NewChat ...
+func NewChat(chat db.Chat, ch chan<- events.Event) *Chat {
+	return &Chat{chat, ch}
 }
 
 // AddUser ...
-func (c *NotifyChat) AddUser(username string) error {
+func (c *Chat) AddUser(username string) error {
 	err := c.Chat.AddUser(username)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func (c *NotifyChat) AddUser(username string) error {
 }
 
 // RemoveUser ...
-func (c *NotifyChat) RemoveUser(username string) error {
+func (c *Chat) RemoveUser(username string) error {
 	err := c.Chat.RemoveUser(username)
 
 	if err != nil {
@@ -45,13 +45,13 @@ func (c *NotifyChat) RemoveUser(username string) error {
 	return nil
 }
 
-func (c *NotifyChat) notifyUserJoined(username, chatname string, t time.Time) {
+func (c *Chat) notifyUserJoined(username, chatname string, t time.Time) {
 	go func() {
 		c.notifyCh <- events.NewChatJoinEvent(username, chatname, t)
 	}()
 }
 
-func (c *NotifyChat) notifyUserLeaved(username, chatname string, t time.Time) {
+func (c *Chat) notifyUserLeaved(username, chatname string, t time.Time) {
 	go func() {
 		c.notifyCh <- events.NewChatLeaveEvent(username, chatname, t)
 	}()

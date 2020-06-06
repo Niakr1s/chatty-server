@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
@@ -19,11 +18,6 @@ type MemoryChat struct {
 // NewMemoryChat ...
 func NewMemoryChat(chatname string) *MemoryChat {
 	return &MemoryChat{Name: chatname, users: make(map[string]struct{})}
-}
-
-// WithNotifyCh ...
-func (c *MemoryChat) WithNotifyCh(ch chan<- events.Event) *NotifyChat {
-	return NewNotifyChat(c, ch)
 }
 
 // ChatName ...

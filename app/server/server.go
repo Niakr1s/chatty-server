@@ -11,6 +11,7 @@ import (
 	"github.com/niakr1s/chatty-server/app/db/chat"
 	"github.com/niakr1s/chatty-server/app/db/logged"
 	"github.com/niakr1s/chatty-server/app/db/message"
+	"github.com/niakr1s/chatty-server/app/db/notify"
 	"github.com/niakr1s/chatty-server/app/db/postgres"
 	"github.com/niakr1s/chatty-server/app/db/user"
 	"github.com/niakr1s/chatty-server/app/email"
@@ -47,7 +48,7 @@ func NewServer(dbStore *db.Store, m email.Mailer) *Server {
 	ch := res.pool.GetInputChan()
 	res.dbStore.LoggedDB = logged.NewNotifyDB(res.dbStore.LoggedDB, ch)
 
-	notifyChatDB := chat.NewNotifyDB(res.dbStore.ChatDB, ch)
+	notifyChatDB := notify.NewChatDB(res.dbStore.ChatDB, ch)
 	notifyChatDB.StartListeningToEvents(res.pool.CreateChan(eventpool.FilterPassLogoutEvents))
 	res.dbStore.ChatDB = notifyChatDB
 
