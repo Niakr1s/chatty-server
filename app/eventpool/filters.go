@@ -29,22 +29,10 @@ func FilterPassLogoutEvents(e events.Event) bool {
 func FilterPassIfUserInChat(chatDB db.ChatDB, username string) FilterPass {
 	return FilterPass(func(e events.Event) bool {
 		inChat, err := e.InChat()
-
 		if err != nil {
 			return err == er.ErrGlobalEvent
 		}
 
-		chatDB.Lock()
-		defer chatDB.Unlock()
-
-		chat, err := chatDB.Get(inChat)
-		chat.Lock()
-		defer chat.Unlock()
-
-		if err != nil {
-			return false
-		}
-
-		return chat.IsInChat(username)
+		return chatDB.IsInChat(inChat, username)
 	})
 }

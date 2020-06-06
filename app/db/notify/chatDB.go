@@ -5,6 +5,7 @@ import (
 
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/events"
+	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // ChatDB is wrapper above ChatDB
@@ -35,28 +36,15 @@ func (d *ChatDB) StartListeningToEvents(ch <-chan events.Event) {
 }
 
 // Add ...
-func (d *ChatDB) Add(chatname string) (db.Chat, error) {
-	c, err := d.ChatDB.Add(chatname)
-
+func (d *ChatDB) Add(chatname string) error {
+	err := d.ChatDB.Add(chatname)
 	if err != nil {
-		return c, err
+		return err
 	}
-
-	// converting chat to notifyChat
-	c = NewChat(c, d.logged, d.notifyCh)
 
 	d.notifyChatCreated(chatname, time.Now().UTC())
 
-	return c, nil
-}
-
-// Get ...
-func (d *ChatDB) Get(chatname string) (db.Chat, error) {
-	c, err := d.ChatDB.Get(chatname)
-	if err != nil {
-		return c, err
-	}
-	return NewChat(c, d.logged, d.notifyCh), nil
+	return nil
 }
 
 // Remove ...
@@ -72,13 +60,25 @@ func (d *ChatDB) Remove(chatname string) error {
 	return nil
 }
 
-// GetChats ...
-func (d *ChatDB) GetChats() []db.Chat {
-	chats := d.ChatDB.GetChats()
-	for i, chat := range chats {
-		chats[i] = NewChat(chat, d.logged, d.notifyCh)
+// AddUser ...
+func (d *ChatDB) AddUser(chatname, username string) error {
+	err := d.ChatDB.AddUser(chatname, username)
+	if err != nil {
+		return err
 	}
-	return chats
+
+	d.notifyUserJoined(chatname, username, time.Now().UTC())
+	return err
+}
+
+// RemoveUser ...
+func (d *ChatDB) RemoveUser(chatname, username string) error {
+	err := d.ChatDB.RemoveUser(chatname, username)
+	if err != nil {
+		return err
+	}
+	d.notifyUserLeaved(chatname, username, time.Now().UTC())
+	return err
 }
 
 func (d *ChatDB) notifyChatCreated(chatname string, t time.Time) {
@@ -93,17 +93,28 @@ func (d *ChatDB) notifyChatRemoved(chatname string, t time.Time) {
 	}()
 }
 
+func (d *ChatDB) notifyUserJoined(chatname, username string, t time.Time) {
+	go func() {
+		status := models.UserStatus{}
+		if loggedU, err := d.logged.Get(username); err == nil {
+			status = loggedU.UserStatus
+		}
+		d.notifyCh <- events.NewChatJoinEvent(username, chatname, t).WithStatus(status)
+	}()
+}
+
+func (d *ChatDB) notifyUserLeaved(chatname, username string, t time.Time) {
+	go func() {
+		d.notifyCh <- events.NewChatLeaveEvent(username, chatname, t)
+	}()
+}
+
 // logoutUserFromAllChats forcefully logouts user from all chats.
 // It uses locks, beware of it.
 // It is used in NotifyDB to logout users on LogoutEvent
 func logoutUserFromAllChats(username string, chatDB db.ChatDB) {
-	chatDB.Lock()
-	defer chatDB.Unlock()
-
 	chats := chatDB.GetChats()
 	for _, chat := range chats {
-		chat.Lock()
-		chat.RemoveUser(username)
-		chat.Unlock()
+		chatDB.RemoveUser(chat, username)
 	}
 }

@@ -21,24 +21,12 @@ func (s *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
-	chat, err := s.dbStore.ChatDB.Get(req.ChatName)
-	if err != nil {
-		httputil.WriteError(w, er.ErrNoSuchChat, http.StatusBadRequest)
-		return
-	}
-
-	chat.Lock()
-	defer chat.Unlock()
-
-	if !chat.IsInChat(username) {
+	if !s.dbStore.ChatDB.IsInChat(req.ChatName, username) {
 		httputil.WriteError(w, er.ErrNotInChat, http.StatusBadRequest)
 		return
 	}
 
-	users := chat.GetUsers()
+	users := s.dbStore.ChatDB.GetUsers(req.ChatName)
 	if err := json.NewEncoder(w).Encode(users); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return

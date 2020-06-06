@@ -68,8 +68,8 @@ func TestServer_LeaveChat(t *testing.T) {
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			s := newMockServer()
-			chat, _ := s.dbStore.ChatDB.Add(chatname)
-			chat.AddUser(username)
+			s.dbStore.ChatDB.Add(chatname)
+			s.dbStore.ChatDB.AddUser(chatname, username)
 
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(tt.req))

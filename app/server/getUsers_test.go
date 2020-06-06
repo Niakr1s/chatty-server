@@ -31,8 +31,8 @@ func TestServer_GetUsers(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := newMockServer()
-			chat, _ := s.dbStore.ChatDB.Add(chatname)
-			chat.AddUser(username)
+			s.dbStore.ChatDB.Add(chatname)
+			s.dbStore.ChatDB.AddUser(chatname, username)
 
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(fmt.Sprintf(`{"chat":"%s"}`, tt.chat)))

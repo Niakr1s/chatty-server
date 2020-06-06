@@ -21,29 +21,17 @@ func (s *Server) JoinChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
-	chat, err := s.dbStore.ChatDB.Get(req.ChatName)
-	if err != nil {
-		httputil.WriteError(w, err, http.StatusBadRequest)
-		return
-	}
-
-	chat.Lock()
-	defer chat.Unlock()
-
-	if chat.IsInChat(username) {
+	if s.dbStore.ChatDB.IsInChat(req.ChatName, username) {
 		httputil.WriteError(w, er.ErrAlreadyInChat, http.StatusBadRequest)
 		return
 	}
 
-	if err := chat.AddUser(username); err != nil {
+	if err := s.dbStore.ChatDB.AddUser(req.ChatName, username); err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	report := s.dbStore.MakeChatReportForUser(username, chat)
+	report := s.dbStore.MakeChatReportForUser(username, req.ChatName)
 
 	if err := json.NewEncoder(w).Encode(report); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)

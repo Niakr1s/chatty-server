@@ -17,9 +17,6 @@ func (s *Server) RemoveChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
 	if err := s.dbStore.ChatDB.Remove(req.ChatName); err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return

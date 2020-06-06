@@ -18,16 +18,12 @@ func TestChatDB_Add(t *testing.T) {
 
 	chatDB := NewChatDB(parentDB)
 
-	_, err := chatDB.Add(chatname)
+	err := chatDB.Add(chatname)
 	assert.NoError(t, err)
-	_, err = chatDB.Add(chatname)
+	err = chatDB.Add(chatname)
 	assert.Error(t, err)
-	chat, err := chatDB.Add(chatname)
+	err = chatDB.Add(chatname)
 	assert.Error(t, err)
-
-	gotChat, err := chatDB.Get(chatname)
-	assert.NoError(t, err)
-	assert.Equal(t, chat, gotChat)
 
 	err = chatDB.Remove(chatname)
 	assert.NoError(t, err)
@@ -41,9 +37,9 @@ func TestChatDB_Add(t *testing.T) {
 		cn := fmt.Sprintf("chat%d", i)
 		chatDB.Add(cn)
 		// removing chats from memory
-		chatDB.memoryDB.Remove(cn)
+		chatDB.ChatDB.Remove(cn)
 	}
-	assert.Empty(t, chatDB.memoryDB.GetChats())
+	assert.Empty(t, chatDB.ChatDB.GetChats())
 
 	chatDB.LoadChatsFromPostgres()
 

@@ -29,8 +29,8 @@ func TestServer_GetLastMessages(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := newMockServer()
-			chat, _ := s.dbStore.ChatDB.Add(chat)
-			chat.AddUser(username)
+			s.dbStore.ChatDB.Add(chat)
+			s.dbStore.ChatDB.AddUser(chat, username)
 
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/", strings.NewReader(fmt.Sprintf(`{"chat":"%s"}`, tt.chat)))

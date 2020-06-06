@@ -21,19 +21,7 @@ func (s *Server) LeaveChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
-	chat, err := s.dbStore.ChatDB.Get(req.ChatName)
-	if err != nil {
-		httputil.WriteError(w, err, http.StatusBadRequest)
-		return
-	}
-
-	chat.Lock()
-	defer chat.Unlock()
-
-	if err := chat.RemoveUser(username); err != nil {
+	if err := s.dbStore.ChatDB.RemoveUser(req.ChatName, username); err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return
 	}

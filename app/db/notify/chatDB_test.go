@@ -39,11 +39,11 @@ func TestChatDB_Notify(t *testing.T) {
 
 	memoryDB := NewChatDB(memory.NewChatDB(), memory.NewLoggedDB(), ch)
 
-	chat, err := memoryDB.Add(chatname)
+	err := memoryDB.Add(chatname)
 	assert.NoError(t, err)
 	<-ch
 
-	chat.AddUser(username)
+	memoryDB.AddUser(chatname, username)
 
 	e, ok := (<-ch)
 	assert.True(t, ok)
@@ -61,10 +61,10 @@ func TestChatDB_StartListeningToEvents(t *testing.T) {
 
 	ch := make(chan events.Event)
 	d := NewChatDB(memory.NewChatDB(), memory.NewLoggedDB(), make(chan<- events.Event))
-	chat, _ := d.Add(chatname)
-	chat.AddUser(username)
+	d.Add(chatname)
+	d.AddUser(chatname, username)
 
-	assert.NotEmpty(t, chat.GetUsers())
+	assert.NotEmpty(t, d.GetUsers(chatname))
 
 	d.StartListeningToEvents(ch)
 
@@ -72,5 +72,51 @@ func TestChatDB_StartListeningToEvents(t *testing.T) {
 
 	<-time.After(time.Millisecond * 10)
 
-	assert.Empty(t, chat.GetUsers())
+	assert.Empty(t, d.GetUsers(chatname))
+}
+
+func TestChat_notify(t *testing.T) {
+	ch := make(chan events.Event)
+
+	db := NewChatDB(memory.NewChatDB(), memory.NewLoggedDB(), ch)
+	db.Add(chatname)
+	<-ch
+
+	db.AddUser(chatname, username)
+	db.AddUser(chatname, username)
+
+	joinE := (<-ch).(*events.ChatJoinEvent)
+	assert.Equal(t, joinE.UserName, username)
+
+	db.RemoveUser(chatname, username)
+	db.RemoveUser(chatname, username)
+
+	leaveE := (<-ch).(*events.ChatLeaveEvent)
+	assert.Equal(t, leaveE.UserName, username)
+
+	select {
+	case <-ch:
+		assert.Fail(t, "channel should be empty")
+	default:
+	}
+}
+
+func TestChat_NotifyJoinChatWithUserStatus(t *testing.T) {
+	logged := memory.NewLoggedDB()
+	lu, _ := logged.Login(username)
+	lu.UserStatus = models.UserStatus{Admin: true, Verified: true}
+	logged.Update(lu)
+
+	ch := make(chan events.Event)
+
+	db := NewChatDB(memory.NewChatDB(), logged, ch)
+	db.Add(chatname)
+	<-ch
+
+	db.AddUser(chatname, username)
+
+	joinE := (<-ch).(*events.ChatJoinEvent)
+	assert.Equal(t, joinE.UserName, username)
+	assert.Equal(t, true, joinE.Verified)
+	assert.Equal(t, true, joinE.Admin)
 }

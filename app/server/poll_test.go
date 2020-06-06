@@ -32,9 +32,9 @@ func TestServer_Poll(t *testing.T) {
 
 	s.dbStore.LoggedDB.Login(username)
 
-	chat, _ := s.dbStore.ChatDB.Add(chatname)
-	chat.AddUser(username)
-	chat.AddUser("another user")
+	s.dbStore.ChatDB.Add(chatname)
+	s.dbStore.ChatDB.AddUser(chatname, username)
+	s.dbStore.ChatDB.AddUser(chatname, "another user")
 
 	<-done
 

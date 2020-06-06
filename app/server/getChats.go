@@ -13,17 +13,12 @@ import (
 func (s *Server) GetChats(w http.ResponseWriter, r *http.Request) {
 	username := sess.GetUserNameFromCtx(r.Context())
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
 	chats := s.dbStore.ChatDB.GetChats()
 
 	res := make([]db.ChatReport, 0, len(chats))
 
 	for _, c := range chats {
-		c.Lock()
 		res = append(res, s.dbStore.MakeChatReportForUser(username, c))
-		c.Unlock()
 	}
 
 	err := json.NewEncoder(w).Encode(res)

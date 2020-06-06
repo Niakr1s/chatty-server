@@ -42,8 +42,8 @@ func TestServer_PostMessage(t *testing.T) {
 			r = r.WithContext(sess.SetUserNameIntoCtx(r.Context(), tt.user))
 
 			s := newMockServer()
-			chat, _ := s.dbStore.ChatDB.Add(chatname)
-			chat.AddUser(username)
+			s.dbStore.ChatDB.Add(chatname)
+			s.dbStore.ChatDB.AddUser(chatname, username)
 
 			s.PostMessage(w, r)
 

@@ -17,10 +17,7 @@ func (s *Server) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
-	if _, err := s.dbStore.ChatDB.Add(req.ChatName); err != nil {
+	if err := s.dbStore.ChatDB.Add(req.ChatName); err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return
 	}

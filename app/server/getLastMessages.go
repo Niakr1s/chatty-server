@@ -22,24 +22,12 @@ func (s *Server) GetLastMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
-	c, err := s.dbStore.ChatDB.Get(input.ChatName)
-	if err != nil {
-		httputil.WriteError(w, err, http.StatusBadRequest)
-		return
-	}
-
-	c.Lock()
-	defer c.Unlock()
-
-	if !c.IsInChat(username) {
+	if !s.dbStore.ChatDB.IsInChat(input.ChatName, username) {
 		httputil.WriteError(w, er.ErrNotInChat, http.StatusBadRequest)
 		return
 	}
 
-	res, _ := s.dbStore.MessageDB.GetLastNMessages(c.ChatName(), config.C.LastMessages)
+	res, _ := s.dbStore.MessageDB.GetLastNMessages(input.ChatName, config.C.LastMessages)
 
 	err = json.NewEncoder(w).Encode(res)
 	if err != nil {

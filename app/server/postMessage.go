@@ -27,19 +27,7 @@ func (s *Server) PostMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.ChatDB.Lock()
-	defer s.dbStore.ChatDB.Unlock()
-
-	chat, err := s.dbStore.ChatDB.Get(mess.ChatName)
-	if err != nil {
-		httputil.WriteError(w, er.ErrNoSuchChat, http.StatusBadRequest)
-		return
-	}
-
-	chat.Lock()
-	defer chat.Unlock()
-
-	if !chat.IsInChat(mess.UserName) {
+	if !s.dbStore.ChatDB.IsInChat(mess.ChatName, mess.UserName) {
 		httputil.WriteError(w, er.ErrNotInChat, http.StatusBadRequest)
 		return
 	}

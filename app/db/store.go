@@ -40,16 +40,16 @@ func NewChatReport(username, chatname string, joined bool) ChatReport {
 // MakeChatReportForUser returns ChatReport for an user.
 // If not joined, Messages and Users fields are always empty.
 // Chat should be locked. LoggedDB, MessageDB should be unlocked.
-func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
-	res := NewChatReport(username, chat.ChatName(), chat.IsInChat(username))
+func (s *Store) MakeChatReportForUser(username string, chatname string) ChatReport {
+	res := NewChatReport(username, chatname, s.ChatDB.IsInChat(chatname, username))
 
 	if res.Joined {
-		gotMessages, err := s.MessageDB.GetLastNMessages(chat.ChatName(), config.C.LastMessages)
+		gotMessages, err := s.MessageDB.GetLastNMessages(chatname, config.C.LastMessages)
 		if err == nil {
 			res.Messages = gotMessages
 		}
-		for _, u := range chat.GetUsers() {
-			if loggedU, err := s.LoggedDB.Get(u.UserName); err == nil {
+		for _, u := range s.ChatDB.GetUsers(chatname) {
+			if loggedU, err := s.LoggedDB.Get(u); err == nil {
 				userToAppend := models.NewUserWithStatus(loggedU.User, loggedU.UserStatus)
 				res.Users = append(res.Users, userToAppend)
 			}
