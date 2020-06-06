@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/niakr1s/chatty-server/app/internal/migrations"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -25,23 +24,21 @@ func NewDB(ctx context.Context, connStr string) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	log.Infof("PostgresDB: connected to %s sucsessfully", connStr)
-	return &DB{ctx: ctx, pool: pool}, nil
+
+	res := &DB{ctx: ctx, pool: pool}
+	res.ApplyMigrations()
+
+	return res, nil
 }
 
 // ApplyMigrations applies migrations from dir to create valid tables.
 // First naiive impl, applies all migrations from folder, step by step.
-func (d *DB) ApplyMigrations(migrationsDir string) error {
-	migr, err := migrations.GetMigrations(migrationsDir)
-	if err != nil {
-		return err
-	}
-	for _, m := range migr {
-		if _, err := d.pool.Exec(d.ctx, m.Contents); err != nil {
-			log.Infof("PostgresDB: couldn't apply migration %s, check it", m.FullFileName)
+func (d *DB) ApplyMigrations() {
+	for _, m := range migrations {
+		if i, err := d.pool.Exec(d.ctx, m); err != nil {
+			log.Infof("PostgresDB: couldn't apply %d migration, check it", i)
 		}
 	}
-	log.Infof("PostgresDB: %d migrations from dir %s applied succesfully", len(migr), migrationsDir)
-	return nil
+	log.Infof("PostgresDB: %d migrations applied succesfully", len(migrations))
 }

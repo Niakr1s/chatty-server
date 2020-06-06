@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testConnStr = "postgres://localhost:5432/users"
+const testConnStr = "postgres://localhost:5432/users_test"
 
 func newTestDB(t *testing.T) (*DB, func()) {
 	t.Helper()

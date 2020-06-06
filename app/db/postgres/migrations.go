@@ -1,0 +1,27 @@
+package postgres
+
+var migrations = []string{
+	`CREATE TABLE IF NOT EXISTS users (
+		"id" SERIAL PRIMARY KEY,
+		"user" VARCHAR(50) NOT NULL UNIQUE,
+		"email" VARCHAR(50) NOT NULL UNIQUE,
+		"email_activation_token" VARCHAR(50) NOT NULL,
+		"email_activated" BOOLEAN NOT NULL DEFAULT FALSE,
+		"password_hash" VARCHAR(255) NOT NULL
+	);`,
+
+	`CREATE TABLE IF NOT EXISTS chats ( "chat" VARCHAR(50) NOT NULL UNIQUE);`,
+
+	`CREATE TABLE IF NOT EXISTS messages (
+		"id" SERIAL PRIMARY KEY,
+		"user_id" INTEGER NOT NULL,
+		"user" VARCHAR(50) NOT NULL,
+		"chat" VARCHAR(50) NOT NULL,
+		"text" TEXT NOT NULL,
+		"time" TIMESTAMP NOT NULL
+	);`,
+
+	`ALTER TABLE messages ADD column IF NOT EXISTS "verified" BOOLEAN;`,
+
+	`ALTER TABLE users RENAME "email_activated" TO "verified";`,
+}

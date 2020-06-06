@@ -70,9 +70,6 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := postgresDB.ApplyMigrations(constants.MigrationsDir); err != nil {
-		log.Infof("PostgresDB: no valid migrations found in dir %s, reason: %v", constants.MigrationsDir, err)
-	}
 	u := postgres.NewUserDB(postgresDB)
 	c := postgres.NewChatDB(postgresDB)
 	c.LoadChatsFromPostgres()
@@ -104,9 +101,6 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		postgresDB, err := postgres.NewDB(ctx, url)
 		if err != nil {
 			return nil, err
-		}
-		if err := postgresDB.ApplyMigrations(constants.MigrationsDir); err != nil {
-			log.Infof("PostgresDB: no migrations found in dir %s, reason: %v", constants.MigrationsDir, err)
 		}
 		u = postgres.NewUserDB(postgresDB)
 		cp := postgres.NewChatDB(postgresDB)
