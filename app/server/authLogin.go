@@ -24,26 +24,26 @@ func (s *Server) AuthLogin(w http.ResponseWriter, r *http.Request) {
 	defer s.dbStore.LoggedDB.Unlock()
 
 	s.dbStore.LoggedDB.Logout(username) // we are authorized, do forced login
-	u, err := s.dbStore.LoggedDB.Login(username)
+	loggedu, err := s.dbStore.LoggedDB.Login(username)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusForbidden)
 		return
 	}
 
-	if storedU, err := s.dbStore.UserDB.Get(u.UserName); err == nil {
-		u.UserStatus = storedU.UserStatus
-		s.dbStore.LoggedDB.Update(u)
+	if storedU, err := s.dbStore.UserDB.Get(loggedu.UserName); err == nil {
+		loggedu.UserStatus = storedU.UserStatus
+		s.dbStore.LoggedDB.Update(loggedu)
 	}
 
-	session.Values[constants.SessionUserName] = u.UserName
-	session.Values[constants.SessionLoginToken] = u.LoginToken
+	session.Values[constants.SessionUserName] = loggedu.UserName
+	session.Values[constants.SessionLoginToken] = loggedu.LoginToken
 
 	if err := session.Save(r, w); err != nil {
 		httputil.WriteSessionError(w)
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(u.User); err != nil {
+	if err := json.NewEncoder(w).Encode(loggedu); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return
 	}

@@ -57,7 +57,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(loggedU.User); err != nil {
+	if err := json.NewEncoder(w).Encode(loggedU); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return
 	}
