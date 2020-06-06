@@ -11,12 +11,3 @@ type UserDB interface {
 
 	Get(username string) (models.FullUser, error)
 }
-
-// IsUserVerified gets verified status.
-func IsUserVerified(db UserDB, username string) bool {
-	u, err := db.Get(username)
-	if err != nil {
-		return false
-	}
-	return u.Verified
-}

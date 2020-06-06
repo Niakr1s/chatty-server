@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/niakr1s/chatty-server/app/constants"
-	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/er"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
@@ -36,7 +35,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if db.IsUserVerified(s.dbStore.UserDB, u.UserName) {
+	if fullU, err := s.dbStore.UserDB.Get(u.UserName); err == nil || fullU.Verified {
 		httputil.WriteError(w, er.ErrUnathorized, http.StatusConflict)
 		return
 	}
