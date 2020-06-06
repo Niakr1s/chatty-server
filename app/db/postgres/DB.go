@@ -35,9 +35,9 @@ func NewDB(ctx context.Context, connStr string) (*DB, error) {
 // ApplyMigrations applies migrations from dir to create valid tables.
 // First naiive impl, applies all migrations from folder, step by step.
 func (d *DB) ApplyMigrations() {
-	for _, m := range migrations {
-		if i, err := d.pool.Exec(d.ctx, m); err != nil {
-			log.Infof("PostgresDB: couldn't apply %d migration, check it", i)
+	for i, m := range migrations {
+		if _, err := d.pool.Exec(d.ctx, m); err != nil {
+			log.Infof("PostgresDB: couldn't apply #%d migration, check it: \n%s", i, m)
 		}
 	}
 	log.Infof("PostgresDB: %d migrations applied succesfully", len(migrations))
