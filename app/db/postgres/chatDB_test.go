@@ -41,9 +41,9 @@ func TestChatDB_Add(t *testing.T) {
 		cn := fmt.Sprintf("chat%d", i)
 		chatDB.Add(cn)
 		// removing chats from memory
-		chatDB.ChatDB.Remove(cn)
+		chatDB.memoryDB.Remove(cn)
 	}
-	assert.Empty(t, chatDB.ChatDB.GetChats())
+	assert.Empty(t, chatDB.memoryDB.GetChats())
 
 	chatDB.LoadChatsFromPostgres()
 
