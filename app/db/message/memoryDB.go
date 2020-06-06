@@ -23,11 +23,6 @@ func NewMemoryDB() *MemoryDB {
 	return &MemoryDB{chats: make(map[string][]*models.Message)}
 }
 
-// WithNotifyCh ...
-func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
-	return NewNotifyDB(d, ch)
-}
-
 // Post ...
 func (d *MemoryDB) Post(msg *models.Message) error {
 	chat := d.chats[msg.ChatName]

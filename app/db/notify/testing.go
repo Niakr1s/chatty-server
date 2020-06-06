@@ -1,4 +1,7 @@
 package notify
 
-const username = "user"
-const chatname = "chat"
+const (
+	username = "user"
+	chatname = "chat"
+	text     = "text"
+)

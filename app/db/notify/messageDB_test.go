@@ -1,18 +1,19 @@
-package message
+package notify
 
 import (
 	"testing"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/db/message"
 	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNotifyDB_notify(t *testing.T) {
+func TestMessageDB_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	db := NewMemoryDB().WithNotifyCh(ch)
+	db := NewMessageDB(message.NewMemoryDB(), ch)
 
 	msg := models.NewMessage(username, text, chatname).WithTime(time.Now().UTC())
 
