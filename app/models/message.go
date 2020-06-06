@@ -12,13 +12,11 @@ import (
 // Time must contain UTC time, not local.
 type Message struct {
 	User
+	UserStatus
 	Chat
 	ID   int      `json:"id"`
 	Text string   `json:"text" validate:"required"`
 	Time UnixTime `json:"time"`
-
-	// Status of user, posted this message.
-	Verified bool `json:"verified"`
 }
 
 // NewMessage constructs message with Time=time.Now().UTC()
