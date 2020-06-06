@@ -22,9 +22,9 @@ func NewStore(u UserDB, c ChatDB, l LoggedDB, m MessageDB) *Store {
 type ChatReport struct {
 	models.User
 	models.Chat
-	Joined   bool              `json:"joined"`
-	Messages []*models.Message `json:"messages"`
-	Users    []models.User     `json:"users"`
+	Joined   bool                `json:"joined"`
+	Messages []*models.Message   `json:"messages"`
+	Users    []models.LoggedUser `json:"users"`
 }
 
 // NewChatReport ...
@@ -34,12 +34,12 @@ func NewChatReport(username, chatname string, joined bool) ChatReport {
 		Chat:     models.Chat{ChatName: chatname},
 		Joined:   joined,
 		Messages: []*models.Message{},
-		Users:    []models.User{}}
+		Users:    []models.LoggedUser{}}
 }
 
 // MakeChatReportForUser returns ChatReport for an user.
 // If not joined, Messages and Users fields are always empty.
-// Chat should be locked.
+// Chat should be locked. LoggedDB, MessageDB should be unlocked.
 func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 	res := NewChatReport(username, chat.ChatName(), chat.IsInChat(username))
 
@@ -50,7 +50,13 @@ func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 		if err == nil {
 			res.Messages = gotMessages
 		}
-		res.Users = chat.GetUsers()
+		s.LoggedDB.Lock()
+		for _, u := range chat.GetUsers() {
+			if loggedU, err := s.LoggedDB.Get(u.UserName); err == nil {
+				res.Users = append(res.Users, *loggedU)
+			}
+		}
+		s.LoggedDB.Unlock()
 	}
 
 	return res
