@@ -25,7 +25,7 @@ func (s *Server) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !storedU.Email.Activated {
+	if !storedU.Verified {
 		httputil.WriteError(w, er.ErrUnverifiedEmail, http.StatusForbidden)
 		return
 	}

@@ -18,5 +18,5 @@ func IsUserVerified(db UserDB, username string) bool {
 	if err != nil {
 		return false
 	}
-	return u.Email.Activated
+	return u.Verified
 }

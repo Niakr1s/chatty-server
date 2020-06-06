@@ -17,7 +17,7 @@ func TestServer_Authorize(t *testing.T) {
 
 	storedUser := models.NewFullUser("user", "user@example.org", "password")
 	storedUser.GeneratePasswordHash()
-	storedUser.Email.Activated = true
+	storedUser.Verified = true
 
 	s.dbStore.UserDB.Store(storedUser)
 

@@ -7,6 +7,7 @@ import (
 // FullUser ...
 type FullUser struct {
 	User
+	UserStatus
 	Email
 	Pass
 }

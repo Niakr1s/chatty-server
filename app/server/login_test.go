@@ -65,7 +65,7 @@ func TestServer_CannotLoginAsVerifiedUser(t *testing.T) {
 
 	username := "user"
 
-	s.dbStore.UserDB.Store(models.FullUser{User: models.User{UserName: username}, Email: models.Email{Activated: true}})
+	s.dbStore.UserDB.Store(models.FullUser{User: models.User{UserName: username}, UserStatus: models.UserStatus{Verified: true}})
 
 	u := models.User{UserName: username}
 	b, _ := json.Marshal(u)

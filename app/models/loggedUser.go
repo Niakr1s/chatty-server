@@ -9,6 +9,7 @@ import (
 // LoggedUser ...
 type LoggedUser struct {
 	User
+	UserStatus
 
 	LastActivity time.Time `validate:"required"`
 	LoginToken   string    `validate:"required"`

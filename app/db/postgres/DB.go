@@ -39,7 +39,7 @@ func (d *DB) ApplyMigrations(migrationsDir string) error {
 	}
 	for _, m := range migr {
 		if _, err := d.pool.Exec(d.ctx, m.Contents); err != nil {
-			return err
+			log.Infof("PostgresDB: couldn't apply migration %s, check it", m.FullFileName)
 		}
 	}
 	log.Infof("PostgresDB: %d migrations from dir %s applied succesfully", len(migr), migrationsDir)
