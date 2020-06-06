@@ -47,8 +47,8 @@ func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message,
 		FROM messages
 		WHERE chat=$1
 		ORDER BY id DESC
-		LIMIT 4) AS q1
-	ORDER BY q1.id ASC;`, chatname)
+		LIMIT $2) AS q1
+	ORDER BY q1.id ASC;`, chatname, n)
 	if err != nil {
 		return nil, err
 	}
