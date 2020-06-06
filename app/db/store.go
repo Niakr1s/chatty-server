@@ -44,9 +44,7 @@ func (s *Store) MakeChatReportForUser(username string, chat Chat) ChatReport {
 	res := NewChatReport(username, chat.ChatName(), chat.IsInChat(username))
 
 	if res.Joined {
-		s.MessageDB.Lock()
 		gotMessages, err := s.MessageDB.GetLastNMessages(chat.ChatName(), config.C.LastMessages)
-		s.MessageDB.Unlock()
 		if err == nil {
 			res.Messages = gotMessages
 		}

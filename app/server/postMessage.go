@@ -48,9 +48,6 @@ func (s *Server) PostMessage(w http.ResponseWriter, r *http.Request) {
 		mess.UserStatus = storedU.UserStatus
 	}
 
-	s.dbStore.MessageDB.Lock()
-	defer s.dbStore.MessageDB.Unlock()
-
 	err = s.dbStore.MessageDB.Post(mess)
 	if err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)

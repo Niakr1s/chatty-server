@@ -39,9 +39,6 @@ func (s *Server) GetLastMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.dbStore.MessageDB.Lock()
-	defer s.dbStore.MessageDB.Unlock()
-
 	res, _ := s.dbStore.MessageDB.GetLastNMessages(c.ChatName(), config.C.LastMessages)
 
 	err = json.NewEncoder(w).Encode(res)

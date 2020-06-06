@@ -25,6 +25,24 @@ func NewMessageDB() *MessageDB {
 
 // Post ...
 func (d *MessageDB) Post(msg *models.Message) error {
+	d.Lock()
+	defer d.Unlock()
+
+	return d.post(msg)
+}
+
+// GetLastNMessages ...
+func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message, error) {
+	d.Lock()
+	defer d.Unlock()
+
+	return d.getLastNMessages(chatname, n)
+}
+
+// concurrency-unsafe
+
+// Post ...
+func (d *MessageDB) post(msg *models.Message) error {
 	chat := d.chats[msg.ChatName]
 
 	msg.ID = len(chat) + 1
@@ -37,7 +55,7 @@ func (d *MessageDB) Post(msg *models.Message) error {
 }
 
 // GetLastNMessages ...
-func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message, error) {
+func (d *MessageDB) getLastNMessages(chatname string, n int) ([]*models.Message, error) {
 	chat, ok := d.chats[chatname]
 
 	if !ok {
