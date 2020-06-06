@@ -11,7 +11,7 @@ import (
 func TestChat_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	chat := NewChat(memory.NewChat(chatname), ch)
+	chat := NewChat(memory.NewChat(chatname), memory.NewLoggedDB(), ch)
 
 	chat.AddUser(username)
 	chat.AddUser(username)

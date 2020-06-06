@@ -13,7 +13,7 @@ import (
 func TestNotifyDB_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	memoryDB := NewChatDB(memory.NewChatDB(), ch)
+	memoryDB := NewChatDB(memory.NewChatDB(), memory.NewLoggedDB(), ch)
 
 	memoryDB.Add(chatname)
 	memoryDB.Add(chatname) // shouldn't fire same event twice
@@ -37,7 +37,7 @@ func TestNotifyDB_notify(t *testing.T) {
 func TestChatDB_Notify(t *testing.T) {
 	ch := make(chan events.Event)
 
-	memoryDB := NewChatDB(memory.NewChatDB(), ch)
+	memoryDB := NewChatDB(memory.NewChatDB(), memory.NewLoggedDB(), ch)
 
 	chat, err := memoryDB.Add(chatname)
 	assert.NoError(t, err)
@@ -60,7 +60,7 @@ func TestChatDB_StartListeningToEvents(t *testing.T) {
 	)
 
 	ch := make(chan events.Event)
-	d := NewChatDB(memory.NewChatDB(), make(chan<- events.Event))
+	d := NewChatDB(memory.NewChatDB(), memory.NewLoggedDB(), make(chan<- events.Event))
 	chat, _ := d.Add(chatname)
 	chat.AddUser(username)
 

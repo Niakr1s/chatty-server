@@ -10,13 +10,14 @@ import (
 // ChatDB is wrapper above ChatDB
 type ChatDB struct {
 	db.ChatDB
+	logged db.LoggedDB
 
 	notifyCh chan<- events.Event
 }
 
 // NewChatDB ...
-func NewChatDB(db db.ChatDB, ch chan<- events.Event) *ChatDB {
-	return &ChatDB{ChatDB: db, notifyCh: ch}
+func NewChatDB(db db.ChatDB, logged db.LoggedDB, ch chan<- events.Event) *ChatDB {
+	return &ChatDB{db, logged, ch}
 }
 
 // StartListeningToEvents starts to listen to events from input channel.
@@ -42,7 +43,7 @@ func (d *ChatDB) Add(chatname string) (db.Chat, error) {
 	}
 
 	// converting chat to notifyChat
-	c = NewChat(c, d.notifyCh)
+	c = NewChat(c, d.logged, d.notifyCh)
 
 	d.notifyChatCreated(chatname, time.Now().UTC())
 
@@ -55,7 +56,7 @@ func (d *ChatDB) Get(chatname string) (db.Chat, error) {
 	if err != nil {
 		return c, err
 	}
-	return NewChat(c, d.notifyCh), nil
+	return NewChat(c, d.logged, d.notifyCh), nil
 }
 
 // Remove ...
@@ -75,7 +76,7 @@ func (d *ChatDB) Remove(chatname string) error {
 func (d *ChatDB) GetChats() []db.Chat {
 	chats := d.ChatDB.GetChats()
 	for i, chat := range chats {
-		chats[i] = NewChat(chat, d.notifyCh)
+		chats[i] = NewChat(chat, d.logged, d.notifyCh)
 	}
 	return chats
 }

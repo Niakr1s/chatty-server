@@ -45,7 +45,7 @@ func NewServer(dbStore *db.Store, m email.Mailer) *Server {
 	ch := res.pool.GetInputChan()
 	res.dbStore.LoggedDB = notify.NewLoggedDB(res.dbStore.LoggedDB, ch)
 
-	notifyChatDB := notify.NewChatDB(res.dbStore.ChatDB, ch)
+	notifyChatDB := notify.NewChatDB(res.dbStore.ChatDB, res.dbStore.LoggedDB, ch)
 	notifyChatDB.StartListeningToEvents(res.pool.CreateChan(eventpool.FilterPassLogoutEvents))
 	res.dbStore.ChatDB = notifyChatDB
 

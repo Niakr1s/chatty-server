@@ -10,13 +10,14 @@ import (
 // Chat ...
 type Chat struct {
 	db.Chat
+	logged db.LoggedDB
 
 	notifyCh chan<- events.Event
 }
 
 // NewChat ...
-func NewChat(chat db.Chat, ch chan<- events.Event) *Chat {
-	return &Chat{chat, ch}
+func NewChat(chat db.Chat, logged db.LoggedDB, ch chan<- events.Event) *Chat {
+	return &Chat{chat, logged, ch}
 }
 
 // AddUser ...
