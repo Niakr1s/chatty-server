@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNotifyChat_notify(t *testing.T) {
+func TestChat_notify(t *testing.T) {
 	ch := make(chan events.Event)
 
 	chat := NewChat(chat.NewMemoryChat(chatname), ch)

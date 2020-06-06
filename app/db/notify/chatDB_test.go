@@ -34,7 +34,7 @@ func TestNotifyDB_notify(t *testing.T) {
 	}
 }
 
-func TestNotifyDB_ChatNotify(t *testing.T) {
+func TestChatDB_Notify(t *testing.T) {
 	ch := make(chan events.Event)
 
 	memoryDB := NewChatDB(chat.NewMemoryDB(), ch)
@@ -53,7 +53,7 @@ func TestNotifyDB_ChatNotify(t *testing.T) {
 	assert.Equal(t, joinedE.UserName, "user")
 }
 
-func TestNotifyDB_StartListeningToEvents(t *testing.T) {
+func TestChatDB_StartListeningToEvents(t *testing.T) {
 	const (
 		chatname = "chat"
 		username = "user"

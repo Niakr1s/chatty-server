@@ -1,4 +1,4 @@
-package logged
+package notify
 
 import (
 	"time"
@@ -8,20 +8,20 @@ import (
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
-// NotifyDB ...
-type NotifyDB struct {
+// LoggedDB ...
+type LoggedDB struct {
 	db.LoggedDB
 
 	notifyCh chan<- events.Event
 }
 
-// NewNotifyDB ...
-func NewNotifyDB(db db.LoggedDB, ch chan<- events.Event) *NotifyDB {
-	return &NotifyDB{db, ch}
+// NewLoggedDB ...
+func NewLoggedDB(db db.LoggedDB, ch chan<- events.Event) *LoggedDB {
+	return &LoggedDB{db, ch}
 }
 
 // Login ...
-func (d *NotifyDB) Login(username string) (*models.LoggedUser, error) {
+func (d *LoggedDB) Login(username string) (*models.LoggedUser, error) {
 	u, err := d.LoggedDB.Login(username)
 
 	if err != nil {
@@ -34,7 +34,7 @@ func (d *NotifyDB) Login(username string) (*models.LoggedUser, error) {
 }
 
 // Logout ...
-func (d *NotifyDB) Logout(username string) error {
+func (d *LoggedDB) Logout(username string) error {
 	err := d.LoggedDB.Logout(username)
 
 	if err != nil {
@@ -46,13 +46,13 @@ func (d *NotifyDB) Logout(username string) error {
 	return nil
 }
 
-func (d *NotifyDB) notifyLogin(username string, t time.Time) {
+func (d *LoggedDB) notifyLogin(username string, t time.Time) {
 	go func() {
 		d.notifyCh <- events.NewLoginEvent(username, "", t)
 	}()
 }
 
-func (d *NotifyDB) notifyLogout(username string, t time.Time) {
+func (d *LoggedDB) notifyLogout(username string, t time.Time) {
 	go func() {
 		d.notifyCh <- events.NewLogoutEvent(username, "", t)
 	}()

@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/niakr1s/chatty-server/app/er"
-	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
@@ -18,11 +17,6 @@ type MemoryDB struct {
 // NewMemoryDB ...
 func NewMemoryDB() *MemoryDB {
 	return &MemoryDB{users: make(map[string]*models.LoggedUser)}
-}
-
-// WithNotifyCh ...
-func (d *MemoryDB) WithNotifyCh(ch chan<- events.Event) *NotifyDB {
-	return NewNotifyDB(d, ch)
 }
 
 // GetLoggedUsers ...
