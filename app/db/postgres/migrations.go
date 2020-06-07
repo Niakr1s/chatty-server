@@ -25,4 +25,5 @@ var migrations = []string{
 
 	`ALTER TABLE users RENAME "email_activated" TO "verified";`,
 	`ALTER TABLE users ADD column IF NOT EXISTS "admin" BOOLEAN default false;`,
+	`ALTER TABLE users ADD COLUMN IF NOT EXISTS "password_reset_token" VARCHAR(50) not null default '';`,
 }
