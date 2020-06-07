@@ -77,6 +77,14 @@
 {User}
 ```
 
+#### /api/resetPassword
+- Server will generate hash for new password and store it.
+- Method: POST
+- Request:
+```json
+{User, "passwordResetToken": "reset token from email", "password": "new password"}
+```
+
 #### /api/verifyEmail/{username}/{activationToken}
 - Server will set user activated status to true in database
 - Method: GET

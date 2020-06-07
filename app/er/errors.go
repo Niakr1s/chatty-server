@@ -55,11 +55,13 @@ var (
 
 // Server errors
 var (
-	ErrCannotParseData    = errors.New("cannot parse data")
-	ErrUnathorized        = errors.New("unauthorized")
-	ErrNoUsername         = errors.New("no username")
-	ErrNoActivationToken  = errors.New("no activation token")
-	ErrBadActivationToken = errors.New("bad activation token")
+	ErrCannotParseData       = errors.New("cannot parse data")
+	ErrUnathorized           = errors.New("unauthorized")
+	ErrNoUsername            = errors.New("no username")
+	ErrNoActivationToken     = errors.New("no activation token")
+	ErrBadActivationToken    = errors.New("bad activation token")
+	ErrBadResetPasswordToken = errors.New("bad reset password token")
+	ErrEmptyFields           = errors.New("some fields are empty")
 )
 
 // Email errors

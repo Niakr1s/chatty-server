@@ -10,6 +10,7 @@ const (
 	mockUsername = "user"
 	mockEmail    = "email@example.org"
 	mockPassword = "password"
+	mockToken    = "123456789"
 )
 
 // newMockServer ...

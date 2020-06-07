@@ -9,7 +9,7 @@ import (
 type Pass struct {
 	Password           string `json:"password,omitempty" validate:"gt=5,lt=15"`
 	PasswordHash       string `json:"-" validate:"required"`
-	PasswordResetToken string
+	PasswordResetToken string `json:"passwordResetToken"`
 }
 
 // GeneratePasswordHash ...
@@ -36,6 +36,11 @@ func (p *Pass) GeneratePasswordResetToken() {
 // ErasePassword ...
 func (p *Pass) ErasePassword() {
 	p.Password = ""
+}
+
+// EraseResetToken ...
+func (p *Pass) EraseResetToken() {
+	p.PasswordResetToken = ""
 }
 
 // CheckPassword ...
