@@ -34,7 +34,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 
 	u.ErasePassword()
 
-	if err := s.mailer.SendMail(u.Email.Address, u.UserName, u.Email.ActivationToken); err != nil {
+	if err := s.mailer.SendActivationEmail(u.Email.Address, u.UserName, u.Email.ActivationToken); err != nil {
 		httputil.WriteError(w, er.ErrSendEmail, http.StatusInternalServerError)
 		return
 	}
