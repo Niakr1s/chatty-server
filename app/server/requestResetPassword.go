@@ -11,18 +11,18 @@ import (
 
 // RequestResetPassword ...
 func (s *Server) RequestResetPassword(w http.ResponseWriter, r *http.Request) {
-	uwe := models.User{}
-	if err := json.NewDecoder(r.Body).Decode(&uwe); err != nil {
+	req := models.User{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		httputil.WriteError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	if uwe.UserName == "" {
+	if req.UserName == "" {
 		httputil.WriteError(w, er.ErrUserNameIsEmpty, http.StatusBadRequest)
 		return
 	}
 
-	fullU, err := s.dbStore.UserDB.Get(uwe.UserName)
+	fullU, err := s.dbStore.UserDB.Get(req.UserName)
 	if err != nil {
 		httputil.WriteError(w, er.ErrUserNotFound, http.StatusInternalServerError)
 		return
