@@ -135,7 +135,7 @@ func (p *Pool) processChatJoinEvent(event events.Event) {
 		return
 	}
 
-	systemMessageEvent := events.NewSystemMessageChatJoinEvent(inChat, chatJoin.UserName)
+	systemMessageEvent := events.NewSystemMessageChatJoinEvent(inChat, chatJoin.UserName, chatJoin.Time)
 	go func() {
 		p.inputCh <- systemMessageEvent
 	}()
@@ -153,7 +153,7 @@ func (p *Pool) processChatLeaveEvent(event events.Event) {
 		return
 	}
 
-	systemMessageEvent := events.NewSystemMessageChatLeaveEvent(inChat, chatLeave.UserName)
+	systemMessageEvent := events.NewSystemMessageChatLeaveEvent(inChat, chatLeave.UserName, chatLeave.Time)
 	go func() {
 		p.inputCh <- systemMessageEvent
 	}()
