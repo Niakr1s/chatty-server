@@ -23,6 +23,11 @@
 {"user": "user"}
 ```
 
+- Email
+```json
+{"email": "user@example.org"}
+```
+
 - Chat
 ```json
 {"chat": "chat"}
@@ -62,6 +67,14 @@
 - Request:
 ```json
 {User, "email": "user@example.com", "password": "password"}
+```
+
+#### /api/requestResetPassword
+- Server will request send ResetPasswordToken via email.
+- Method: POST
+- Request:
+```json
+{User}
 ```
 
 #### /api/verifyEmail/{username}/{activationToken}

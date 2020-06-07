@@ -146,6 +146,7 @@ func (s *Server) generateRoutePaths() {
 	apiRouter.Handle("/register", http.HandlerFunc(s.Register)).Methods(http.MethodPost, http.MethodOptions)
 	apiRouter.Handle("/authorize", http.HandlerFunc(s.Authorize)).Methods(http.MethodPost, http.MethodOptions)
 	apiRouter.Handle("/verifyEmail/{username}/{activationToken}", http.HandlerFunc(s.VerifyEmail)).Methods(http.MethodGet, http.MethodOptions)
+	apiRouter.Handle("/requestResetPassword", http.HandlerFunc(s.RequestResetPassword)).Methods(http.MethodPost, http.MethodOptions)
 	apiRouter.Handle("/login", http.HandlerFunc(s.Login)).Methods(http.MethodPost, http.MethodOptions)
 
 	// /api/loggedonly

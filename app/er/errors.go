@@ -66,6 +66,7 @@ var (
 var (
 	ErrSendEmail       = errors.New("couldn't send email")
 	ErrUnverifiedEmail = errors.New("email is not verified")
+	ErrEmailIsEmpty    = errors.New("email is empty")
 )
 
 // Session errors

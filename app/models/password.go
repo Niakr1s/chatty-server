@@ -7,8 +7,9 @@ import (
 
 // Pass ...
 type Pass struct {
-	Password     string `json:"password,omitempty" validate:"gt=5,lt=15"`
-	PasswordHash string `json:"-" validate:"required"`
+	Password           string `json:"password,omitempty" validate:"gt=5,lt=15"`
+	PasswordHash       string `json:"-" validate:"required"`
+	PasswordResetToken string
 }
 
 // GeneratePasswordHash ...
@@ -27,7 +28,12 @@ func (p *Pass) GeneratePasswordHash() error {
 	return nil
 }
 
-// ClearPassword ...
+// GeneratePasswordResetToken ...
+func (p *Pass) GeneratePasswordResetToken() {
+	p.PasswordResetToken = randSeq(20)
+}
+
+// ErasePassword ...
 func (p *Pass) ErasePassword() {
 	p.Password = ""
 }
