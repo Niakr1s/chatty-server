@@ -138,3 +138,51 @@ func TestPool_Run(t *testing.T) {
 	}
 
 }
+
+func TestPool_ProcessSysMsgChatJoin(t *testing.T) {
+	p := NewMockPool(t, 0, 0)
+	p.Run()
+
+	inputCh := p.GetInputChan()
+	listenCh := p.CreateChan(FilterPassAlways)
+
+	inputCh <- events.NewChatJoinEvent("user", "chat", time.Now().UTC())
+
+	gotEvent := <-listenCh
+	_, ok := gotEvent.(*events.ChatJoinEvent)
+	assert.True(t, ok)
+
+	gotEvent = <-listenCh
+	_, ok = gotEvent.(*events.SystemMessageChatJoinEvent)
+	assert.True(t, ok)
+
+	select {
+	case <-listenCh:
+		assert.Fail(t, "non-empty listenCh")
+	default:
+	}
+}
+
+func TestPool_ProcessSysMsgChatLeave(t *testing.T) {
+	p := NewMockPool(t, 0, 0)
+	p.Run()
+
+	inputCh := p.GetInputChan()
+	listenCh := p.CreateChan(FilterPassAlways)
+
+	inputCh <- events.NewChatLeaveEvent("user", "chat", time.Now().UTC())
+
+	gotEvent := <-listenCh
+	_, ok := gotEvent.(*events.ChatLeaveEvent)
+	assert.True(t, ok)
+
+	gotEvent = <-listenCh
+	_, ok = gotEvent.(*events.SystemMessageChatLeaveEvent)
+	assert.True(t, ok)
+
+	select {
+	case <-listenCh:
+		assert.Fail(t, "non-empty listenCh")
+	default:
+	}
+}

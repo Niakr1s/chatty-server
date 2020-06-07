@@ -119,6 +119,44 @@ func (p *Pool) Run() {
 func (p *Pool) beforeSending(event events.Event) {
 	p.processLogoutEvent(event)
 	p.processLoginEvent(event)
+	p.processChatJoinEvent(event)
+	p.processChatLeaveEvent(event)
+}
+
+func (p *Pool) processChatJoinEvent(event events.Event) {
+	chatJoin, ok := event.(*events.ChatJoinEvent)
+	if !ok {
+		return
+	}
+	inChat, err := chatJoin.InChat()
+
+	// discarding global events
+	if err != nil {
+		return
+	}
+
+	systemMessageEvent := events.NewSystemMessageChatJoinEvent(inChat, chatJoin.UserName)
+	go func() {
+		p.inputCh <- systemMessageEvent
+	}()
+}
+
+func (p *Pool) processChatLeaveEvent(event events.Event) {
+	chatLeave, ok := event.(*events.ChatLeaveEvent)
+	if !ok {
+		return
+	}
+	inChat, err := chatLeave.InChat()
+
+	// discarding global events
+	if err != nil {
+		return
+	}
+
+	systemMessageEvent := events.NewSystemMessageChatLeaveEvent(inChat, chatLeave.UserName)
+	go func() {
+		p.inputCh <- systemMessageEvent
+	}()
 }
 
 func (p *Pool) processLogoutEvent(event events.Event) {
