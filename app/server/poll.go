@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/events"
 	"github.com/niakr1s/chatty-server/app/internal/httputil"
 	"github.com/niakr1s/chatty-server/app/internal/sess"
@@ -25,6 +26,6 @@ func (s *Server) Poll(w http.ResponseWriter, r *http.Request) {
 			httputil.WriteError(w, err, http.StatusInternalServerError)
 			return
 		}
-	case <-time.After(time.Second * 10):
+	case <-time.After(config.C.ResponseTimeout.Duration - time.Second):
 	}
 }
