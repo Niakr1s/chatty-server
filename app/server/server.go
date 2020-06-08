@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"sync"
 
 	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/constants"
@@ -146,9 +147,16 @@ func (s *Server) ListenAndServe() error {
 
 // Shutdown ...
 func (s *Server) Shutdown(ctx context.Context) error {
+	wg := sync.WaitGroup{}
+	wg.Add(len(s.shutdownFuncs))
 	for _, f := range s.shutdownFuncs {
-		defer f()
+		go func(f func()) {
+			f()
+			wg.Done()
+		}(f)
 	}
+	defer wg.Wait()
+
 	return s.srv.Shutdown(ctx)
 }
 
