@@ -5,6 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/niakr1s/chatty-server/app/config"
@@ -41,22 +45,51 @@ func main() {
 	config.InitConfig()
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	runServer()
+}
 
-	var err error
-	var s *server.Server
-	switch *dev {
-	case false: // it's prod
-		log.Infof("Initializing prod server...")
-		s, err = server.NewProdServer(ctx)
-	default: // it's dev
-		log.Infof("Initializing dev server...")
-		s, err = server.NewDevServer(ctx)
-	}
+func runServer() {
+	server, err := initServer()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Fatal(s.ListenAndServe())
+	done := make(chan struct{})
+
+	exit := make(chan os.Signal)
+	signal.Notify(exit, os.Interrupt)
+	signal.Notify(exit, syscall.SIGTERM)
+
+	go func() {
+		s := <-exit
+		log.Infof("Got %v, exiting...", s)
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		if err := server.Shutdown(ctx); err != nil {
+			log.Errorf("server shutdown fail: %v", err)
+		}
+		done <- struct{}{}
+	}()
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Errorf("listen err: %v", err)
+		}
+	}()
+
+	<-done
+
+	log.Infof("server shutdown succesfully")
+}
+
+func initServer() (*server.Server, error) {
+	switch *dev {
+	case false: // it's prod
+		log.Infof("Initializing prod server...")
+		return server.NewProdServer()
+	default: // it's dev
+		log.Infof("Initializing dev server...")
+		return server.NewDevServer()
+	}
 }

@@ -30,6 +30,9 @@ type Server struct {
 	cookieStore sessions.Store
 	mailer      email.Mailer
 	pool        *eventpool.Pool
+	srv         *http.Server
+
+	shutdownFuncs []func()
 }
 
 // newServer ...
@@ -60,12 +63,24 @@ func newServer(dbStore *db.Store, m email.Mailer) *Server {
 	return res
 }
 
+func (s *Server) withShutdownFunc(f func()) *Server {
+	s.shutdownFuncs = append(s.shutdownFuncs, f)
+	return s
+}
+
 // NewProdServer ...
-func NewProdServer(ctx context.Context) (*Server, error) {
+func NewProdServer() (*Server, error) {
 	url := os.Getenv(constants.EnvDatabaseURL)
 	if url == "" {
 		return nil, er.ErrEnvEmptyDatabaseURL
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	shutdownFunc := func() {
+		cancel()
+		<-ctx.Done()
+		log.Infof("db has been closed")
+	}
+
 	postgresDB, err := postgres.NewDB(ctx, url)
 	if err != nil {
 		return nil, err
@@ -81,11 +96,13 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newServer(db.NewStore(u, c, l, m), mailer), nil
+	return newServer(db.NewStore(u, c, l, m), mailer).withShutdownFunc(shutdownFunc), nil
 }
 
 // NewDevServer ...
-func NewDevServer(ctx context.Context) (*Server, error) {
+func NewDevServer() (*Server, error) {
+	var shutdownFunc func()
+
 	url := os.Getenv(constants.EnvDatabaseURL)
 
 	var u db.UserDB
@@ -98,6 +115,13 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 		c = memory.NewChatDB()
 		m = memory.NewMessageDB()
 	default:
+		ctx, cancel := context.WithCancel(context.Background())
+		shutdownFunc = func() {
+			cancel()
+			<-ctx.Done()
+			log.Infof("db has been closed")
+		}
+
 		postgresDB, err := postgres.NewDB(ctx, url)
 		if err != nil {
 			return nil, err
@@ -112,13 +136,17 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 	l := memory.NewLoggedDB()
 
 	mailer := email.NewMockMailer()
-	return newServer(db.NewStore(u, c, l, m), mailer), nil
+	res := newServer(db.NewStore(u, c, l, m), mailer)
+	if shutdownFunc != nil {
+		res = res.withShutdownFunc(shutdownFunc)
+	}
+	return res, nil
 }
 
 // ListenAndServe ...
 func (s *Server) ListenAndServe() error {
 	address := config.C.ServerListenAddress
-	srv := &http.Server{
+	s.srv = &http.Server{
 		Addr:         config.C.ServerListenAddress,
 		Handler:      s.router,
 		ReadTimeout:  config.C.RequestTimeout.Duration,
@@ -133,7 +161,15 @@ func (s *Server) ListenAndServe() error {
 	}
 
 	log.Printf("starting to listening on address %s", address)
-	return srv.ListenAndServe()
+	return s.srv.ListenAndServe()
+}
+
+// Shutdown ...
+func (s *Server) Shutdown(ctx context.Context) error {
+	for _, f := range s.shutdownFuncs {
+		defer f()
+	}
+	return s.srv.Shutdown(ctx)
 }
 
 func (s *Server) generateRoutePaths() {
