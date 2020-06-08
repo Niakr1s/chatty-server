@@ -49,7 +49,8 @@ func main() {
 }
 
 func runServer() {
-	server, err := initServer()
+	log.Infof("Initializing server, dev=%v", *dev)
+	server, err := server.New(*dev)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,15 +82,4 @@ func runServer() {
 	<-done
 
 	log.Infof("server shutdown succesfully")
-}
-
-func initServer() (*server.Server, error) {
-	switch *dev {
-	case false: // it's prod
-		log.Infof("Initializing prod server...")
-		return server.NewProdServer()
-	default: // it's dev
-		log.Infof("Initializing dev server...")
-		return server.NewDevServer()
-	}
 }

@@ -68,40 +68,9 @@ func (s *Server) withShutdownFuncs(funcs ...func()) *Server {
 	return s
 }
 
-// NewProdServer ...
-func NewProdServer() (*Server, error) {
-	url := os.Getenv(constants.EnvDatabaseURL)
-	if url == "" {
-		return nil, er.ErrEnvEmptyDatabaseURL
-	}
-	ctx, cancel := context.WithCancel(context.Background())
-	shutdownFunc := func() {
-		cancel()
-		<-ctx.Done()
-		log.Infof("db has been closed")
-	}
-
-	postgresDB, err := postgres.NewDB(ctx, url)
-	if err != nil {
-		return nil, err
-	}
-	u := postgres.NewUserDB(postgresDB)
-	c := postgres.NewChatDB(postgresDB)
-	c.LoadChatsFromPostgres()
-	m := postgres.NewMessageDB(postgresDB)
-
-	l := memory.NewLoggedDB()
-
-	mailer, err := email.NewSMTPMailer()
-	if err != nil {
-		return nil, err
-	}
-	return newServer(db.NewStore(u, c, l, m), mailer).withShutdownFuncs(shutdownFunc), nil
-}
-
-// NewDevServer ...
-func NewDevServer() (*Server, error) {
-	var shutdownFunc func()
+// New ...
+func New(dev bool) (*Server, error) {
+	shutdownFuncs := []func(){}
 
 	url := os.Getenv(constants.EnvDatabaseURL)
 
@@ -110,17 +79,21 @@ func NewDevServer() (*Server, error) {
 	var m db.MessageDB
 	switch url {
 	case "":
-		log.Warnf("Provided empty env %s. It's ok, just using user.MemoryDB", constants.EnvDatabaseURL)
-		u = memory.NewUserDB()
-		c = memory.NewChatDB()
-		m = memory.NewMessageDB()
+		if dev {
+			log.Warnf("Provided empty env %s. It's ok for dev mode, just using user.MemoryDB", constants.EnvDatabaseURL)
+			u = memory.NewUserDB()
+			c = memory.NewChatDB()
+			m = memory.NewMessageDB()
+		} else {
+			return nil, er.ErrEnvEmptyDatabaseURL
+		}
 	default:
 		ctx, cancel := context.WithCancel(context.Background())
-		shutdownFunc = func() {
+		shutdownFuncs = append(shutdownFuncs, func() {
 			cancel()
 			<-ctx.Done()
 			log.Infof("db has been closed")
-		}
+		})
 
 		postgresDB, err := postgres.NewDB(ctx, url)
 		if err != nil {
@@ -135,12 +108,19 @@ func NewDevServer() (*Server, error) {
 
 	l := memory.NewLoggedDB()
 
-	mailer := email.NewMockMailer()
-	res := newServer(db.NewStore(u, c, l, m), mailer)
-	if shutdownFunc != nil {
-		res = res.withShutdownFuncs(shutdownFunc)
+	var mailer email.Mailer
+	var err error
+
+	if dev {
+		mailer = email.NewMockMailer()
+	} else {
+		mailer, err = email.NewSMTPMailer()
+		if err != nil {
+			return nil, err
+		}
 	}
-	return res, nil
+
+	return newServer(db.NewStore(u, c, l, m), mailer).withShutdownFuncs(shutdownFuncs...), nil
 }
 
 // ListenAndServe ...
