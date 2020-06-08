@@ -65,7 +65,7 @@ func runServer() {
 		s := <-exit
 		log.Infof("Got %v, exiting...", s)
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 		if err := server.Shutdown(ctx); err != nil {
 			log.Errorf("server shutdown fail: %v", err)
