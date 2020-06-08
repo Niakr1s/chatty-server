@@ -63,8 +63,8 @@ func newServer(dbStore *db.Store, m email.Mailer) *Server {
 	return res
 }
 
-func (s *Server) withShutdownFunc(f func()) *Server {
-	s.shutdownFuncs = append(s.shutdownFuncs, f)
+func (s *Server) withShutdownFuncs(funcs ...func()) *Server {
+	s.shutdownFuncs = append(s.shutdownFuncs, funcs...)
 	return s
 }
 
@@ -96,7 +96,7 @@ func NewProdServer() (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newServer(db.NewStore(u, c, l, m), mailer).withShutdownFunc(shutdownFunc), nil
+	return newServer(db.NewStore(u, c, l, m), mailer).withShutdownFuncs(shutdownFunc), nil
 }
 
 // NewDevServer ...
@@ -138,7 +138,7 @@ func NewDevServer() (*Server, error) {
 	mailer := email.NewMockMailer()
 	res := newServer(db.NewStore(u, c, l, m), mailer)
 	if shutdownFunc != nil {
-		res = res.withShutdownFunc(shutdownFunc)
+		res = res.withShutdownFuncs(shutdownFunc)
 	}
 	return res, nil
 }
