@@ -19,5 +19,5 @@ func newMockServer() *Server {
 	c := memory.NewChatDB()
 	l := memory.NewLoggedDB()
 	m := memory.NewMessageDB()
-	return NewServer(db.NewStore(u, c, l, m), email.NewMockMailer())
+	return newServer(db.NewStore(u, c, l, m), email.NewMockMailer())
 }

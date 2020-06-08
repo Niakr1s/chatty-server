@@ -32,8 +32,8 @@ type Server struct {
 	pool        *eventpool.Pool
 }
 
-// NewServer ...
-func NewServer(dbStore *db.Store, m email.Mailer) *Server {
+// newServer ...
+func newServer(dbStore *db.Store, m email.Mailer) *Server {
 	res := &Server{
 		router:      mux.NewRouter(),
 		dbStore:     dbStore,
@@ -81,7 +81,7 @@ func NewProdServer(ctx context.Context) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewServer(db.NewStore(u, c, l, m), mailer), nil
+	return newServer(db.NewStore(u, c, l, m), mailer), nil
 }
 
 // NewDevServer ...
@@ -112,7 +112,7 @@ func NewDevServer(ctx context.Context) (*Server, error) {
 	l := memory.NewLoggedDB()
 
 	mailer := email.NewMockMailer()
-	return NewServer(db.NewStore(u, c, l, m), mailer), nil
+	return newServer(db.NewStore(u, c, l, m), mailer), nil
 }
 
 // ListenAndServe ...
