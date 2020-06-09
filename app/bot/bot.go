@@ -71,7 +71,6 @@ func (b *HelloBot) Run(ctx context.Context) error {
 			log.Tracef("got event: %v", e)
 			switch e := e.(type) {
 			case *events.ChatJoinEvent:
-				b.greetUser(e.ChatName, e.UserName)
 			case *events.MessageEvent:
 				cmd, err := command.ParseCommand(b.botName, e.Message)
 				if err != nil {
