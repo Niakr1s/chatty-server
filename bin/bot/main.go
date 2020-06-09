@@ -1,20 +1,25 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/niakr1s/chatty-server/app/bot"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
+	log.SetLevel(log.TraceLevel)
+
 	e, err := parseEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	b, err := bot.New()
+	b, err := bot.NewHelloBot()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,6 +27,23 @@ func main() {
 	if err := b.Connect(e.BotUsername, e.BotPassword, e.URL); err != nil {
 		log.Fatal(err)
 	}
+
+	exit := make(chan os.Signal)
+	signal.Notify(exit, os.Interrupt)
+	signal.Notify(exit, syscall.SIGTERM)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	done := make(chan struct{})
+	go func() {
+		b.Run(ctx)
+		done <- struct{}{}
+	}()
+
+	<-exit
+	cancel()
+	<-done
 }
 
 type env struct {

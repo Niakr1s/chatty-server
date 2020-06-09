@@ -17,6 +17,19 @@
                 "-loglevel=trace",
                 "-dev"
             ]
+        },
+        {
+            "name": "Debug Bot",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceRoot}/bin/bot",
+            "env": {
+                "BOT_USERNAME": "Bot",
+                "BOT_PASSWORD": "111111111",
+                "BOT_URL": "http://localhost:8080"
+            },
+            "args": []
         }
     ]
 }
