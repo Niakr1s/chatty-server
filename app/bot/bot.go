@@ -68,8 +68,12 @@ func (b *Bot) Run() error {
 func (b *Bot) loop() bool {
 	// connecting...
 	for b.connect() != nil {
-		log.Infof("couldn't reconnect, trying in 10secs...")
-		<-time.After(time.Second * 10)
+		log.Infof("couldn't reconnect to %s, trying in 10secs...", b.url)
+		select {
+		case <-b.ctx.Done():
+			return false
+		case <-time.After(time.Second * 10):
+		}
 	}
 
 	chats, err := b.getChats()
