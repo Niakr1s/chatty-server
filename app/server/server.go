@@ -78,6 +78,9 @@ func New(dev bool) (*Server, error) {
 	var u db.UserDB
 	var c db.ChatDB
 	var m db.MessageDB
+
+	l := memory.NewLoggedDB()
+
 	switch url {
 	case "":
 		if dev {
@@ -106,8 +109,6 @@ func New(dev bool) (*Server, error) {
 		c = cp
 		m = postgres.NewMessageDB(postgresDB)
 	}
-
-	l := memory.NewLoggedDB()
 
 	var mailer email.Mailer
 	var err error

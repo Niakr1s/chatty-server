@@ -19,9 +19,9 @@ func NewUserDB(p *DB) *UserDB {
 func (d *UserDB) Store(u models.FullUser) error {
 	log.Tracef("PostgresDB: start storing %v", u)
 	if _, err := d.p.pool.Exec(d.p.ctx, `INSERT INTO users 
-	("user", "email", "email_activation_token", "verified", "password_hash", "admin", "password_reset_token") 
-	VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-		u.UserName, u.Address, u.ActivationToken, u.Verified, u.PasswordHash, u.Admin, u.PasswordResetToken); err != nil {
+	("user", "email", "email_activation_token", "verified", "password_hash", "admin", "password_reset_token", "bot") 
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`,
+		u.UserName, u.Address, u.ActivationToken, u.Verified, u.PasswordHash, u.Admin, u.PasswordResetToken, u.Bot); err != nil {
 		return err
 	}
 	log.Tracef("PostgresDB: succes storing %v", u)
@@ -42,9 +42,11 @@ func (d *UserDB) Update(u models.FullUser) error {
 func (d *UserDB) Get(username string) (models.FullUser, error) {
 	log.Tracef("PostgresDB: start getting %s", username)
 	res := models.FullUser{}
-	row := d.p.pool.QueryRow(d.p.ctx, `SELECT "user", "email", "email_activation_token", "verified", "password_hash" , "admin", "password_reset_token"
+	row := d.p.pool.QueryRow(d.p.ctx, `SELECT "user", "email", "email_activation_token", "verified", 
+	"password_hash" , "admin", "password_reset_token", "bot"
 	FROM "users" WHERE "user" = $1;`, username)
-	if err := row.Scan(&res.UserName, &res.Address, &res.ActivationToken, &res.Verified, &res.PasswordHash, &res.Admin, &res.PasswordResetToken); err != nil {
+	if err := row.Scan(&res.UserName, &res.Address, &res.ActivationToken, &res.Verified,
+		&res.PasswordHash, &res.Admin, &res.PasswordResetToken, &res.Bot); err != nil {
 		return res, err
 	}
 	log.Tracef("PostgresDB: success getting %s", username)

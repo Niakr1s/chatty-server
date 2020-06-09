@@ -4,4 +4,5 @@ package models
 type UserStatus struct {
 	Verified bool `json:"verified"`
 	Admin    bool `json:"admin"`
+	Bot      bool `json:"bot"`
 }

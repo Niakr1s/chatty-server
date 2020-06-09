@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/models"
 )
 
@@ -11,6 +12,8 @@ import (
 type MessageDB struct {
 	sync.Mutex
 	p *DB
+
+	loggedDB db.LoggedDB
 }
 
 // NewMessageDB ...

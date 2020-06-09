@@ -29,4 +29,6 @@ var migrations = []string{
 
 	`UPDATE users SET admin=false WHERE admin IS NULL;
 	ALTER table users ALTER COLUMN "admin" set NOT null;`,
+
+	`ALTER TABLE users ADD column IF NOT EXISTS "bot" BOOLEAN not null default false;`,
 }
