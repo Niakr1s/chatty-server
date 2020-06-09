@@ -26,53 +26,72 @@ type Bot struct {
 	client *http.Client
 
 	ctx context.Context
-	url string
 
-	botName string
+	botname  string
+	password string
+	url      string
 }
 
 // New ...
-func New() (*Bot, error) {
+func New(ctx context.Context, botname, password, url string) (*Bot, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
 	}
-	return &Bot{client: &http.Client{Jar: jar}}, nil
+	return &Bot{client: &http.Client{Jar: jar}, botname: botname, password: password, url: url, ctx: ctx}, nil
 }
 
-// Connect ...
-func (b *Bot) Connect(botname, password, url string) error {
-	b.botName = botname
-	b.url = url
-	w, err := b.client.Post(url+constants.RouteApi+constants.RouteAuthorize,
-		contentJSON, strings.NewReader(fmt.Sprintf(`{"user": "%s", "password": "%s"}`, botname, password)))
+// connect ...
+func (b *Bot) connect() error {
+	w, err := b.client.Post(b.url+constants.RouteApi+constants.RouteAuthorize,
+		contentJSON, strings.NewReader(fmt.Sprintf(`{"user": "%s", "password": "%s"}`, b.botname, b.password)))
 	if err != nil {
 		return err
 	}
-	w.Body.Close()
+	defer w.Body.Close()
 	return nil
 }
 
 // Run ...
-func (b *Bot) Run(ctx context.Context) error {
-	b.ctx = ctx
+func (b *Bot) Run() error {
+	// start sending keep alive, we'll do it forever
+	b.startSendingKeepAlive()
+
+	// start our loop
+	for b.loop() {
+	}
+
+	return nil
+}
+
+// loop returns true if need to run again, otherwise false.
+func (b *Bot) loop() bool {
+	// connecting...
+	for b.connect() != nil {
+		log.Infof("couldn't reconnect, trying in 10secs...")
+		<-time.After(time.Second * 10)
+	}
+
 	chats, err := b.getChats()
 	if err != nil {
-		return err
+		return true
 	}
 	b.joinChats(chats...)
-	b.startSendingKeepAlive()
 	eventsCh := b.startListen()
 	for {
 		select {
-		case <-ctx.Done():
-			return nil
-		case e := <-eventsCh:
+		case <-b.ctx.Done():
+			return false
+		case e, ok := <-eventsCh:
+			// channel has been closed, go reconnect
+			if !ok {
+				return true
+			}
 			log.Tracef("got event: %v", e)
 			switch e := e.(type) {
 			case *events.ChatJoinEvent:
 			case *events.MessageEvent:
-				cmd, err := command.ParseCommand(b.botName, e.Message)
+				cmd, err := command.ParseCommand(b.botname, e.Message)
 				if err != nil {
 					continue
 				}
@@ -90,7 +109,7 @@ func (b *Bot) Run(ctx context.Context) error {
 func (b *Bot) postHelpMessage(chat string) {
 	b.postMessage(chat, fmt.Sprintf(`Usage info: post message with "%s, /command" to invoke command.
 Available commands:
-	help: prints this message`, b.botName))
+	help: prints this message`, b.botname))
 }
 
 func (b *Bot) greetUser(chat, user string) {
@@ -108,7 +127,8 @@ func (b *Bot) startListen() <-chan events.Event {
 			default:
 				w, err := b.client.Get(pollURL)
 				if err != nil {
-					continue
+					close(ch)
+					return
 				}
 				e, err := parseEvent(w.Body)
 				if err != nil {
@@ -127,7 +147,7 @@ func (b *Bot) postMessage(chat, text string) {
 		postMsgURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RoutePostMessage
 		if _, err := b.client.Post(postMsgURL, contentJSON,
 			strings.NewReader(fmt.Sprintf(`{"user": "%s", "chat": "%s", "text": "%s"}`,
-				b.botName, chat, text))); err != nil {
+				b.botname, chat, text))); err != nil {
 			log.Errorf("postMessage: %v", err)
 		}
 	}()
@@ -182,9 +202,7 @@ func (b *Bot) startSendingKeepAlive() {
 	go func() {
 		for {
 			<-time.After(time.Second * 10)
-			if err := b.sendKeepAlive(); err != nil {
-				log.Errorf("send alive: %v", err)
-			}
+			b.sendKeepAlive()
 		}
 	}()
 }

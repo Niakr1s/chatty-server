@@ -19,12 +19,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	b, err := bot.New()
-	if err != nil {
-		log.Fatal(err)
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	if err := b.Connect(e.BotUsername, e.BotPassword, e.URL); err != nil {
+	b, err := bot.New(ctx, e.BotUsername, e.BotPassword, e.URL)
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -32,12 +31,9 @@ func main() {
 	signal.Notify(exit, os.Interrupt)
 	signal.Notify(exit, syscall.SIGTERM)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	done := make(chan struct{})
 	go func() {
-		b.Run(ctx)
+		b.Run()
 		done <- struct{}{}
 	}()
 
