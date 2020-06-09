@@ -21,8 +21,8 @@ const (
 	contentJSON = "application/json"
 )
 
-// HelloBot ...
-type HelloBot struct {
+// Bot ...
+type Bot struct {
 	client *http.Client
 
 	ctx context.Context
@@ -31,17 +31,17 @@ type HelloBot struct {
 	botName string
 }
 
-// NewHelloBot ...
-func NewHelloBot() (*HelloBot, error) {
+// New ...
+func New() (*Bot, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
 	}
-	return &HelloBot{client: &http.Client{Jar: jar}}, nil
+	return &Bot{client: &http.Client{Jar: jar}}, nil
 }
 
 // Connect ...
-func (b *HelloBot) Connect(botname, password, url string) error {
+func (b *Bot) Connect(botname, password, url string) error {
 	b.botName = botname
 	b.url = url
 	w, err := b.client.Post(url+constants.RouteApi+constants.RouteAuthorize,
@@ -54,7 +54,7 @@ func (b *HelloBot) Connect(botname, password, url string) error {
 }
 
 // Run ...
-func (b *HelloBot) Run(ctx context.Context) error {
+func (b *Bot) Run(ctx context.Context) error {
 	b.ctx = ctx
 	chats, err := b.getChats()
 	if err != nil {
@@ -87,17 +87,17 @@ func (b *HelloBot) Run(ctx context.Context) error {
 	}
 }
 
-func (b *HelloBot) postHelpMessage(chat string) {
+func (b *Bot) postHelpMessage(chat string) {
 	b.postMessage(chat, fmt.Sprintf(`Usage info: post message with "%s, /command" to invoke command.
 Available commands:
 	help: prints this message`, b.botName))
 }
 
-func (b *HelloBot) greetUser(chat, user string) {
+func (b *Bot) greetUser(chat, user string) {
 	b.postMessage(chat, fmt.Sprintf("Hello, %s, how are you?", user))
 }
 
-func (b *HelloBot) startListen() <-chan events.Event {
+func (b *Bot) startListen() <-chan events.Event {
 	ch := make(chan events.Event)
 	go func() {
 		pollURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RoutePoll
@@ -121,7 +121,7 @@ func (b *HelloBot) startListen() <-chan events.Event {
 	return ch
 }
 
-func (b *HelloBot) postMessage(chat, text string) {
+func (b *Bot) postMessage(chat, text string) {
 	log.Tracef("posting message in chat %s: %s", chat, text)
 	go func() {
 		postMsgURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RoutePostMessage
@@ -133,7 +133,7 @@ func (b *HelloBot) postMessage(chat, text string) {
 	}()
 }
 
-func (b *HelloBot) getChats() ([]string, error) {
+func (b *Bot) getChats() ([]string, error) {
 	getChatsURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RouteGetChats
 
 	w, err := b.client.Get(getChatsURL)
@@ -154,7 +154,7 @@ func (b *HelloBot) getChats() ([]string, error) {
 	return res, nil
 }
 
-func (b *HelloBot) joinChats(chatnames ...string) {
+func (b *Bot) joinChats(chatnames ...string) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(chatnames))
 	for _, cn := range chatnames {
@@ -169,7 +169,7 @@ func (b *HelloBot) joinChats(chatnames ...string) {
 	wg.Wait()
 }
 
-func (b *HelloBot) joinChat(chat string) error {
+func (b *Bot) joinChat(chat string) error {
 	joinChatURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RouteJoinChat
 	_, err := b.client.Post(joinChatURL, contentJSON, strings.NewReader(fmt.Sprintf(`{"chat": "%s"}`, chat)))
 	if err != nil {
@@ -178,7 +178,7 @@ func (b *HelloBot) joinChat(chat string) error {
 	return nil
 }
 
-func (b *HelloBot) startSendingKeepAlive() {
+func (b *Bot) startSendingKeepAlive() {
 	go func() {
 		for {
 			<-time.After(time.Second * 10)
@@ -189,7 +189,7 @@ func (b *HelloBot) startSendingKeepAlive() {
 	}()
 }
 
-func (b *HelloBot) sendKeepAlive() error {
+func (b *Bot) sendKeepAlive() error {
 	keepAliveURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RouteKeepAlive
 	r, err := http.NewRequestWithContext(b.ctx, http.MethodPut, keepAliveURL, nil)
 	if err != nil {

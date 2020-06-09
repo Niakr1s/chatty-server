@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	b, err := bot.NewHelloBot()
+	b, err := bot.New()
 	if err != nil {
 		log.Fatal(err)
 	}
