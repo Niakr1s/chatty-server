@@ -107,6 +107,9 @@ func (b *HelloBot) startListen() <-chan events.Event {
 				return
 			default:
 				w, err := b.client.Get(pollURL)
+				if err != nil {
+					continue
+				}
 				e, err := parseEvent(w.Body)
 				if err != nil {
 					continue
