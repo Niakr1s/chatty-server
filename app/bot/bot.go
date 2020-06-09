@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/niakr1s/chatty-server/app/bot/internal/command"
 	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
 	"github.com/niakr1s/chatty-server/app/events"
@@ -71,6 +72,12 @@ func (b *HelloBot) Run(ctx context.Context) error {
 			switch e := e.(type) {
 			case *events.ChatJoinEvent:
 				b.greetUser(e.ChatName, e.UserName)
+			case *events.MessageEvent:
+				cmd, err := command.ParseCommand(b.botName, e.Message)
+				if err != nil {
+					continue
+				}
+				b.postMessage(e.ChatName, cmd.Answer())
 			default:
 			}
 		}
