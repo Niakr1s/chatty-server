@@ -100,6 +100,8 @@ func (b *Bot) loop() bool {
 					continue
 				}
 				b.postMessage(e.ChatName, answer)
+			case *events.ChatCreatedEvent:
+				go func() { b.joinChat(e.ChatName) }()
 			default:
 			}
 		}
