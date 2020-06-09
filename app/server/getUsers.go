@@ -27,7 +27,17 @@ func (s *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	users := s.dbStore.ChatDB.GetUsers(req.ChatName)
-	if err := json.NewEncoder(w).Encode(users); err != nil {
+	loggedUsers := make([]*models.LoggedUser, 0, len(users))
+
+	for _, u := range users {
+		lu, err := s.dbStore.LoggedDB.Get(u)
+		if err != nil {
+			continue
+		}
+		loggedUsers = append(loggedUsers, lu)
+	}
+
+	if err := json.NewEncoder(w).Encode(loggedUsers); err != nil {
 		httputil.WriteError(w, err, http.StatusInternalServerError)
 		return
 	}
