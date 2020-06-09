@@ -33,8 +33,9 @@ func (d *MessageDB) Post(m *models.Message) error {
 }
 
 func (d *MessageDB) postWithUserID(m *models.Message, id int) error {
-	if err := d.p.pool.QueryRow(d.p.ctx, `INSERT INTO messages ("user_id", "user", "chat", "text", "time", "verified")
-	VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`, id, m.UserName, m.ChatName, m.Text, m.Time.ToSQLTimeStamp(), m.Verified).Scan(&m.ID); err != nil {
+	if err := d.p.pool.QueryRow(d.p.ctx, `INSERT INTO messages ("user_id", "user", "chat", "text", "time", "verified", "bot")
+	VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+		id, m.UserName, m.ChatName, m.Text, m.Time.ToSQLTimeStamp(), m.Verified, m.Bot).Scan(&m.ID); err != nil {
 		return err
 	}
 	return nil
@@ -45,7 +46,7 @@ func (d *MessageDB) postWithUserID(m *models.Message, id int) error {
 func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message, error) {
 	res := []*models.Message{}
 	rows, err := d.p.pool.Query(d.p.ctx, `SELECT *
-	FROM (SELECT id, "user", text, time, verified
+	FROM (SELECT id, "user", text, time, verified, bot
 		FROM messages
 		WHERE chat=$1
 		ORDER BY id DESC
@@ -59,7 +60,7 @@ func (d *MessageDB) GetLastNMessages(chatname string, n int) ([]*models.Message,
 	for rows.Next() {
 		m := models.NewMessage("", "", "")
 		var t time.Time
-		err := rows.Scan(&m.ID, &m.UserName, &m.Text, &t, &m.Verified)
+		err := rows.Scan(&m.ID, &m.UserName, &m.Text, &t, &m.Verified, &m.Bot)
 		if err != nil {
 			return nil, err
 		}

@@ -31,4 +31,5 @@ var migrations = []string{
 	ALTER table users ALTER COLUMN "admin" set NOT null;`,
 
 	`ALTER TABLE users ADD column IF NOT EXISTS "bot" BOOLEAN not null default false;`,
+	`ALTER TABLE messages ADD column IF NOT EXISTS "bot" BOOLEAN not null default false;`,
 }
