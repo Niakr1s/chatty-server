@@ -45,7 +45,9 @@ func ParseCommand(botname string, msg *models.Message) (Command, error) {
 
 	switch cmd {
 	case "/help":
-		return CommandFunc(HelpCommand(botname)), nil
+		return HelpCommand(botname), nil
+	case "/anecdot", "/anekdot":
+		return AnecdotCommand(), nil
 	default:
 		return nil, ErrNoSuchCommand
 	}
