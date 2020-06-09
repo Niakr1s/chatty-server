@@ -32,7 +32,7 @@ type Bot struct {
 	url      string
 }
 
-// New ...
+// New constructs a Bot
 func New(ctx context.Context, botname, password, url string) (*Bot, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -41,7 +41,7 @@ func New(ctx context.Context, botname, password, url string) (*Bot, error) {
 	return &Bot{client: &http.Client{Jar: jar}, botname: botname, password: password, url: url, ctx: ctx}, nil
 }
 
-// connect ...
+// connect trying to authorize at our chatty-server
 func (b *Bot) connect() error {
 	w, err := b.client.Post(b.url+constants.RouteApi+constants.RouteAuthorize,
 		contentJSON, strings.NewReader(fmt.Sprintf(`{"user": "%s", "password": "%s"}`, b.botname, b.password)))
@@ -108,16 +108,8 @@ func (b *Bot) loop() bool {
 	}
 }
 
-func (b *Bot) postHelpMessage(chat string) {
-	b.postMessage(chat, fmt.Sprintf(`Usage info: post message with "%s, /command" to invoke command.
-Available commands:
-	help: prints this message`, b.botname))
-}
-
-func (b *Bot) greetUser(chat, user string) {
-	b.postMessage(chat, fmt.Sprintf("Hello, %s, how are you?", user))
-}
-
+// startListen polls events and sends them into channel.
+// on network error closes that channel.
 func (b *Bot) startListen() <-chan events.Event {
 	ch := make(chan events.Event)
 	go func() {
@@ -143,6 +135,7 @@ func (b *Bot) startListen() <-chan events.Event {
 	return ch
 }
 
+// postMessage posts message in a new goroutine
 func (b *Bot) postMessage(chat, text string) {
 	log.Tracef("posting message in chat %s: %s", chat, text)
 	go func() {
@@ -155,6 +148,7 @@ func (b *Bot) postMessage(chat, text string) {
 	}()
 }
 
+// getChats ask server for all existent chats
 func (b *Bot) getChats() ([]string, error) {
 	getChatsURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RouteGetChats
 
@@ -176,6 +170,7 @@ func (b *Bot) getChats() ([]string, error) {
 	return res, nil
 }
 
+// joinChats joins chats, each join in a single goroutine
 func (b *Bot) joinChats(chatnames ...string) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(chatnames))
@@ -191,6 +186,7 @@ func (b *Bot) joinChats(chatnames ...string) {
 	wg.Wait()
 }
 
+// joinChat joins a chat
 func (b *Bot) joinChat(chat string) error {
 	joinChatURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RouteJoinChat
 	_, err := b.client.Post(joinChatURL, contentJSON, strings.NewReader(fmt.Sprintf(`{"chat": "%s"}`, chat)))
@@ -200,6 +196,7 @@ func (b *Bot) joinChat(chat string) error {
 	return nil
 }
 
+// startSendingKeepAlive sends keep-alive packages forever with interfal 10s
 func (b *Bot) startSendingKeepAlive() {
 	go func() {
 		for {
@@ -209,6 +206,7 @@ func (b *Bot) startSendingKeepAlive() {
 	}()
 }
 
+// sendKeepAlive is a helper-function for startSendingKeepAlive
 func (b *Bot) sendKeepAlive() error {
 	keepAliveURL := b.url + constants.RouteApi + constants.RouteLoggedOnly + constants.RouteKeepAlive
 	r, err := http.NewRequestWithContext(b.ctx, http.MethodPut, keepAliveURL, nil)
