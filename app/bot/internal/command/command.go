@@ -16,22 +16,15 @@ var (
 // Command used by bot to answer user.
 // Bot can response to commands of type "/help", or maybe "/calc 2+2".
 type Command interface {
-	Answer() string
+	Answer() (string, error)
 }
 
 // CommandFunc is adapter for Command
-type CommandFunc func() string
+type CommandFunc func() (string, error)
 
 // Answer ...
-func (cf CommandFunc) Answer() string {
+func (cf CommandFunc) Answer() (string, error) {
 	return cf()
-}
-
-// HelpCommand for string "/help"
-func HelpCommand(botname string) CommandFunc {
-	return func() string {
-		return `Available commands: /help`
-	}
 }
 
 // ParseCommand gots input of type "Bot, /help smth" (comma after bot name can be omitted) and returns a command

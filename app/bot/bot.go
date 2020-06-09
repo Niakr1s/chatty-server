@@ -76,7 +76,11 @@ func (b *HelloBot) Run(ctx context.Context) error {
 				if err != nil {
 					continue
 				}
-				b.postMessage(e.ChatName, cmd.Answer())
+				answer, err := cmd.Answer()
+				if err != nil {
+					continue
+				}
+				b.postMessage(e.ChatName, answer)
 			default:
 			}
 		}
