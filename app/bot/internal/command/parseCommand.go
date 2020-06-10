@@ -28,7 +28,7 @@ func ParseCommand(msg *models.Message) (Command, error) {
 		return nil, ErrBadInput
 	}
 
-	cmd := splitted[1]
+	cmd := splitted[0]
 	arg := ""
 	return getCommand(cmd, arg)
 }

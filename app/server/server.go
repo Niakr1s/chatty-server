@@ -6,6 +6,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/niakr1s/chatty-server/app/bot/serverbot"
 	"github.com/niakr1s/chatty-server/app/config"
 	"github.com/niakr1s/chatty-server/app/constants"
 	"github.com/niakr1s/chatty-server/app/db"
@@ -32,6 +33,7 @@ type Server struct {
 	mailer      email.Mailer
 	pool        *eventpool.Pool
 	srv         *http.Server
+	bot         *serverbot.Bot
 
 	shutdownFuncs []func()
 }
@@ -60,6 +62,12 @@ func newServer(dbStore *db.Store, m email.Mailer) *Server {
 	res.pool.Run()
 
 	res.generateRoutePaths()
+
+	res.bot = serverbot.New(res.pool.CreateChanNoFilter(), res.dbStore.MessageDB)
+	res.shutdownFuncs = append(res.shutdownFuncs, func() {
+		<-res.bot.Shutdown()
+		log.Infof("bot shutdown gracefully")
+	})
 
 	return res
 }
@@ -141,6 +149,8 @@ func (s *Server) ListenAndServe() error {
 	for _, c := range config.C.Chats {
 		s.dbStore.ChatDB.Add(c)
 	}
+
+	s.bot.Run()
 
 	log.Printf("starting to listening on address %s", address)
 	return s.srv.ListenAndServe()
