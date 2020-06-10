@@ -2,9 +2,6 @@ package command
 
 import (
 	"errors"
-	"strings"
-
-	"github.com/niakr1s/chatty-server/app/models"
 )
 
 // errors
@@ -25,30 +22,4 @@ type CommandFunc func() (string, error)
 // Answer ...
 func (cf CommandFunc) Answer() (string, error) {
 	return cf()
-}
-
-// ParseCommand gots input of type "Bot, /help smth" (comma after bot name can be omitted) and returns a command
-func ParseCommand(botname string, msg *models.Message) (Command, error) {
-	if len(msg.Text) == 0 || msg.UserName == botname {
-		return nil, ErrBadInput
-	}
-	splitted := strings.SplitN(msg.Text, " ", 2)
-	if len(splitted) < 2 || !(splitted[0] == botname+"," || splitted[0] == botname) {
-		return nil, ErrBadInput
-	}
-
-	cmd := splitted[1]
-	// arg := ""
-	// if len(splitted) > 2 {
-	// 	arg = splitted[2]
-	// }
-
-	switch cmd {
-	case "/help":
-		return HelpCommand(botname), nil
-	case "/anecdot", "/anekdot":
-		return AnecdotCommand(), nil
-	default:
-		return nil, ErrNoSuchCommand
-	}
 }

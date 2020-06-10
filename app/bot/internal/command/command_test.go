@@ -24,7 +24,7 @@ func TestParseCommand(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := ParseCommand(botName, tt.message)
+			_, err := ParseCommandForBot(botName, tt.message)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}

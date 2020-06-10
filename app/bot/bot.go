@@ -72,7 +72,7 @@ func (b *Bot) loop() bool {
 			switch e := e.(type) {
 			case *events.ChatJoinEvent:
 			case *events.MessageEvent:
-				cmd, err := command.ParseCommand(b.Username, e.Message)
+				cmd, err := command.ParseCommandForBot(b.Username, e.Message)
 				if err != nil {
 					continue
 				}
