@@ -10,10 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	contentJSON = "application/json"
-)
-
 // Bot ...
 type Bot struct {
 	*client.Client
