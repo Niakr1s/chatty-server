@@ -27,5 +27,6 @@ func (s *Server) Poll(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case <-time.After(config.C.ResponseTimeout.Duration - time.Second):
+	case <-s.cancel:
 	}
 }

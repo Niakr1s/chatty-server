@@ -35,6 +35,9 @@ type Server struct {
 	srv         *http.Server
 	bot         *serverbot.Bot
 
+	// Channel for cancel long handlers, Poll for example.
+	cancel chan struct{}
+
 	shutdownFuncs []func()
 }
 
@@ -46,6 +49,7 @@ func newServer(dbStore *db.Store, m email.Mailer) *Server {
 		cookieStore: sess.InitStoreFromConfig(),
 		mailer:      m,
 		pool:        eventpool.NewPool(),
+		cancel:      make(chan struct{}),
 	}
 
 	ch := res.pool.GetInputChan()
@@ -158,6 +162,8 @@ func (s *Server) ListenAndServe() error {
 
 // Shutdown ...
 func (s *Server) Shutdown(ctx context.Context) error {
+	close(s.cancel)
+
 	wg := sync.WaitGroup{}
 	wg.Add(len(s.shutdownFuncs))
 	for _, f := range s.shutdownFuncs {
