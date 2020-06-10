@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/niakr1s/chatty-server/app/bot"
+	"github.com/niakr1s/chatty-server/app/bot/clientbot"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,7 +22,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	b, err := bot.New(ctx, e.BotUsername, e.BotPassword, e.URL)
+	b, err := clientbot.New(ctx, e.BotUsername, e.BotPassword, e.URL)
 	if err != nil {
 		log.Fatal(err)
 	}
